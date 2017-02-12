@@ -610,6 +610,675 @@
             
               
                 
+                <a class="post-title-link" href="/2016/04/20/Git-笔记/" itemprop="url">
+                  Git笔记
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-20T22:23:33+08:00" content="2016-04-20">
+              2016-04-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/而知也无涯/" itemprop="url" rel="index">
+                    <span itemprop="name">而知也无涯</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>#常用命令<br><a href="http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html</a></p>
+<p>#Git分支管理<br><a href="http://www.ruanyifeng.com/blog/2012/07/git.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2012/07/git.html</a></p>
+<p>文中提到的Master 和 Developer 两条线的思路，非常棒，但是在具体的实践中，需要根据项目来确定。<br>今天和发哥讨论的结果是，如果像我司一样，有独立的测试部门，需要不时的从Master取版本，做集成测试，那么 需要两条线，管理比较方便。<br>如果规模较小，可以考虑只用一个master 足够，每次打个tag就行，无需专人负责dev -&gt;mastert 的merge，况且这部分容易有坑。</p>
+<p>#Git 使用规范<br><a href="http://www.ruanyifeng.com/blog/2015/08/git-use-process.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2015/08/git-use-process.html</a></p>
+<p>在我们实际的 项目中，每次commit之前，需要先pull，解决好冲突之后，才能commit。<br>在我们使用Gerrit的过程中，会出现Merge Appending 的报错，原因是，submit了 1234 4次，且4依赖于前面的，前面任意一项submit未通过，那么submit 4的时候会出现找个错误。所以，有依赖关系的请谨慎。</p>
+<p>需要详细了解的内容：<br>cherry pick<br>rebase<br>tag</p>
+
+          
+        
+      
+    </div>
+    
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/04/20/敏捷开发（二）-Scrum-实践/" itemprop="url">
+                  敏捷开发（二）-Scrum实践
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-20T22:23:33+08:00" content="2016-04-20">
+              2016-04-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/而知也无涯/" itemprop="url" rel="index">
+                    <span itemprop="name">而知也无涯</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>#前言<br>　　今天，几位同事带着我先过了一次Scrum 实践，走了一个流程，感觉内容很多，一时估计没法消化，做个笔记。</p>
+<p>#Scrum简介<br>　　Scrum是迭代式增量软件开发过程，通常用于敏捷软件开发。Scrum包括了一系列实践和预定义角色的过程骨架。Scrum中的主要角色包括同项目经理类似的Scrum主管角色负责维护过程和任务，产品负责人代表利益所有者，开发团队包括了所有开发人员。虽然Scrum是为管理软件开发项目而开发的，它同样可以用于运行软件维护团队，或者作为计划管理方法：<em>Scrum of Scrums</em>.</p>
+<p>#角色</p>
+<p>##“猪”角色</p>
+<ul>
+<li><p>产品负责人（Product Owner）<br>通常由市场部门的人担任</p>
+</li>
+<li><p>敏捷教练 (Scrum Master)<br>通常由开发组组长担任</p>
+</li>
+<li><p>开发团队 (Scrum Team)<br>包括开发,需求,测试</p>
+</li>
+</ul>
+<p>##“鸡”角色</p>
+<ul>
+<li><p>用户<br>软件是为了某些人而创建！就像“假如森林里有一棵树倒下了，但没有人听到，那么它算发出了声音吗”，“假如软件没有被使用，那么它算是被开发出来了么？”</p>
+</li>
+<li><p>利益所有者 (客户，提供商)<br>影响项目成功的人, 但只直接参与冲刺评审过程。</p>
+</li>
+<li><p>管理者<br>为产品开发团体架起环境的那个人<br>#流程<br>　启动会议<br>-&gt;每日站会<br>-&gt;show Case<br>-&gt;迭代总结会议</p>
+</li>
+</ul>
+<p>有的地方也写成如下名字：<br>　冲刺规划会议（Sprint Plan Meeting）<br>-&gt;每日站立会议（Sprint Daily Meeting）<br>-&gt;冲刺复审会议（Sprint Review Meetion）<br>-&gt;冲刺回顾会议（Retrospective Meeting）</p>
+<p>##启动会议<br>1.需求<br>需求需要和PO沟通 主要有如下几点：</p>
+<ul>
+<li>工作来源：这份工作是谁安排的，要求达到什么目的</li>
+<li>细节问题：这部分需要做好功课，你需要站在一个开发者的角度，来思考这些细节，这也是为你的开发团队向PO提问。</li>
+<li>工作量预估</li>
+</ul>
+<p>2.用户故事拆分<br>As For Do 原则</p>
+<ul>
+<li><p>As（用户角色）： 该功能是为谁设计的，预期用户是哪些人？<br>这一点必须收敛和明确，如果某一功能的预期用户太过复杂，说明这一部分的设计是有问题，需要拆分。</p>
+</li>
+<li><p>For（价值、目的） : 该功能的实现目的是什么</p>
+</li>
+<li>Do （过程、行为） : 该部分涉及真实进行的场景</li>
+</ul>
+<p>3.故事点<br>这一部分，涉及到分发任务，最好由开发人员回答，要引导（压榨）开发人员，发掘故事点。</p>
+<ul>
+<li>全员预估、发现坑、技术教练指导</li>
+<li>和PO 沟通实施先后顺序</li>
+<li>用户故事优先级别</li>
+</ul>
+<h2 id="每日站会"><a href="#每日站会" class="headerlink" title="每日站会"></a>每日站会</h2><p>严格按照Story 的故事点来汇报。Master 需要汇报整个项目进度。</p>
+<ul>
+<li>昨天做了什么</li>
+<li>今天准备做什么</li>
+<li>有什么问题<br>要求每个人发言简洁，明确。如果有细节的问题，注意打断然后私下讨论。确保每个人都能集中其工作在某个点上。</li>
+</ul>
+<p>##show case<br>As 对象 必须在场<br>ST 成员各自演示功能</p>
+<h2 id="迭代总结会议"><a href="#迭代总结会议" class="headerlink" title="迭代总结会议"></a>迭代总结会议</h2><ul>
+<li>计划投入、实际投入、延时</li>
+<li>把大家的想法总结<ul>
+<li>大家反馈完成度</li>
+<li>谁做的最好？谁有待改进？ why？ 做个记录，有利于成员管理和考核，对好的予以表扬。不足的设法改进。Master 也需要借此对团队成员有一个考量。</li>
+<li>每个人提建议。<br>1.不足的可以改进的地方（注意分类，在逻辑层次需要在一个层面，例如 外部问题，团队管理问题，个人问题，有的问题可以及时和甲方沟通）<br> 2.好的，可以延续的地方。（如重构）</li>
+</ul>
+</li>
+</ul>
+<p>#杂七杂八</p>
+<ul>
+<li>第一次接触团队，大家互相不熟悉，第一个迭代（冲刺）可以制定工作量70% 这一部分需要和甲方商榷。</li>
+<li>作为Master 要保持自身的机动性。</li>
+<li>每个故事点，要尽可能的发掘开发人员的思路。</li>
+<li>用户故事，或者故事点过大时，要及时切分。</li>
+<li>纸上得来终觉浅</li>
+</ul>
+<p>#Reference<br><a href="http://blog.csdn.net/uxyheaven/article/details/49618097" target="_blank" rel="external">http://blog.csdn.net/uxyheaven/article/details/49618097</a></p>
+
+          
+        
+      
+    </div>
+    
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/04/20/Echarts-笔记/" itemprop="url">
+                  Echarts笔记
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-20T22:23:33+08:00" content="2016-04-20">
+              2016-04-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/而知也无涯/" itemprop="url" rel="index">
+                    <span itemprop="name">而知也无涯</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+    
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/04/20/敏捷开发（一）-基本概念/" itemprop="url">
+                  敏捷开发（一）-基本概念
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-20T22:23:33+08:00" content="2016-04-20">
+              2016-04-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/而知也无涯/" itemprop="url" rel="index">
+                    <span itemprop="name">而知也无涯</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>#前言<br>　　上周六部长给我安排了一个任务，去带一个团队，不过是承担辅助的角色.当时我的内心毫无波动，甚至有点想笑.<br>　　历经了几天内部扯皮，才知道这个活不好干，而自身才他喵的入职4个月，刚刚转正.好吧，反正都到这个份上了，说什么都没用，好好学吧.</p>
+<p>#敏捷开发宣言<br><code><br>个体和互动 高于 流程和文档<br>工作的软件 高于 详尽的文档<br>客户合作 高于 合同谈判<br>响应变化 高于 遵循计划<br>也就是说, 尽管右项有其价值, 我们更重视左项的价值.<br></code></p>
+<p>#敏捷开发核心理念<br>　　以最简单有效的方式快速达成目标, 并在这个过程中及时地响应外界的变化, 做出迅速的调整.</p>
+<p>　　</p>
+<p>#敏捷开发的核心价值观</p>
+<ul>
+<li>以人为本</li>
+<li>目标导向</li>
+<li>客户为先</li>
+<li>拥抱变化</li>
+</ul>
+<p>#敏捷开发的原则</p>
+<ul>
+<li>我们最重要的目标，是通过持续不断地及早交付有价值的软件使客户满意。</li>
+<li>欣然面对需求变化，即使在开发后期也一样。为了客户的竞争优势，敏捷过程掌控变化。</li>
+<li>经常地交付可工作的软件，相隔几星期或一两个月，倾向于采取较短的周期。</li>
+<li>业务人员和开发人员必须相互合作，项目中的每一天都不例外。</li>
+<li>激发个体的斗志，以他们为核心搭建项目。提供所需的环境和支援，辅以信任，从而达成目标。</li>
+<li>不论团队内外，传递信息效果最好效率也最高的方式是面对面的交谈。</li>
+<li>可工作的软件是进度的首要度量标准。</li>
+<li>敏捷过程倡导可持续开发。责任人、开发人员和用户要能够共同维持其步调稳定延续。</li>
+<li>坚持不懈地追求技术卓越和良好设计，敏捷能力由此增强。</li>
+<li>以简洁为本，它是极力减少不必要工作量的艺术。</li>
+<li>最好的架构、需求和设计出自自组织团队。</li>
+<li>团队定期地反思如何能提高成效，并依此调整自身的举止表现。</li>
+</ul>
+<p>#体悟</p>
+<ul>
+<li>敏捷不是万能的，针对每个团队的特性，合适的才是最好的</li>
+<li>敏捷其实对团队中每个成员的要求都很高，要求每个人都能发挥自己的主观能动性，为了达成团队的共同目标献言献策，在实际中，如何去调动大家的积极性很重要。</li>
+<li>敏捷不只是快，更多的是要求开发团队对需求反应更为迅捷。能迅速适应变化。</li>
+</ul>
+<p>#Reference<br><a href="http://blog.csdn.net/uxyheaven/article/details/49618097" target="_blank" rel="external">http://blog.csdn.net/uxyheaven/article/details/49618097</a></p>
+
+          
+        
+      
+    </div>
+    
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/04/20/基于Spark的图计算框架-GraphX/" itemprop="url">
+                  Echarts笔记
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-20T22:23:33+08:00" content="2016-04-20">
+              2016-04-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/而知也无涯/" itemprop="url" rel="index">
+                    <span itemprop="name">而知也无涯</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>原链接打不开了，做个N手转载，做个记录<br><a href="http://huxiao64.github.io/graphx" target="_blank" rel="external">http://huxiao64.github.io/graphx</a></p>
+<p>这篇介绍，应该是GraphX 官方文档的一个翻译（用作示例的那两张图，不忍吐槽）<br>。。。。</p>
+<p>别的事出差，这个就先这样搁浅了。。</p>
+
+          
+        
+      
+    </div>
+    
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/04/18/photo/" itemprop="url">
                   河海雪
                 </a>
@@ -723,8 +1392,8 @@
             
               
                 
-                <a class="post-title-link" href="/2016/04/18/poem/" itemprop="url">
-                  平江随感
+                <a class="post-title-link" href="/2016/04/18/TODO-List/" itemprop="url">
+                  TODO-List
                 </a>
               
             
@@ -751,8 +1420,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/杂记/" itemprop="url" rel="index">
-                    <span itemprop="name">杂记</span>
+                  <a href="/categories/吾生也有涯/" itemprop="url" rel="index">
+                    <span itemprop="name">吾生也有涯</span>
                   </a>
                 </span>
 
@@ -786,7 +1455,42 @@
       
         
           
-            <center><br>礼耕堂前少年游<br>谷雨各向平江流<br>鱼食饭稻碧螺香<br>尽与风华不与休<br></center>
+            <p>提前转正了，小开森一下。<br>然后发现之前太忙，学了很多东西，都没有总结，写个list，慢慢填坑吧。</p>
+<h1 id="HBase"><a href="#HBase" class="headerlink" title="HBase"></a>HBase</h1><ul>
+<li>HBase 原理</li>
+<li>RowKey 设计</li>
+<li>建表，建分区表，删表</li>
+<li>增、改、查（过滤器）</li>
+<li>协处理器</li>
+<li>shell 使用</li>
+<li>FAQ</li>
+</ul>
+<p>#Spark</p>
+<ul>
+<li>SparkSQL、Hive On Spark、Parquet</li>
+<li>DataSet、DataFrame、RDD</li>
+<li>SparkMLlib</li>
+<li>SparkML</li>
+<li>GraphX</li>
+</ul>
+<p>#Kafka</p>
+<ul>
+<li>Producer</li>
+<li>Consumer</li>
+<li>多线程</li>
+<li>高可用</li>
+<li>分区</li>
+</ul>
+<p>#HDFS</p>
+<p>#Hadoop</p>
+<ul>
+<li>Yarn</li>
+<li>Zookeeper</li>
+<li>Map</li>
+</ul>
+<p>#数据挖掘</p>
+<p>#Storm</p>
+<p>#Zookeeper</p>
 
           
         
@@ -818,6 +1522,10 @@
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
 
           </div>
@@ -856,7 +1564,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-count">13</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -864,7 +1572,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -873,7 +1581,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">26</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -939,7 +1647,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2016</span>
+  <span itemprop="copyrightYear">2017</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
