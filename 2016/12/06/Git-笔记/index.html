@@ -82,23 +82,23 @@
 
 <meta name="description" content="Git是非常好用的分布式版本管理系统，学习记录如下
 常用命令http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html
-#Git分支管理http://www.ruanyifeng.com/blog/2012/07/git.html
-文中提到的Master 和 Developer 两条线的思路，非常棒，但是在具体的实践中，需要根据项目来确定">
+Git分支管理http://www.ruanyifeng.com/blog/2012/07/git.html
+文中提到的Master 和 Developer 两条线的思路，非常棒，但是在具体的实践中，需要根据项目来确定。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Git笔记">
 <meta property="og:url" content="http://yoursite.com/2016/12/06/Git-笔记/index.html">
 <meta property="og:site_name" content="喵十八の小窝">
 <meta property="og:description" content="Git是非常好用的分布式版本管理系统，学习记录如下
 常用命令http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html
-#Git分支管理http://www.ruanyifeng.com/blog/2012/07/git.html
-文中提到的Master 和 Developer 两条线的思路，非常棒，但是在具体的实践中，需要根据项目来确定">
-<meta property="og:updated_time" content="2017-12-07T15:46:25.179Z">
+Git分支管理http://www.ruanyifeng.com/blog/2012/07/git.html
+文中提到的Master 和 Developer 两条线的思路，非常棒，但是在具体的实践中，需要根据项目来确定。">
+<meta property="og:updated_time" content="2017-12-07T15:48:50.813Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Git笔记">
 <meta name="twitter:description" content="Git是非常好用的分布式版本管理系统，学习记录如下
 常用命令http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html
-#Git分支管理http://www.ruanyifeng.com/blog/2012/07/git.html
-文中提到的Master 和 Developer 两条线的思路，非常棒，但是在具体的实践中，需要根据项目来确定">
+Git分支管理http://www.ruanyifeng.com/blog/2012/07/git.html
+文中提到的Master 和 Developer 两条线的思路，非常棒，但是在具体的实践中，需要根据项目来确定。">
 
 
 
@@ -327,9 +327,9 @@
       
         <p>Git是非常好用的分布式版本管理系统，学习记录如下</p>
 <h1 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h1><p><a href="http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html</a></p>
-<p>#Git分支管理<br><a href="http://www.ruanyifeng.com/blog/2012/07/git.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2012/07/git.html</a></p>
+<h1 id="Git分支管理"><a href="#Git分支管理" class="headerlink" title="Git分支管理"></a>Git分支管理</h1><p><a href="http://www.ruanyifeng.com/blog/2012/07/git.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2012/07/git.html</a></p>
 <p>文中提到的Master 和 Developer 两条线的思路，非常棒，但是在具体的实践中，需要根据项目来确定。<br>今天和发哥讨论的结果是，如果像我司一样，有独立的测试部门，需要不时的从Master取版本，做集成测试，那么 需要两条线，管理比较方便。<br>如果规模较小，可以考虑只用一个master 足够，每次打个tag就行，无需专人负责dev -&gt;mastert 的merge，况且这部分容易有坑。</p>
-<p>#Git 使用规范<br><a href="http://www.ruanyifeng.com/blog/2015/08/git-use-process.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2015/08/git-use-process.html</a></p>
+<h1 id="Git-使用规范"><a href="#Git-使用规范" class="headerlink" title="Git 使用规范"></a>Git 使用规范</h1><p><a href="http://www.ruanyifeng.com/blog/2015/08/git-use-process.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2015/08/git-use-process.html</a></p>
 <p>在我们实际的 项目中，每次commit之前，需要先pull，解决好冲突之后，才能commit。<br>在我们使用Gerrit的过程中，会出现Merge Appending 的报错，原因是，submit了 1234 4次，且4依赖于前面的，前面任意一项submit未通过，那么submit 4的时候会出现找个错误。所以，有依赖关系的请谨慎。</p>
 <p>需要详细了解的内容：<br>cherry pick<br>rebase<br>tag</p>
 
@@ -514,7 +514,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#常用命令"><span class="nav-number">1.</span> <span class="nav-text">常用命令</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#常用命令"><span class="nav-number">1.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Git分支管理"><span class="nav-number">2.</span> <span class="nav-text">Git分支管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Git-使用规范"><span class="nav-number">3.</span> <span class="nav-text">Git 使用规范</span></a></li></ol></div>
             
           </div>
         </section>

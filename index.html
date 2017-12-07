@@ -702,9 +702,9 @@
           
             <p>Git是非常好用的分布式版本管理系统，学习记录如下</p>
 <h1 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h1><p><a href="http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html</a></p>
-<p>#Git分支管理<br><a href="http://www.ruanyifeng.com/blog/2012/07/git.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2012/07/git.html</a></p>
+<h1 id="Git分支管理"><a href="#Git分支管理" class="headerlink" title="Git分支管理"></a>Git分支管理</h1><p><a href="http://www.ruanyifeng.com/blog/2012/07/git.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2012/07/git.html</a></p>
 <p>文中提到的Master 和 Developer 两条线的思路，非常棒，但是在具体的实践中，需要根据项目来确定。<br>今天和发哥讨论的结果是，如果像我司一样，有独立的测试部门，需要不时的从Master取版本，做集成测试，那么 需要两条线，管理比较方便。<br>如果规模较小，可以考虑只用一个master 足够，每次打个tag就行，无需专人负责dev -&gt;mastert 的merge，况且这部分容易有坑。</p>
-<p>#Git 使用规范<br><a href="http://www.ruanyifeng.com/blog/2015/08/git-use-process.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2015/08/git-use-process.html</a></p>
+<h1 id="Git-使用规范"><a href="#Git-使用规范" class="headerlink" title="Git 使用规范"></a>Git 使用规范</h1><p><a href="http://www.ruanyifeng.com/blog/2015/08/git-use-process.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2015/08/git-use-process.html</a></p>
 <p>在我们实际的 项目中，每次commit之前，需要先pull，解决好冲突之后，才能commit。<br>在我们使用Gerrit的过程中，会出现Merge Appending 的报错，原因是，submit了 1234 4次，且4依赖于前面的，前面任意一项submit未通过，那么submit 4的时候会出现找个错误。所以，有依赖关系的请谨慎。</p>
 <p>需要详细了解的内容：<br>cherry pick<br>rebase<br>tag</p>
 
@@ -820,10 +820,8 @@
         
           
             <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>　　今天，几位同事带着我先过了一次Scrum 实践，走了一个流程，感觉内容很多，一时估计没法消化，做个笔记。</p>
-<p>#Scrum简介<br>　　Scrum是迭代式增量软件开发过程，通常用于敏捷软件开发。Scrum包括了一系列实践和预定义角色的过程骨架。Scrum中的主要角色包括同项目经理类似的Scrum主管角色负责维护过程和任务，产品负责人代表利益所有者，开发团队包括了所有开发人员。虽然Scrum是为管理软件开发项目而开发的，它同样可以用于运行软件维护团队，或者作为计划管理方法：<em>Scrum of Scrums</em>.</p>
-<p>#角色</p>
-<p>##“猪”角色</p>
-<ul>
+<h1 id="Scrum简介"><a href="#Scrum简介" class="headerlink" title="Scrum简介"></a>Scrum简介</h1><p>　　Scrum是迭代式增量软件开发过程，通常用于敏捷软件开发。Scrum包括了一系列实践和预定义角色的过程骨架。Scrum中的主要角色包括同项目经理类似的Scrum主管角色负责维护过程和任务，产品负责人代表利益所有者，开发团队包括了所有开发人员。虽然Scrum是为管理软件开发项目而开发的，它同样可以用于运行软件维护团队，或者作为计划管理方法：<em>Scrum of Scrums</em>.</p>
+<h1 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h1><h2 id="“猪”角色"><a href="#“猪”角色" class="headerlink" title="“猪”角色"></a>“猪”角色</h2><ul>
 <li><p>产品负责人（Product Owner）<br>通常由市场部门的人担任</p>
 </li>
 <li><p>敏捷教练 (Scrum Master)<br>通常由开发组组长担任</p>
@@ -831,17 +829,17 @@
 <li><p>开发团队 (Scrum Team)<br>包括开发,需求,测试</p>
 </li>
 </ul>
-<p>##“鸡”角色</p>
-<ul>
+<h2 id="“鸡”角色"><a href="#“鸡”角色" class="headerlink" title="“鸡”角色"></a>“鸡”角色</h2><ul>
 <li><p>用户<br>软件是为了某些人而创建！就像“假如森林里有一棵树倒下了，但没有人听到，那么它算发出了声音吗”，“假如软件没有被使用，那么它算是被开发出来了么？”</p>
 </li>
 <li><p>利益所有者 (客户，提供商)<br>影响项目成功的人, 但只直接参与冲刺评审过程。</p>
 </li>
-<li><p>管理者<br>为产品开发团体架起环境的那个人<br>#流程<br>　启动会议<br>-&gt;每日站会<br>-&gt;show Case<br>-&gt;迭代总结会议</p>
+<li><p>管理者<br>为产品开发团体架起环境的那个人</p>
+<h1 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h1><p>　启动会议<br>-&gt;每日站会<br>-&gt;show Case<br>-&gt;迭代总结会议</p>
 </li>
 </ul>
 <p>有的地方也写成如下名字：<br>　冲刺规划会议（Sprint Plan Meeting）<br>-&gt;每日站立会议（Sprint Daily Meeting）<br>-&gt;冲刺复审会议（Sprint Review Meetion）<br>-&gt;冲刺回顾会议（Retrospective Meeting）</p>
-<p>##启动会议<br>1.需求<br>需求需要和PO沟通 主要有如下几点：</p>
+<h2 id="启动会议"><a href="#启动会议" class="headerlink" title="启动会议"></a>启动会议</h2><p>1.需求<br>需求需要和PO沟通 主要有如下几点：</p>
 <ul>
 <li>工作来源：这份工作是谁安排的，要求达到什么目的</li>
 <li>细节问题：这部分需要做好功课，你需要站在一个开发者的角度，来思考这些细节，这也是为你的开发团队向PO提问。</li>
@@ -867,7 +865,7 @@
 <li>今天准备做什么</li>
 <li>有什么问题<br>要求每个人发言简洁，明确。如果有细节的问题，注意打断然后私下讨论。确保每个人都能集中其工作在某个点上。</li>
 </ul>
-<p>##show case<br>As 对象 必须在场<br>ST 成员各自演示功能</p>
+<h2 id="show-case"><a href="#show-case" class="headerlink" title="show case"></a>show case</h2><p>As 对象 必须在场<br>ST 成员各自演示功能</p>
 <h2 id="迭代总结会议"><a href="#迭代总结会议" class="headerlink" title="迭代总结会议"></a>迭代总结会议</h2><ul>
 <li>计划投入、实际投入、延时</li>
 <li>把大家的想法总结<ul>
@@ -877,15 +875,14 @@
 </ul>
 </li>
 </ul>
-<p>#杂七杂八</p>
-<ul>
+<h1 id="杂七杂八"><a href="#杂七杂八" class="headerlink" title="杂七杂八"></a>杂七杂八</h1><ul>
 <li>第一次接触团队，大家互相不熟悉，第一个迭代（冲刺）可以制定工作量70% 这一部分需要和甲方商榷。</li>
 <li>作为Master 要保持自身的机动性。</li>
 <li>每个故事点，要尽可能的发掘开发人员的思路。</li>
 <li>用户故事，或者故事点过大时，要及时切分。</li>
 <li>纸上得来终觉浅</li>
 </ul>
-<p>#Reference<br><a href="http://blog.csdn.net/uxyheaven/article/details/49618097" target="_blank" rel="external">http://blog.csdn.net/uxyheaven/article/details/49618097</a></p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a href="http://blog.csdn.net/uxyheaven/article/details/49618097" target="_blank" rel="external">http://blog.csdn.net/uxyheaven/article/details/49618097</a></p>
 
           
         
@@ -1000,17 +997,15 @@
           
             <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>　　上周六部长给我安排了一个任务，去带一个团队，不过是承担辅助的角色.当时我的内心毫无波动，甚至有点想笑.<br>　　历经了几天内部扯皮，才知道这个活不好干，而自身才他喵的入职4个月，刚刚转正.好吧，反正都到这个份上了，说什么都没用，好好学吧.</p>
 <h1 id="敏捷开发宣言"><a href="#敏捷开发宣言" class="headerlink" title="敏捷开发宣言"></a>敏捷开发宣言</h1><p><code><br>个体和互动 高于 流程和文档<br>工作的软件 高于 详尽的文档<br>客户合作 高于 合同谈判<br>响应变化 高于 遵循计划<br>也就是说, 尽管右项有其价值, 我们更重视左项的价值.<br></code></p>
-<p>#敏捷开发核心理念<br>　　以最简单有效的方式快速达成目标, 并在这个过程中及时地响应外界的变化, 做出迅速的调整.</p>
+<h1 id="敏捷开发核心理念"><a href="#敏捷开发核心理念" class="headerlink" title="敏捷开发核心理念"></a>敏捷开发核心理念</h1><p>　　以最简单有效的方式快速达成目标, 并在这个过程中及时地响应外界的变化, 做出迅速的调整.</p>
 <p>　　</p>
-<p>#敏捷开发的核心价值观</p>
-<ul>
+<h1 id="敏捷开发的核心价值观"><a href="#敏捷开发的核心价值观" class="headerlink" title="敏捷开发的核心价值观"></a>敏捷开发的核心价值观</h1><ul>
 <li>以人为本</li>
 <li>目标导向</li>
 <li>客户为先</li>
 <li>拥抱变化</li>
 </ul>
-<p>#敏捷开发的原则</p>
-<ul>
+<h1 id="敏捷开发的原则"><a href="#敏捷开发的原则" class="headerlink" title="敏捷开发的原则"></a>敏捷开发的原则</h1><ul>
 <li>我们最重要的目标，是通过持续不断地及早交付有价值的软件使客户满意。</li>
 <li>欣然面对需求变化，即使在开发后期也一样。为了客户的竞争优势，敏捷过程掌控变化。</li>
 <li>经常地交付可工作的软件，相隔几星期或一两个月，倾向于采取较短的周期。</li>
@@ -1024,13 +1019,12 @@
 <li>最好的架构、需求和设计出自自组织团队。</li>
 <li>团队定期地反思如何能提高成效，并依此调整自身的举止表现。</li>
 </ul>
-<p>#体悟</p>
-<ul>
+<h1 id="体悟"><a href="#体悟" class="headerlink" title="体悟"></a>体悟</h1><ul>
 <li>敏捷不是万能的，针对每个团队的特性，合适的才是最好的</li>
 <li>敏捷其实对团队中每个成员的要求都很高，要求每个人都能发挥自己的主观能动性，为了达成团队的共同目标献言献策，在实际中，如何去调动大家的积极性很重要。</li>
 <li>敏捷不只是快，更多的是要求开发团队对需求反应更为迅捷。能迅速适应变化。</li>
 </ul>
-<p>#Reference<br><a href="http://blog.csdn.net/uxyheaven/article/details/49618097" target="_blank" rel="external">http://blog.csdn.net/uxyheaven/article/details/49618097</a></p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a href="http://blog.csdn.net/uxyheaven/article/details/49618097" target="_blank" rel="external">http://blog.csdn.net/uxyheaven/article/details/49618097</a></p>
 
           
         
