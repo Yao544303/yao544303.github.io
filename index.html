@@ -259,6 +259,623 @@
             
               
                 
+                <a class="post-title-link" href="/2017/12/27/percentrank/" itemprop="url">
+                  Spark 爬坑记录之percent_rank()
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-12-27T23:14:20+08:00" content="2017-12-27">
+              2017-12-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/大大大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大大大数据</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>在Kmeans 预处理之前的数据预处理部分，需要做一次类似percent_rank() 操作。<br>举个例子，输入一条记录为user_1,key1,value_1<br>输入多条记录<br>按照key1 聚合之后，结果为key1,list[value1,value2…..]<br>将list 排序，并获取count  结果为    key1，count，list<br>然后计算user1 这条记录的rank  =  index（value1）/count</p>
+<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">    val ah_freqlist_dic_old = user_ah_freq_dic.map(x=&gt;(x._1._2,Nil:+x._2))</span><br><span class="line">      .reduceByKey(_:::_)</span><br><span class="line">      .map(x=&gt;(x._1,(x._2.length).toString +: x._2.sorted))</span><br><span class="line">      .collectAsMap()</span><br><span class="line">val ah_freqlist_dic = sc.broadcast(ah_freqlist_dic_old)</span><br><span class="line">val user_ah_percent_dic = user_ah_freq_dic.map(t=&gt;((t._1._1,t._1._2),ah_freqlist_dic.value.getOrElse(t._1._2,Nil).indexOf(t._2)/((ah_freqlist_dic.value.getOrElse(t._1._2,Nil)(0).toInt).toFloat)))</span><br></pre></td></tr></table></figure>
+<p>上述代码在实现的时候效率极低。</p>
+<p>当把这段代码换成 percent_rank() 之后，奇迹发生了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">val df = sqlContext.createDataFrame(user_ah_freq_dic).toDF(&quot;user&quot;,&quot;ah&quot;,&quot;freq&quot;)</span><br><span class="line">   df.registerTempTable(&quot;uahf&quot;)</span><br><span class="line">   val sql=&quot;select user,ah,percent_rank() over (partition by ah order by freq) as rank from uahf&quot;</span><br><span class="line"></span><br><span class="line">   val user_ah_percent_dic = sqlContext.sql(sql).rdd.map(x=&gt;((x(0).toString,x(1).toString),x(2).toString.toFloat))</span><br></pre></td></tr></table></figure></p>
+<p>果然spark sql 的是做了优化的。阅读spark sql 的源码，又有计划了</p>
+
+          
+        
+      
+    </div>
+    
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/12/27/scala版本冲突/" itemprop="url">
+                  Spark 爬坑记录之开发Scala版本冲突
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-12-27T23:14:09+08:00" content="2017-12-27">
+              2017-12-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/大大大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大大大数据</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>若在maven 中配置了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;plugin&gt;</span><br><span class="line"> &lt;groupId&gt;org.scala-tools&lt;/groupId&gt;</span><br><span class="line"> &lt;artifactId&gt;maven-scala-plugin&lt;/artifactId&gt;</span><br><span class="line"> &lt;executions&gt;</span><br><span class="line"> &lt;execution&gt;</span><br><span class="line"> &lt;goals&gt;</span><br><span class="line"> &lt;goal&gt;compile&lt;/goal&gt;</span><br><span class="line"> &lt;goal&gt;testCompile&lt;/goal&gt;</span><br><span class="line"> &lt;/goals&gt;</span><br><span class="line"> &lt;/execution&gt;</span><br><span class="line"> &lt;/executions&gt;</span><br><span class="line"> &lt;configuration&gt;</span><br><span class="line"> &lt;scalaVersion&gt;$&#123;scala.version&#125;.6&lt;/scalaVersion&gt;</span><br><span class="line"> &lt;args&gt;</span><br><span class="line"> &lt;arg&gt;-target:jvm-1.7&lt;/arg&gt;</span><br><span class="line"> &lt;/args&gt;</span><br><span class="line"> &lt;/configuration&gt;</span><br><span class="line">&lt;/plugin&gt;</span><br></pre></td></tr></table></figure></p>
+<p>无需再在IDEA中配置 scala 的sdk 版本不一致会冲突</p>
+<p>注意这一行，最好标注小版本 2.10.6</p>
+<scalaversion>2.10.6</scalaversion>
+
+          
+        
+      
+    </div>
+    
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/12/27/spark2-x迁移至1-6/" itemprop="url">
+                  将基于Spark 2.x 开发的LDA 程序 迁移至Spark 1.6 的环境
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-12-27T23:10:50+08:00" content="2017-12-27">
+              2017-12-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/大大大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大大大数据</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>对方提供的LDA 聚类程序，是基于Spark 2.x 的，但是，我们的生产环境是Spark 1.6。 恩那么问题就来了，怎么让基于Spark 2.x 的代码在Spark 1.6 上跑起来。第一个想法是，只要把SparkSession 改为SparkContext 和 SQLContext 就行了。然后发现自己真的图样图森破。对方非常高端的使用了ml库，当然这不是问题。对方是用python 写的，当然这也不是问题<del>毕竟小学生都要学python了，作为一个程序员不会python 就说不过去了</del>对方的python 版本是2.7，当然这更不是问题。但是当你遇到需要将python 2.7 写的基于Spark 2.x  ml 写的代码迁移到spark 1.6 上的时候，就有问题了。<br><del>他喵的，老子都要精分了，一直在python 2.7 python 3.0  spark 1.6  spark2.2 版本间切换，在java，scala ，python 语言间切换</del></p>
+<h1 id="改造经过"><a href="#改造经过" class="headerlink" title="改造经过"></a>改造经过</h1><p>任务到手，谋定后动，当然先开始分析。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">spark = SparkSession.builder.master(&apos;yarn&apos;) \</span><br><span class="line">	.appName(&apos;marketing_data_lda_clustering&apos;) \</span><br><span class="line">	.enableHiveSupport() \</span><br><span class="line">	.getOrCreate()</span><br></pre></td></tr></table></figure></p>
+<p>这个，当然小case啦。改成sparkContext 就行了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">conf = SparkConf().setMaster(&apos;yarn&apos;) \</span><br><span class="line">	.setAppName(&apos;marketing_data_lda_clustering&apos;) </span><br><span class="line">sc = SparkContext(conf = conf)	</span><br><span class="line">sqlContext = SQLContext(sc)</span><br></pre></td></tr></table></figure></p>
+<p>然后，以为就搞定了，开开心心的spark-submit。不出意外的报错，提示下面代码缺少方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lda = LDA(k=30, seed=long(time.time()), optimizer=&quot;em&quot;)</span><br><span class="line">model = lda.fit(feature_dataframe)</span><br></pre></td></tr></table></figure></p>
+<p>怎么可能！！！ ml 怎么可能没有fit？？？<br>带着满腔疑惑，打开了api，然后发现，不是ml 没有fit，是1.6 的ml 库中压根就没有LDA！！！<br>哦对，顺便看了眼隔壁Scala 的API 两个都有。。。<br><del>心情复杂</del><br>看来只能将ml 的程序改成mllib了<del>毕竟我当年也改过，只不过是java 的而已</del><br>说干就干，首先将fit 改为train，然后将输入从dataframe 改为RDD 即可。因为构建features的时候，对方已经将df 转为了rdd，只需要将对方从rdd转为df 的那一步去掉就行了。<del>简直完美</del><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">features = data.rdd.map(lambda x: (x[0], x[1:])).groupByKey().mapValues(list).map(lambda row: build_sparse_vector(row, tag_index_map)).cache()</span><br><span class="line">model = LDA.train(rdd, k=10, seed=1)</span><br></pre></td></tr></table></figure></p>
+<p>然后，不出意外的报错了，类型不匹配。<br>怎么会类型不匹配呢？一定是我对LDA 的算法理解不够深入。干脆找个简单的例子来测试下吧。<br>于是照着example 撸了下面的代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">conf = SparkConf().setMaster(&apos;local&apos;).setAppName(&apos;marketing_data_lda_clustering&apos;) </span><br><span class="line">sc = SparkContext(conf = conf)	</span><br><span class="line">sqlContext = SQLContext(sc)</span><br><span class="line">data = [</span><br><span class="line">     [1, Vectors.dense([0.0, 1.0])],</span><br><span class="line">     [2, SparseVector(2, &#123;0: 1.0&#125;)],</span><br><span class="line">]</span><br><span class="line">rdd =  sc.parallelize(data)</span><br><span class="line">model = LDA.train(rdd, k=2, seed=1)</span><br><span class="line">print(model.vocabSize())</span><br><span class="line"></span><br><span class="line">print(model.describeTopics())</span><br><span class="line">print(model.describeTopics(1))</span><br></pre></td></tr></table></figure></p>
+<p>结果一次通过，正确无比。那么问题究竟出在哪里呢？ 算法的各项参数差异不大，应该不会出问题。有问题的就只能是rdd了。python 新学，不会debug，只能祭出print 大法了<del>顺便吐槽下，能让服务器版本2.7  driver python 版本2.6 的 也是醉了</del><br>将测试用的rdd collect 然后打印出来的结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[[1, DenseVector([0.0, 1.0])], [2, SparseVector(2, &#123;0: 1.0&#125;)]]</span><br></pre></td></tr></table></figure></p>
+<p>有问题的代码打出来是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[(u&apos;D5A55D4E4E8F484FB4ACFCCAE1E37BFE&apos;, SparseVector(10, &#123;1: 1.0, 7: 1.0&#125;)), (u&apos;41AF98FE050658F50F0DD55F823CE954&apos;, SparseVector(10, &#123;2: 1.0, 4: 1.0&#125;)), (u&apos;4CD09883D04D35697666115ADE9393DC&apos;, SparseVector(10, &#123;5: 1.0, 6: 1.0, 8: 1.0, 9: 1.0&#125;)), (u&apos;CF5F565193E6FE9B5D7D50F3DADCB85F&apos;, SparseVector(10, &#123;3: 1.0&#125;)), (u&apos;E776CC8BAF4900C092D9789077EF1E56&apos;, SparseVector(10, &#123;0: 1.0&#125;))]</span><br></pre></td></tr></table></figure></p>
+<p>这他妈坑爹呢！！！ 对方的构造方法返回居然是这个格式，无奈在features 加上如下的map 方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.map(lambda x: [x[0], x[1]])</span><br></pre></td></tr></table></figure></p>
+<p>然而报错依赖。绝望之际，只能去读源码了。以前一直读的是scala，不知道python的源码会怎们样？<br>怀着激动的心情，我打开了spark源码。<br>机智如我，一下子就找到了python\pyspark\mllib 路径下的clustering.py文件<del>这不是废话么</del><br>找到了LDA的实现<br>关键的实现，就这么一句<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">model = callMLlibFunc(&quot;trainLDAModel&quot;, rdd, k, maxIterations,</span><br><span class="line">                      docConcentration, topicConcentration, seed,</span><br><span class="line">                      checkpointInterval, optimizer)</span><br></pre></td></tr></table></figure></p>
+<p>这个callMLlibFunc 方法好厉害，看了好几个方法都是调用这个。于是就追到这个方法里看了下。<br>结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">def callJavaFunc(sc, func, *args):</span><br><span class="line">    &quot;&quot;&quot; Call Java Function &quot;&quot;&quot;</span><br><span class="line">    args = [_py2java(sc, a) for a in args]</span><br><span class="line">    return _java2py(sc, func(*args))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def callMLlibFunc(name, *args):</span><br><span class="line">    &quot;&quot;&quot; Call API in PythonMLLibAPI &quot;&quot;&quot;</span><br><span class="line">    sc = SparkContext.getOrCreate()</span><br><span class="line">    api = getattr(sc._jvm.PythonMLLibAPI(), name)</span><br><span class="line">    return callJavaFunc(sc, api, *args)</span><br></pre></td></tr></table></figure></p>
+<p>他喵的，原来pyspark mllib 的底层实现是调了jar 。真是简洁的设计呢。</p>
+<p>原来python并不是实现。。正当绝望之时，想起当时调试LR，被labeledpoint 支配的恐惧。难道id 输入不能是string？和graphx 一样都必须转化为long？python既然依赖于scala 的源码，那查scala 的源码岂不是一样？<br>于是查啊查，查到LDA 的scala 执行<br>在org.apache.spark.mllib.clustering.LDA.scala  中查到有个run<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def run(documents: JavaPairRDD[java.lang.Long, Vector]): LDAModel = &#123;</span><br><span class="line">  run(documents.rdd.asInstanceOf[RDD[(Long, Vector)]])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>好了很明确了，就是要转成long，那df 为什么不用转呢？</p>
+<p>又开始查ml的源码</p>
+<p> 在fit 方法中，有这么一段<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">val oldData = LDA.getOldDataset(dataset, $(featuresCol))</span><br></pre></td></tr></table></figure></p>
+<p>我能吐槽么。。。 老版本的能用的，直接加个前缀。。。。。。<br>然后再跟到vgetOldDataset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">/** Get dataset for spark.mllib LDA */</span><br><span class="line">private[clustering] def getOldDataset(</span><br><span class="line">     dataset: Dataset[_],</span><br><span class="line">     featuresCol: String): RDD[(Long, OldVector)] = &#123;</span><br><span class="line">  dataset</span><br><span class="line">    .withColumn(&quot;docId&quot;, monotonically_increasing_id())</span><br><span class="line">    .select(&quot;docId&quot;, featuresCol)</span><br><span class="line">    .rdd</span><br><span class="line">    .map &#123; case Row(docId: Long, features: Vector) =&gt;</span><br><span class="line">      (docId, OldVectors.fromML(features))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>连带着注释一起贴了，说好的ml 是对df 有了优化的呢，他喵的，这不是 还是转成mllib 实现了么！！！<br>所以，问题其实已经解决了，就是这一句<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">withColumn(&quot;docId&quot;, monotonically_increasing_id())</span><br></pre></td></tr></table></figure></p>
+<p>生成了一个long 类型的id。<br>ok 完美落幕，再一次愉快的submit。<br>然后 WTF！！！！！  又他娘的报错。<br>从describeTopics的结果生成df 的时候发错，然后发现。<br>RDD  describeTopics的结果是这样的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[([7, 8, 1, 0, 4, 3, 2, 6, 9, 5], [0.10368743342260674, 0.10207234154290727, 0.10138905514695376, 0.10061123338885637, 0.09970383057872025, 0.09948034467474759, 0.09945100732346705, 0.09850959571098065, 0.09837913555700037, 0.09671602265375995]), ([5, 9, 6, 2, 3, 4, 0, 1, 8, 7], [0.10328397706229461, 0.10162086430285339, 0.1014904041601532, 0.10054899262906491, 0.100519655280321, 0.10029616939567182, 0.09938876666399324, 0.09861094497314936, 0.09792765863627545, 0.09631256689622307])]</span><br></pre></td></tr></table></figure></p>
+<p>DF describeTopics 的结果在前面有个编号。是ML 在调用时有入参，做了一次累加。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">def describeTopics(maxTermsPerTopic: Int)</span><br></pre></td></tr></table></figure></p>
+<p>so 略作调整，通过row number 加了个字段搞定。至此 告一段路</p>
+
+          
+        
+      
+    </div>
+    
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/12/27/数据挖掘/" itemprop="url">
+                  数据挖掘 & Spark MLlib 经验记录
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-12-27T23:06:33+08:00" content="2017-12-27">
+              2017-12-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/大大大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大大大数据</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <pre><code>之前断断续续，用Spark MLlib 做了将近两个月的数据挖掘，记录点东西。
+</code></pre><p>1.数据挖掘是有目的的，Spark只是工具<br>在数据挖掘操作前，需要明确，通过这些计算，你希望从这一堆数据中获取到什么。不然只是每个算法跑一遍，也只能证明你调用Spark API 的能力合格了。</p>
+<p> 在最开始的时候，进入了一个误区，以为社区炒的火热的Spark是全知全能的。数据挖掘什么的，Spark就能搞定了。然而，Spark毕竟只是一个工具，使用工具归根结底还是人。最开始，只是想掌握Spark这种技术而已，从而忽视了数据挖掘的目的（当然，这也和团队构成有关，一个产品经理加我一个研发，总觉得和业务相关的事由产品经理去实现就行。。。 图样图森破啊 ）</p>
+<p>将Spark MLlib 中的算法能跑的都跑了一遍，得到了许多自己根本不知道意义的数据，才发现，其实做了无用功。</p>
+<p>2.数据可视化很重要<br>看到这个需求的时候，第一反应是找相应的工具。的确有很多数据可视化的工具，画出来的图非常炫。但是，这些工具大部分真的只是画图的工具，需要你将数据整理好输入进去，然后展现出来。然而我需要的则是能够做一些简单汇总计算的操作。于是试过了echarts 、plotyly.js 、R 等等，居然发现是Excel 用的最顺手。然而Excel 却难以处理如此庞大的数据只能进行切割。下一步是该好好学学python了，考虑直接用python on Spark 进行计算，然后对结果画图，这样应该会简单很多。</p>
+<p>3.不要随便造轮子<br>用Spark用了几天，然后被zb推荐用了weka，方才恍然，TMD世界上怎么有真么方便的工具啊，还要Spark MLlib 干蛋啊。各种算法都整合好，数据处理又方便，还能出简单的图，简直完美。</p>
+<p>4.知己知彼<br>接上，既然weka这么完美，那为何还要用Spark呢？归根结底，还是数据量太大，只能使用Spark。这也是Spark的优势所在。即便这个玩意，对机器配置要求高，容易OOM，GC一团乱码，还不稳定。然而做离线的机器学习处理，以上这些劣势who care？只要它够快，处理的数据够大，能出结果就行了。没有工具是万能的，只要他能满足你的需求他就是个好工具。</p>
+<p>5.MLlib VS ML<br>诚然，一开始想上ML的。封装程度更高的API，简洁的Pipeline，一切都是那么美好。然而数据却不是那么美好。很多源数据的清洗没法用SparkSQL 或者 Hive进行。（好吧 我承认我很水，SQL 只是刚会用而已）于是采用了MLlib。</p>
+<p>因为数据是存在Hive表里的，思路就如下：</p>
+<p>SparkSQL 取数据 -&gt;RDD  （进行清洗）-&gt;MLlib （进行挖掘） -&gt;python (可视化）</p>
+<p>6.讲故事很重要<br>说实话，最后计算出来的数据，其实我是看不懂的，还好zb厉害，能够给出各种合理的解释，然后按照相应的方向进行深挖。</p>
+
+          
+        
+      
+    </div>
+    
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/12/27/spark开发环境搭建/" itemprop="url">
+                  spark开发环境搭建
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-12-27T23:03:36+08:00" content="2017-12-27">
+              2017-12-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/大大大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大大大数据</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Spark本地安装"><a href="#Spark本地安装" class="headerlink" title="Spark本地安装"></a>Spark本地安装</h1><ul>
+<li>Java 安装</li>
+<li>Spark 安装</li>
+<li>PySpark 安装</li>
+</ul>
+<h2 id="Java安装"><a href="#Java安装" class="headerlink" title="Java安装"></a>Java安装</h2><p>这一部分不多赘述，配置好Java 环境变量即可。</p>
+<h2 id="Spark-安装"><a href="#Spark-安装" class="headerlink" title="Spark 安装"></a>Spark 安装</h2><p>在<a href="http://spark.apache.org/downloads.html" target="_blank" rel="external">官网</a>下载所需版本的Spark 压缩包</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3698622-0b4a4a91b763512a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>解压至对应目录，如 C:\dev\spark1.6.3<br>配置环境变量<br><img src="http://upload-images.jianshu.io/upload_images/3698622-fe96697c1ec0e859.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>这时，进入cmd 命令行，可以启动。<br><img src="http://upload-images.jianshu.io/upload_images/3698622-9b047f516b942438.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<h2 id="Pyspark-安装"><a href="#Pyspark-安装" class="headerlink" title="Pyspark 安装"></a>Pyspark 安装</h2><p>要求在本机已经安装好Spark。此外python 3.6 版本不兼容Spark 1.6，使用时需要注意。<br>新增环境变量：PYTHONPATH<br>值为：%SPARK_HOME%\Python;%SPARK_HOME%\python\lib\py4j-0.9-src.zip</p>
+<p>同时，在python 的配置的Lib\site-packages 中新增pyspark.pth 文件，内容为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\dev\spark1.6.3\python</span><br></pre></td></tr></table></figure></p>
+<p>重启CMD ，输入pyspark 即可<br><img src="http://upload-images.jianshu.io/upload_images/3698622-791496f526c654d9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<h1 id="开发环境搭建"><a href="#开发环境搭建" class="headerlink" title="开发环境搭建"></a>开发环境搭建</h1><h2 id="Scala"><a href="#Scala" class="headerlink" title="Scala"></a>Scala</h2><p>搭建一个maven 工程即可pom.xml 如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br></pre></td><td class="code"><pre><span class="line">&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;&gt;</span><br><span class="line">  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</span><br><span class="line">  &lt;groupId&gt;com.ych&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;ychTestSpark4S&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;</span><br><span class="line">  &lt;inceptionYear&gt;2008&lt;/inceptionYear&gt;</span><br><span class="line">    &lt;properties&gt;</span><br><span class="line">        &lt;spark.version&gt;1.6.2&lt;/spark.version&gt;</span><br><span class="line">        &lt;scala.version&gt;2.10&lt;/scala.version&gt;</span><br><span class="line">    &lt;/properties&gt;</span><br><span class="line"></span><br><span class="line">  &lt;repositories&gt;</span><br><span class="line">    &lt;repository&gt;</span><br><span class="line">      &lt;id&gt;scala-tools.org&lt;/id&gt;</span><br><span class="line">      &lt;name&gt;Scala-Tools Maven2 Repository&lt;/name&gt;</span><br><span class="line">      &lt;url&gt;http://scala-tools.org/repo-releases&lt;/url&gt;</span><br><span class="line">    &lt;/repository&gt;</span><br><span class="line">  &lt;/repositories&gt;</span><br><span class="line"></span><br><span class="line">  &lt;pluginRepositories&gt;</span><br><span class="line">    &lt;pluginRepository&gt;</span><br><span class="line">      &lt;id&gt;scala-tools.org&lt;/id&gt;</span><br><span class="line">      &lt;name&gt;Scala-Tools Maven2 Repository&lt;/name&gt;</span><br><span class="line">      &lt;url&gt;http://scala-tools.org/repo-releases&lt;/url&gt;</span><br><span class="line">    &lt;/pluginRepository&gt;</span><br><span class="line">  &lt;/pluginRepositories&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  &lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;org.apache.spark&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;spark-core_$&#123;scala.version&#125;&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;$&#123;spark.version&#125;&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;org.apache.spark&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;spark-streaming_$&#123;scala.version&#125;&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;$&#123;spark.version&#125;&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;org.apache.spark&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;spark-sql_$&#123;scala.version&#125;&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;$&#123;spark.version&#125;&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;org.apache.spark&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;spark-hive_$&#123;scala.version&#125;&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;$&#123;spark.version&#125;&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;org.apache.spark&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;spark-mllib_$&#123;scala.version&#125;&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;$&#123;spark.version&#125;&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;org.apache.avro&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;avro&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;1.7.7&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;junit&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;junit&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;4.4&lt;/version&gt;</span><br><span class="line">      &lt;scope&gt;test&lt;/scope&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;org.specs&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;specs&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;1.2.5&lt;/version&gt;</span><br><span class="line">      &lt;scope&gt;test&lt;/scope&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;com.databricks&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;spark-csv_2.10&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;1.0.3&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">  &lt;/dependencies&gt;</span><br><span class="line"></span><br><span class="line">  &lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">      &lt;plugin&gt;</span><br><span class="line">        &lt;groupId&gt;org.scala-tools&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;maven-scala-plugin&lt;/artifactId&gt;</span><br><span class="line">        &lt;executions&gt;</span><br><span class="line">          &lt;execution&gt;</span><br><span class="line">            &lt;goals&gt;</span><br><span class="line">              &lt;goal&gt;compile&lt;/goal&gt;</span><br><span class="line">              &lt;goal&gt;testCompile&lt;/goal&gt;</span><br><span class="line">            &lt;/goals&gt;</span><br><span class="line">          &lt;/execution&gt;</span><br><span class="line">        &lt;/executions&gt;</span><br><span class="line">        &lt;configuration&gt;</span><br><span class="line">          &lt;scalaVersion&gt;$&#123;scala.version&#125;.6&lt;/scalaVersion&gt;</span><br><span class="line">          &lt;args&gt;</span><br><span class="line">            &lt;arg&gt;-target:jvm-1.5&lt;/arg&gt;</span><br><span class="line">          &lt;/args&gt;</span><br><span class="line">        &lt;/configuration&gt;</span><br><span class="line">      &lt;/plugin&gt;</span><br><span class="line">      &lt;plugin&gt;</span><br><span class="line">        &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;maven-eclipse-plugin&lt;/artifactId&gt;</span><br><span class="line">        &lt;configuration&gt;</span><br><span class="line">          &lt;downloadSources&gt;true&lt;/downloadSources&gt;</span><br><span class="line">          &lt;buildcommands&gt;</span><br><span class="line">            &lt;buildcommand&gt;ch.epfl.lamp.sdt.core.scalabuilder&lt;/buildcommand&gt;</span><br><span class="line">          &lt;/buildcommands&gt;</span><br><span class="line">          &lt;additionalProjectnatures&gt;</span><br><span class="line">            &lt;projectnature&gt;ch.epfl.lamp.sdt.core.scalanature&lt;/projectnature&gt;</span><br><span class="line">          &lt;/additionalProjectnatures&gt;</span><br><span class="line">          &lt;classpathContainers&gt;</span><br><span class="line">            &lt;classpathContainer&gt;org.eclipse.jdt.launching.JRE_CONTAINER&lt;/classpathContainer&gt;</span><br><span class="line">            &lt;classpathContainer&gt;ch.epfl.lamp.sdt.launching.SCALA_CONTAINER&lt;/classpathContainer&gt;</span><br><span class="line">          &lt;/classpathContainers&gt;</span><br><span class="line">        &lt;/configuration&gt;</span><br><span class="line">      &lt;/plugin&gt;</span><br><span class="line">    &lt;/plugins&gt;</span><br><span class="line">  &lt;/build&gt;</span><br><span class="line">  &lt;reporting&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">      &lt;plugin&gt;</span><br><span class="line">        &lt;groupId&gt;org.scala-tools&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;maven-scala-plugin&lt;/artifactId&gt;</span><br><span class="line">        &lt;configuration&gt;</span><br><span class="line">          &lt;scalaVersion&gt;$&#123;scala.version&#125;&lt;/scalaVersion&gt;</span><br><span class="line">        &lt;/configuration&gt;</span><br><span class="line">      &lt;/plugin&gt;</span><br><span class="line">    &lt;/plugins&gt;</span><br><span class="line">  &lt;/reporting&gt;</span><br><span class="line">&lt;/project&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Java-开发环境"><a href="#Java-开发环境" class="headerlink" title="Java 开发环境"></a>Java 开发环境</h2><p>同Scala</p>
+<h2 id="python"><a href="#python" class="headerlink" title="python"></a>python</h2><p>设定好，需要使用的python 环境即可。<br>spyder 根据anaconda 设定的python 环境，选择对应的spyder 启动即可。<br>pycharm 如下配置：<br><img src="http://upload-images.jianshu.io/upload_images/3698622-8b4c2e09d180aee1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+
+          
+        
+      
+    </div>
+    
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/12/07/note4learnspark/" itemprop="url">
                   Spark学习笔记汇总
                 </a>
@@ -920,716 +1537,11 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/29/敏捷开发（二）-Scrum-实践/" itemprop="url">
-                  敏捷开发（二）-Scrum实践
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-29T22:32:33+08:00" content="2016-11-29">
-              2016-11-29
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/DevOps/" itemprop="url" rel="index">
-                    <span itemprop="name">DevOps</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>　　今天，几位同事带着我先过了一次Scrum 实践，走了一个流程，感觉内容很多，一时估计没法消化，做个笔记。</p>
-<h1 id="Scrum简介"><a href="#Scrum简介" class="headerlink" title="Scrum简介"></a>Scrum简介</h1><p>　　Scrum是迭代式增量软件开发过程，通常用于敏捷软件开发。Scrum包括了一系列实践和预定义角色的过程骨架。Scrum中的主要角色包括同项目经理类似的Scrum主管角色负责维护过程和任务，产品负责人代表利益所有者，开发团队包括了所有开发人员。虽然Scrum是为管理软件开发项目而开发的，它同样可以用于运行软件维护团队，或者作为计划管理方法：<em>Scrum of Scrums</em>.</p>
-<h1 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h1><h2 id="“猪”角色"><a href="#“猪”角色" class="headerlink" title="“猪”角色"></a>“猪”角色</h2><ul>
-<li><p>产品负责人（Product Owner）<br>通常由市场部门的人担任</p>
-</li>
-<li><p>敏捷教练 (Scrum Master)<br>通常由开发组组长担任</p>
-</li>
-<li><p>开发团队 (Scrum Team)<br>包括开发,需求,测试</p>
-</li>
-</ul>
-<h2 id="“鸡”角色"><a href="#“鸡”角色" class="headerlink" title="“鸡”角色"></a>“鸡”角色</h2><ul>
-<li><p>用户<br>软件是为了某些人而创建！就像“假如森林里有一棵树倒下了，但没有人听到，那么它算发出了声音吗”，“假如软件没有被使用，那么它算是被开发出来了么？”</p>
-</li>
-<li><p>利益所有者 (客户，提供商)<br>影响项目成功的人, 但只直接参与冲刺评审过程。</p>
-</li>
-<li><p>管理者<br>为产品开发团体架起环境的那个人</p>
-<h1 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h1><p>　启动会议<br>-&gt;每日站会<br>-&gt;show Case<br>-&gt;迭代总结会议</p>
-</li>
-</ul>
-<p>有的地方也写成如下名字：<br>　冲刺规划会议（Sprint Plan Meeting）<br>-&gt;每日站立会议（Sprint Daily Meeting）<br>-&gt;冲刺复审会议（Sprint Review Meetion）<br>-&gt;冲刺回顾会议（Retrospective Meeting）</p>
-<h2 id="启动会议"><a href="#启动会议" class="headerlink" title="启动会议"></a>启动会议</h2><p>1.需求<br>需求需要和PO沟通 主要有如下几点：</p>
-<ul>
-<li>工作来源：这份工作是谁安排的，要求达到什么目的</li>
-<li>细节问题：这部分需要做好功课，你需要站在一个开发者的角度，来思考这些细节，这也是为你的开发团队向PO提问。</li>
-<li>工作量预估</li>
-</ul>
-<p>2.用户故事拆分<br>As For Do 原则</p>
-<ul>
-<li><p>As（用户角色）： 该功能是为谁设计的，预期用户是哪些人？<br>这一点必须收敛和明确，如果某一功能的预期用户太过复杂，说明这一部分的设计是有问题，需要拆分。</p>
-</li>
-<li><p>For（价值、目的） : 该功能的实现目的是什么</p>
-</li>
-<li>Do （过程、行为） : 该部分涉及真实进行的场景</li>
-</ul>
-<p>3.故事点<br>这一部分，涉及到分发任务，最好由开发人员回答，要引导（压榨）开发人员，发掘故事点。</p>
-<ul>
-<li>全员预估、发现坑、技术教练指导</li>
-<li>和PO 沟通实施先后顺序</li>
-<li>用户故事优先级别</li>
-</ul>
-<h2 id="每日站会"><a href="#每日站会" class="headerlink" title="每日站会"></a>每日站会</h2><p>严格按照Story 的故事点来汇报。Master 需要汇报整个项目进度。</p>
-<ul>
-<li>昨天做了什么</li>
-<li>今天准备做什么</li>
-<li>有什么问题<br>要求每个人发言简洁，明确。如果有细节的问题，注意打断然后私下讨论。确保每个人都能集中其工作在某个点上。</li>
-</ul>
-<h2 id="show-case"><a href="#show-case" class="headerlink" title="show case"></a>show case</h2><p>As 对象 必须在场<br>ST 成员各自演示功能</p>
-<h2 id="迭代总结会议"><a href="#迭代总结会议" class="headerlink" title="迭代总结会议"></a>迭代总结会议</h2><ul>
-<li>计划投入、实际投入、延时</li>
-<li>把大家的想法总结<ul>
-<li>大家反馈完成度</li>
-<li>谁做的最好？谁有待改进？ why？ 做个记录，有利于成员管理和考核，对好的予以表扬。不足的设法改进。Master 也需要借此对团队成员有一个考量。</li>
-<li>每个人提建议。<br>1.不足的可以改进的地方（注意分类，在逻辑层次需要在一个层面，例如 外部问题，团队管理问题，个人问题，有的问题可以及时和甲方沟通）<br> 2.好的，可以延续的地方。（如重构）</li>
-</ul>
-</li>
-</ul>
-<h1 id="杂七杂八"><a href="#杂七杂八" class="headerlink" title="杂七杂八"></a>杂七杂八</h1><ul>
-<li>第一次接触团队，大家互相不熟悉，第一个迭代（冲刺）可以制定工作量70% 这一部分需要和甲方商榷。</li>
-<li>作为Master 要保持自身的机动性。</li>
-<li>每个故事点，要尽可能的发掘开发人员的思路。</li>
-<li>用户故事，或者故事点过大时，要及时切分。</li>
-<li>纸上得来终觉浅</li>
-</ul>
-<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a href="http://blog.csdn.net/uxyheaven/article/details/49618097" target="_blank" rel="external">http://blog.csdn.net/uxyheaven/article/details/49618097</a></p>
-
-          
-        
-      
-    </div>
-    
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/29/敏捷开发（一）-基本概念/" itemprop="url">
-                  敏捷开发（一）-基本概念
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-29T21:31:33+08:00" content="2016-11-29">
-              2016-11-29
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/DevOps/" itemprop="url" rel="index">
-                    <span itemprop="name">DevOps</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>　　上周六部长给我安排了一个任务，去带一个团队，不过是承担辅助的角色.当时我的内心毫无波动，甚至有点想笑.<br>　　历经了几天内部扯皮，才知道这个活不好干，而自身才他喵的入职4个月，刚刚转正.好吧，反正都到这个份上了，说什么都没用，好好学吧.</p>
-<h1 id="敏捷开发宣言"><a href="#敏捷开发宣言" class="headerlink" title="敏捷开发宣言"></a>敏捷开发宣言</h1><p><code><br>个体和互动 高于 流程和文档<br>工作的软件 高于 详尽的文档<br>客户合作 高于 合同谈判<br>响应变化 高于 遵循计划<br>也就是说, 尽管右项有其价值, 我们更重视左项的价值.<br></code></p>
-<h1 id="敏捷开发核心理念"><a href="#敏捷开发核心理念" class="headerlink" title="敏捷开发核心理念"></a>敏捷开发核心理念</h1><p>　　以最简单有效的方式快速达成目标, 并在这个过程中及时地响应外界的变化, 做出迅速的调整.</p>
-<p>　　</p>
-<h1 id="敏捷开发的核心价值观"><a href="#敏捷开发的核心价值观" class="headerlink" title="敏捷开发的核心价值观"></a>敏捷开发的核心价值观</h1><ul>
-<li>以人为本</li>
-<li>目标导向</li>
-<li>客户为先</li>
-<li>拥抱变化</li>
-</ul>
-<h1 id="敏捷开发的原则"><a href="#敏捷开发的原则" class="headerlink" title="敏捷开发的原则"></a>敏捷开发的原则</h1><ul>
-<li>我们最重要的目标，是通过持续不断地及早交付有价值的软件使客户满意。</li>
-<li>欣然面对需求变化，即使在开发后期也一样。为了客户的竞争优势，敏捷过程掌控变化。</li>
-<li>经常地交付可工作的软件，相隔几星期或一两个月，倾向于采取较短的周期。</li>
-<li>业务人员和开发人员必须相互合作，项目中的每一天都不例外。</li>
-<li>激发个体的斗志，以他们为核心搭建项目。提供所需的环境和支援，辅以信任，从而达成目标。</li>
-<li>不论团队内外，传递信息效果最好效率也最高的方式是面对面的交谈。</li>
-<li>可工作的软件是进度的首要度量标准。</li>
-<li>敏捷过程倡导可持续开发。责任人、开发人员和用户要能够共同维持其步调稳定延续。</li>
-<li>坚持不懈地追求技术卓越和良好设计，敏捷能力由此增强。</li>
-<li>以简洁为本，它是极力减少不必要工作量的艺术。</li>
-<li>最好的架构、需求和设计出自自组织团队。</li>
-<li>团队定期地反思如何能提高成效，并依此调整自身的举止表现。</li>
-</ul>
-<h1 id="体悟"><a href="#体悟" class="headerlink" title="体悟"></a>体悟</h1><ul>
-<li>敏捷不是万能的，针对每个团队的特性，合适的才是最好的</li>
-<li>敏捷其实对团队中每个成员的要求都很高，要求每个人都能发挥自己的主观能动性，为了达成团队的共同目标献言献策，在实际中，如何去调动大家的积极性很重要。</li>
-<li>敏捷不只是快，更多的是要求开发团队对需求反应更为迅捷。能迅速适应变化。</li>
-</ul>
-<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a href="http://blog.csdn.net/uxyheaven/article/details/49618097" target="_blank" rel="external">http://blog.csdn.net/uxyheaven/article/details/49618097</a></p>
-
-          
-        
-      
-    </div>
-    
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/16/阿布玫瑰/" itemprop="url">
-                  阿布玫瑰
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-16T07:43:16+08:00" content="2016-11-16">
-              2016-11-16
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/一页君知否/" itemprop="url" rel="index">
-                    <span itemprop="name">一页君知否</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>比川崎玫瑰简单许多<br><img src="http://upload-images.jianshu.io/upload_images/3698622-a92eebef68e24f5f.jpg" alt="图片发自简书App"><br><img src="http://upload-images.jianshu.io/upload_images/3698622-956696fce48e239c.jpg" alt="图片发自简书App"></p>
-
-          
-        
-      
-    </div>
-    
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/07/17/diary20160717/" itemprop="url">
-                  diary20160717
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-17T20:18:04+08:00" content="2016-07-17">
-              2016-07-17
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/百无禁忌-诸事皆宜/" itemprop="url" rel="index">
-                    <span itemprop="name">百无禁忌 诸事皆宜</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>上班第一天 加班=。=<br>上班第一个周末  加班=。=<br>平心而论 对加班不反感<br>but..<br>but…..<br>but……..<br>加班能不能让我干活啊~！！！！<br>虽然我是个新人，别总扔给我一堆文档去看啊<br>更何况这些文档，本科时候都看过了。。。。。23333<br>明天周一 继续努力奋斗！</p>
-<p>btw： 点了个赞 似乎引起了什么？ 难道是蝴蝶效应？</p>
-
-          
-        
-      
-    </div>
-    
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/07/17/MariaDBNotes1/" itemprop="url">
-                  MariaDBNotes1
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-17T19:20:55+08:00" content="2016-07-17">
-              2016-07-17
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/大大大数据/" itemprop="url" rel="index">
-                    <span itemprop="name">大大大数据</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="MariaDB-简介"><a href="#MariaDB-简介" class="headerlink" title="MariaDB 简介"></a>MariaDB 简介</h3><p><img src="http://h.hiphotos.baidu.com/baike/pic/item/0dd7912397dda1447af0caafb0b7d0a20cf48636.jpg" alt="enter image description here"></p>
-<p>MariaDB数据库管理系统是MySQL的一个分支，主要由开源社区在维护，采用GPL授权许可 MariaDB的目的是完全兼容MySQL，包括API和命令行，使之能轻松成为MySQL的代替品。在存储引擎方面，使用XtraDB（英语：XtraDB）来代替MySQL的InnoDB。</p>
-<p>个人以为，这是一个很cooooooooooooooool 的DB，加上google 已经把大部分数据迁移到了MariaDB上，诸君以为如何？ 咩哈哈哈哈 </p>
-<h3 id="ubuntu-14-04LTS下MariaDB的安装"><a href="#ubuntu-14-04LTS下MariaDB的安装" class="headerlink" title="ubuntu 14.04LTS下MariaDB的安装"></a>ubuntu 14.04LTS下MariaDB的安装</h3><p>在源里已经有了，所以真的非常简单…2行命令就搞定了</p>
-<pre><code>$sudo apt-get update
-$sudo apt-get install mariadb-server
-</code></pre><p>安装完之后需要设置root的密码，然后就可以浪了…</p>
-<h3 id="MariaDB-下的MySQL命令行"><a href="#MariaDB-下的MySQL命令行" class="headerlink" title="MariaDB 下的MySQL命令行"></a>MariaDB 下的MySQL命令行</h3><p>作为MySQL的分支，大部分情况下是兼容的，正好做下复习。<br>1.连接数据库</p>
-<pre><code>$mysql -h [host] -u [username] -p&apos;[password]&apos;
-</code></pre><p>2.退出数据库</p>
-<pre><code>$exit
-</code></pre><p>3.修改密码</p>
-<pre><code>$mysqladmin -u [username] -p&apos;[old pwd]&apos; password &apos;[new pwd]&apos;
-</code></pre><p>4.增加新用户（一下开始都以分号结尾）<br>    方法一：直接授权并创建</p>
-<pre><code>grant all privileges on phplampDB.* to phplamp@localhost identified by &apos;1234&apos;;
-</code></pre><p>方法二：先创建</p>
-<pre><code>insert into mysql.user(Host,User,Password) values(&apos;localhost&apos;,&apos;phplamp&apos;,password(&apos;1234&apos;));
-</code></pre><p> 查询数据库中所有用户</p>
-<pre><code>SELECT DISTINCT CONCAT(&apos;User: &apos;&apos;&apos;,user,&apos;&apos;&apos;@&apos;&apos;&apos;,host,&apos;&apos;&apos;;&apos;) AS query FROM mysql.user;
-</code></pre><p>查询某个用户权限</p>
-<pre><code>show grants for &apos;cactiuser&apos;@&apos;%&apos;;    
-</code></pre><p>查看user 表结构</p>
-<pre><code>desc mysql.user;
-</code></pre><p>5.创建,使用,数据库</p>
-<pre><code>create database dbname;
-use dbname;
-show dbname;
-drop dbname;
-select database();
-</code></pre><p>6.创建表</p>
-<pre><code>create table &lt;表名&gt; ( &lt;字段名1&gt; &lt;类型1&gt; [,..&lt;字段名n&gt; &lt;类型n&gt;]);
-mysql&gt; create table MyClass(
-     &gt;id int(4) not null primary key auto_increment,
-     &gt;name char(20) not null,
-     &gt;sex int(4) not null default &apos;0&apos;,
-     &gt;degree double(16,2));
-</code></pre><p>7.表插入数据</p>
-<pre><code>insert into &lt;表名&gt; [( &lt;字段名1&gt;[,..&lt;字段名n &gt; ])] values ( 值1 )[, ( 值n )]
-mysql&gt; insert into MyClass values(1,&apos;Tom&apos;,96.45),(2,&apos;Joan&apos;,82.99), (2,&apos;Wang&apos;, 96.59);
-</code></pre><p>8.查询</p>
-<pre><code>select &lt;字段1，字段2，...&gt; from &lt;表名&gt; where &lt;表达式&gt;
-</code></pre><p>9.删除</p>
-<pre><code>delete from &lt;表名&gt; where &lt;表达式&gt;
-</code></pre><p>10.修改</p>
-<pre><code>update 表名 set 字段=新值,… where 条件
-</code></pre><p>11.增加字段</p>
-<pre><code>alter table 表名 add字段 类型 其他;
-</code></pre><h3 id="Refernce"><a href="#Refernce" class="headerlink" title="Refernce"></a>Refernce</h3><p><a href="http://www.open-open.com/lib/view/open1416378327492.html" target="_blank" rel="external">http://www.open-open.com/lib/view/open1416378327492.html</a><br><a href="http://blog.csdn.net/wooshn/article/details/7639802" target="_blank" rel="external">http://blog.csdn.net/wooshn/article/details/7639802</a><br><a href="http://www.cnblogs.com/zhangzhu/archive/2013/07/04/3172486.html" target="_blank" rel="external">http://www.cnblogs.com/zhangzhu/archive/2013/07/04/3172486.html</a><br><a href="http://blog.chinaunix.net/uid-21505614-id-302263.html" target="_blank" rel="external">http://blog.chinaunix.net/uid-21505614-id-302263.html</a></p>
-
-          
-        
-      
-    </div>
-    
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1670,7 +1582,7 @@ mysql&gt; insert into MyClass values(1,&apos;Tom&apos;,96.45),(2,&apos;Joan&apos
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-count">23</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1687,7 +1599,7 @@ mysql&gt; insert into MyClass values(1,&apos;Tom&apos;,96.45),(2,&apos;Joan&apos
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-count">52</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

@@ -1,0 +1,684 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="spark 开发环境,pyspark," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Spark本地安装
+Java 安装
+Spark 安装
+PySpark 安装
+
+Java安装这一部分不多赘述，配置好Java 环境变量即可。
+Spark 安装在官网下载所需版本的Spark 压缩包
+
+解压至对应目录，如 C:\dev\spark1.6.3配置环境变量
+这时，进入cmd 命令行，可以启动。
+Pyspark 安装要求在本机已经安装好Spark。此外python 3.6 版本不兼容Spar">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spark开发环境搭建">
+<meta property="og:url" content="http://yoursite.com/2017/12/27/spark开发环境搭建/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="Spark本地安装
+Java 安装
+Spark 安装
+PySpark 安装
+
+Java安装这一部分不多赘述，配置好Java 环境变量即可。
+Spark 安装在官网下载所需版本的Spark 压缩包
+
+解压至对应目录，如 C:\dev\spark1.6.3配置环境变量
+这时，进入cmd 命令行，可以启动。
+Pyspark 安装要求在本机已经安装好Spark。此外python 3.6 版本不兼容Spar">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3698622-0b4a4a91b763512a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3698622-fe96697c1ec0e859.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3698622-9b047f516b942438.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3698622-791496f526c654d9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3698622-8b4c2e09d180aee1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-12-27T15:05:33.512Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spark开发环境搭建">
+<meta name="twitter:description" content="Spark本地安装
+Java 安装
+Spark 安装
+PySpark 安装
+
+Java安装这一部分不多赘述，配置好Java 环境变量即可。
+Spark 安装在官网下载所需版本的Spark 压缩包
+
+解压至对应目录，如 C:\dev\spark1.6.3配置环境变量
+这时，进入cmd 命令行，可以启动。
+Pyspark 安装要求在本机已经安装好Spark。此外python 3.6 版本不兼容Spar">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3698622-0b4a4a91b763512a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> spark开发环境搭建 | 喵十八の小窝 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">喵十八の小窝</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-heartbeat fa-fw"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                spark开发环境搭建
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-12-27T23:03:36+08:00" content="2017-12-27">
+              2017-12-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/大大大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大大大数据</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Spark本地安装"><a href="#Spark本地安装" class="headerlink" title="Spark本地安装"></a>Spark本地安装</h1><ul>
+<li>Java 安装</li>
+<li>Spark 安装</li>
+<li>PySpark 安装</li>
+</ul>
+<h2 id="Java安装"><a href="#Java安装" class="headerlink" title="Java安装"></a>Java安装</h2><p>这一部分不多赘述，配置好Java 环境变量即可。</p>
+<h2 id="Spark-安装"><a href="#Spark-安装" class="headerlink" title="Spark 安装"></a>Spark 安装</h2><p>在<a href="http://spark.apache.org/downloads.html" target="_blank" rel="external">官网</a>下载所需版本的Spark 压缩包</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3698622-0b4a4a91b763512a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>解压至对应目录，如 C:\dev\spark1.6.3<br>配置环境变量<br><img src="http://upload-images.jianshu.io/upload_images/3698622-fe96697c1ec0e859.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>这时，进入cmd 命令行，可以启动。<br><img src="http://upload-images.jianshu.io/upload_images/3698622-9b047f516b942438.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<h2 id="Pyspark-安装"><a href="#Pyspark-安装" class="headerlink" title="Pyspark 安装"></a>Pyspark 安装</h2><p>要求在本机已经安装好Spark。此外python 3.6 版本不兼容Spark 1.6，使用时需要注意。<br>新增环境变量：PYTHONPATH<br>值为：%SPARK_HOME%\Python;%SPARK_HOME%\python\lib\py4j-0.9-src.zip</p>
+<p>同时，在python 的配置的Lib\site-packages 中新增pyspark.pth 文件，内容为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\dev\spark1.6.3\python</span><br></pre></td></tr></table></figure></p>
+<p>重启CMD ，输入pyspark 即可<br><img src="http://upload-images.jianshu.io/upload_images/3698622-791496f526c654d9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<h1 id="开发环境搭建"><a href="#开发环境搭建" class="headerlink" title="开发环境搭建"></a>开发环境搭建</h1><h2 id="Scala"><a href="#Scala" class="headerlink" title="Scala"></a>Scala</h2><p>搭建一个maven 工程即可pom.xml 如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br></pre></td><td class="code"><pre><span class="line">&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;&gt;</span><br><span class="line">  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</span><br><span class="line">  &lt;groupId&gt;com.ych&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;ychTestSpark4S&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;</span><br><span class="line">  &lt;inceptionYear&gt;2008&lt;/inceptionYear&gt;</span><br><span class="line">    &lt;properties&gt;</span><br><span class="line">        &lt;spark.version&gt;1.6.2&lt;/spark.version&gt;</span><br><span class="line">        &lt;scala.version&gt;2.10&lt;/scala.version&gt;</span><br><span class="line">    &lt;/properties&gt;</span><br><span class="line"></span><br><span class="line">  &lt;repositories&gt;</span><br><span class="line">    &lt;repository&gt;</span><br><span class="line">      &lt;id&gt;scala-tools.org&lt;/id&gt;</span><br><span class="line">      &lt;name&gt;Scala-Tools Maven2 Repository&lt;/name&gt;</span><br><span class="line">      &lt;url&gt;http://scala-tools.org/repo-releases&lt;/url&gt;</span><br><span class="line">    &lt;/repository&gt;</span><br><span class="line">  &lt;/repositories&gt;</span><br><span class="line"></span><br><span class="line">  &lt;pluginRepositories&gt;</span><br><span class="line">    &lt;pluginRepository&gt;</span><br><span class="line">      &lt;id&gt;scala-tools.org&lt;/id&gt;</span><br><span class="line">      &lt;name&gt;Scala-Tools Maven2 Repository&lt;/name&gt;</span><br><span class="line">      &lt;url&gt;http://scala-tools.org/repo-releases&lt;/url&gt;</span><br><span class="line">    &lt;/pluginRepository&gt;</span><br><span class="line">  &lt;/pluginRepositories&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  &lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;org.apache.spark&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;spark-core_$&#123;scala.version&#125;&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;$&#123;spark.version&#125;&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;org.apache.spark&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;spark-streaming_$&#123;scala.version&#125;&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;$&#123;spark.version&#125;&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;org.apache.spark&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;spark-sql_$&#123;scala.version&#125;&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;$&#123;spark.version&#125;&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;org.apache.spark&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;spark-hive_$&#123;scala.version&#125;&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;$&#123;spark.version&#125;&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;org.apache.spark&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;spark-mllib_$&#123;scala.version&#125;&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;$&#123;spark.version&#125;&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;org.apache.avro&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;avro&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;1.7.7&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;junit&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;junit&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;4.4&lt;/version&gt;</span><br><span class="line">      &lt;scope&gt;test&lt;/scope&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;org.specs&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;specs&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;1.2.5&lt;/version&gt;</span><br><span class="line">      &lt;scope&gt;test&lt;/scope&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">      &lt;groupId&gt;com.databricks&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;spark-csv_2.10&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;1.0.3&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">  &lt;/dependencies&gt;</span><br><span class="line"></span><br><span class="line">  &lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">      &lt;plugin&gt;</span><br><span class="line">        &lt;groupId&gt;org.scala-tools&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;maven-scala-plugin&lt;/artifactId&gt;</span><br><span class="line">        &lt;executions&gt;</span><br><span class="line">          &lt;execution&gt;</span><br><span class="line">            &lt;goals&gt;</span><br><span class="line">              &lt;goal&gt;compile&lt;/goal&gt;</span><br><span class="line">              &lt;goal&gt;testCompile&lt;/goal&gt;</span><br><span class="line">            &lt;/goals&gt;</span><br><span class="line">          &lt;/execution&gt;</span><br><span class="line">        &lt;/executions&gt;</span><br><span class="line">        &lt;configuration&gt;</span><br><span class="line">          &lt;scalaVersion&gt;$&#123;scala.version&#125;.6&lt;/scalaVersion&gt;</span><br><span class="line">          &lt;args&gt;</span><br><span class="line">            &lt;arg&gt;-target:jvm-1.5&lt;/arg&gt;</span><br><span class="line">          &lt;/args&gt;</span><br><span class="line">        &lt;/configuration&gt;</span><br><span class="line">      &lt;/plugin&gt;</span><br><span class="line">      &lt;plugin&gt;</span><br><span class="line">        &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;maven-eclipse-plugin&lt;/artifactId&gt;</span><br><span class="line">        &lt;configuration&gt;</span><br><span class="line">          &lt;downloadSources&gt;true&lt;/downloadSources&gt;</span><br><span class="line">          &lt;buildcommands&gt;</span><br><span class="line">            &lt;buildcommand&gt;ch.epfl.lamp.sdt.core.scalabuilder&lt;/buildcommand&gt;</span><br><span class="line">          &lt;/buildcommands&gt;</span><br><span class="line">          &lt;additionalProjectnatures&gt;</span><br><span class="line">            &lt;projectnature&gt;ch.epfl.lamp.sdt.core.scalanature&lt;/projectnature&gt;</span><br><span class="line">          &lt;/additionalProjectnatures&gt;</span><br><span class="line">          &lt;classpathContainers&gt;</span><br><span class="line">            &lt;classpathContainer&gt;org.eclipse.jdt.launching.JRE_CONTAINER&lt;/classpathContainer&gt;</span><br><span class="line">            &lt;classpathContainer&gt;ch.epfl.lamp.sdt.launching.SCALA_CONTAINER&lt;/classpathContainer&gt;</span><br><span class="line">          &lt;/classpathContainers&gt;</span><br><span class="line">        &lt;/configuration&gt;</span><br><span class="line">      &lt;/plugin&gt;</span><br><span class="line">    &lt;/plugins&gt;</span><br><span class="line">  &lt;/build&gt;</span><br><span class="line">  &lt;reporting&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">      &lt;plugin&gt;</span><br><span class="line">        &lt;groupId&gt;org.scala-tools&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;maven-scala-plugin&lt;/artifactId&gt;</span><br><span class="line">        &lt;configuration&gt;</span><br><span class="line">          &lt;scalaVersion&gt;$&#123;scala.version&#125;&lt;/scalaVersion&gt;</span><br><span class="line">        &lt;/configuration&gt;</span><br><span class="line">      &lt;/plugin&gt;</span><br><span class="line">    &lt;/plugins&gt;</span><br><span class="line">  &lt;/reporting&gt;</span><br><span class="line">&lt;/project&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Java-开发环境"><a href="#Java-开发环境" class="headerlink" title="Java 开发环境"></a>Java 开发环境</h2><p>同Scala</p>
+<h2 id="python"><a href="#python" class="headerlink" title="python"></a>python</h2><p>设定好，需要使用的python 环境即可。<br>spyder 根据anaconda 设定的python 环境，选择对应的spyder 启动即可。<br>pycharm 如下配置：<br><img src="http://upload-images.jianshu.io/upload_images/3698622-8b4c2e09d180aee1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/spark-开发环境/" rel="tag">#spark 开发环境</a>
+          
+            <a href="/tags/pyspark/" rel="tag">#pyspark</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/07/note4learnspark/" rel="next" title="Spark学习笔记汇总">
+                <i class="fa fa-chevron-left"></i> Spark学习笔记汇总
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/27/数据挖掘/" rel="prev" title="数据挖掘 & Spark MLlib 经验记录">
+                数据挖掘 & Spark MLlib 经验记录 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/Ruby.png"
+               alt="喵十八" />
+          <p class="site-author-name" itemprop="name">喵十八</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1525632730" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Yao544303" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Spark本地安装"><span class="nav-number">1.</span> <span class="nav-text">Spark本地安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java安装"><span class="nav-number">1.1.</span> <span class="nav-text">Java安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spark-安装"><span class="nav-number">1.2.</span> <span class="nav-text">Spark 安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pyspark-安装"><span class="nav-number">1.3.</span> <span class="nav-text">Pyspark 安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开发环境搭建"><span class="nav-number">2.</span> <span class="nav-text">开发环境搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Scala"><span class="nav-number">2.1.</span> <span class="nav-text">Scala</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-开发环境"><span class="nav-number">2.2.</span> <span class="nav-text">Java 开发环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python"><span class="nav-number">2.3.</span> <span class="nav-text">python</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
