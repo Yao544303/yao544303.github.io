@@ -94,7 +94,7 @@ How第一种就是显性的定位，广告主根据用户的标签直接定位�
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3698622-6081cbd4c2554129.gif?imageMogr2/auto-orient/strip">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3698622-947d0c0c9ded25e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3698622-c59e57ca74f9f2a3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-04-11T14:24:34.470Z">
+<meta property="og:updated_time" content="2018-04-11T15:28:33.424Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Lookalike 技术调研">
 <meta name="twitter:description" content="What基本上所有的互联网公司都有其广告投放平台，这是给广告主投放广告的一个页面。广告主可以通过广告提交页面提交自己的广告需求，后台会给广告主圈定一部分潜在用户，这个就是我们称为Lookalike的模块。lookalike 不是某一种特定的算法，而是一类方法的统称，这类方法综合运用多种技术，最终达到目的。
@@ -360,7 +360,8 @@ How第一种就是显性的定位，广告主根据用户的标签直接定位�
 </li>
 </ol>
 <p><img src="https://upload-images.jianshu.io/upload_images/3698622-fae87cac852a4e89.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="社交关系向量化"></p>
-<p><strong>fully connected layers,FC</strong><br>        将步骤2345 得到的向量做拼接，经过两层FC，得到表示每个用户的多特征向量集（User Vector Set, UVS）。这里取的输出单元个数时可以根据性能和准确度做平衡，目前英特实现的是输出512 个单元，最后的特征输出表达了用户的社交关系、用户属性、发出的内容、感兴趣的内容等的混合特征向量，这些特征向量将作为下一步比对相似性的输入值。<br>　　分别计算种子用户和潜在目标用户的向量集，并比对相似性。英特使用的是余弦相似度计算相似性，将步骤6 得到的用户特征向量集作为输入x 和y，代入下面公式计算相似性。<br><img src="https://upload-images.jianshu.io/upload_images/3698622-6081cbd4c2554129.gif?imageMogr2/auto-orient/strip" alt=""><br>注意：余弦相似度更多是从方向上区分差异，而对绝对的数值不敏感，因此没法衡量每个维度值的差异。这里要在每个维度上减去一个均值或者乘以一个系数，或者在之前做好归一化。</p>
+<p><strong>fully connected layers,FC</strong><br>        将步骤2345 得到的向量做拼接，经过两层FC，得到表示每个用户的多特征向量集（User Vector Set, UVS）。这里取的输出单元个数时可以根据性能和准确度做平衡，目前英特实现的是输出512 个单元，最后的特征输出表达了用户的社交关系、用户属性、发出的内容、感兴趣的内容等的混合特征向量，这些特征向量将作为下一步比对相似性的输入值。<br>　　分别计算种子用户和潜在目标用户的向量集，并比对相似性。英特使用的是余弦相似度计算相似性，将步骤6 得到的用户特征向量集作为输入x 和y，代入下面公式计算相似性。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3698622-6081cbd4c2554129.gif?imageMogr2/auto-orient/strip" alt=""><br>注意：余弦相似度更多是从方向上区分差异，而对绝对的数值不敏感，因此没法衡量每个维度值的差异。这里要在每个维度上减去一个均值或者乘以一个系数，或者在之前做好归一化。</p>
 <ol>
 <li>受众扩展<br>　　① 获取种子受众名单，以及目标受众的数量N；<br>　　② 检查种子用户是否存在于UVS 中，将存在的用户向量化；<br>　　③ 计算受众名单中用户和UVS 中用户的相似度，提取最相似的前N 个用户作为目标受众。</li>
 </ol>

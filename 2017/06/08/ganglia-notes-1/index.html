@@ -83,13 +83,13 @@
 <meta name="description" content="前言最近接到一个新任务，使用ganglia去监控Hadoop各个组件的指标。调研发现，hdfs，hbase，spark这三个，可以通过设置，源生支持ganglia。然后其他的组件，比如storm，hive之类的，由于都是运行在JVM上的，可以使用JMX获取其监控指标。在实际的生产过程，使用HttpClient获取JMX的json串，然后再进行解析，可以获取其内容。但是编码量比较大，而且都是重复工作">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Ganglia 笔记（1）">
-<meta property="og:url" content="http://yoursite.com/2016/06/08/ganglia-notes-1/index.html">
+<meta property="og:url" content="http://yoursite.com/2017/06/08/ganglia-notes-1/index.html">
 <meta property="og:site_name" content="喵十八の小窝">
 <meta property="og:description" content="前言最近接到一个新任务，使用ganglia去监控Hadoop各个组件的指标。调研发现，hdfs，hbase，spark这三个，可以通过设置，源生支持ganglia。然后其他的组件，比如storm，hive之类的，由于都是运行在JVM上的，可以使用JMX获取其监控指标。在实际的生产过程，使用HttpClient获取JMX的json串，然后再进行解析，可以获取其内容。但是编码量比较大，而且都是重复工作">
 <meta property="og:image" content="http://s3.51cto.com/wyfs02/M02/1B/97/wKioL1MV9EGS37itAAH9Gcl8EpQ513.jpg">
 <meta property="og:image" content="http://s3.51cto.com/wyfs02/M02/1B/96/wKiom1MV9JGDSgHAAAEPvjTFZ2c115.jpg">
 <meta property="og:image" content="http://s3.51cto.com/wyfs02/M00/1B/96/wKiom1MV9KjBgYghAAEd9vXRVrM462.jpg">
-<meta property="og:updated_time" content="2018-04-11T14:07:08.380Z">
+<meta property="og:updated_time" content="2018-04-11T15:48:45.423Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ganglia 笔记（1）">
 <meta name="twitter:description" content="前言最近接到一个新任务，使用ganglia去监控Hadoop各个组件的指标。调研发现，hdfs，hbase，spark这三个，可以通过设置，源生支持ganglia。然后其他的组件，比如storm，hive之类的，由于都是运行在JVM上的，可以使用JMX获取其监控指标。在实际的生产过程，使用HttpClient获取JMX的json串，然后再进行解析，可以获取其内容。但是编码量比较大，而且都是重复工作">
@@ -273,8 +273,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-06-08T21:36:36+08:00" content="2016-06-08">
-              2016-06-08
+            <time itemprop="dateCreated" datetime="2017-06-08T21:36:36+08:00" content="2017-06-08">
+              2017-06-08
             </time>
           </span>
 
@@ -342,8 +342,8 @@
 <p>关于单播和组播更详细的介绍和相关配置请参照：Ganglia快速开始向导（翻译自官方wiki），或者直接查看官方wiki。</p>
 <h1 id="Ganglia-安装"><a href="#Ganglia-安装" class="headerlink" title="Ganglia 安装"></a>Ganglia 安装</h1><p>Ganglia的安装，依赖包很多。如果在联网的环境下，还是比较简单的。否则的话，尽量使用源码编译安装。</p>
 <h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><p>安装ganglia依赖的库有：rrdtool，apr，confuse，expat，pkg-config，pcre-8.33<br>安装ganglia前准备：<br>ganglia源码包：<a href="http://sourceforge.net/projects/ganglia/files/?source=navbar，可以下载ganglia，及ganglia-web" target="_blank" rel="external">http://sourceforge.net/projects/ganglia/files/?source=navbar，可以下载ganglia，及ganglia-web</a><br>rrdtool源码包：<a href="http://oss.oetiker.ch/rrdtool/pub/?M=D" target="_blank" rel="external">http://oss.oetiker.ch/rrdtool/pub/?M=D</a><br>apr的源码包：<a href="http://apr.apache.org/download.cgi" target="_blank" rel="external">http://apr.apache.org/download.cgi</a><br>confuse的源码包：<a href="http://www.nongnu.org/confuse/" target="_blank" rel="external">http://www.nongnu.org/confuse/</a><br>expat的源码包：<a href="http://sourceforge.net/projects/expat/files/expat/2.1.0/" target="_blank" rel="external">http://sourceforge.net/projects/expat/files/expat/2.1.0/</a><br>pkg-config的源码包：<a href="http://pkgconfig.freedesktop.org/releases/" target="_blank" rel="external">http://pkgconfig.freedesktop.org/releases/</a><br>pcre的源码包：<a href="http://sourceforge.net/projects/pcre/files/pcre/" target="_blank" rel="external">http://sourceforge.net/projects/pcre/files/pcre/</a></p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>1.安装rrd，安装前需要查看系统中是否有cairo库，glib库，libpng库，如果这些库都不存在，需要安装，如果已经存在，再去安装，会导致ganglia-web中出现不了图片<br>参照：<a href="http://www.centos.bz/2012/05/linux-compile-rrdtool/" target="_blank" rel="external">http://www.centos.bz/2012/05/linux-compile-rrdtool/</a></p>
-<p>rrd依赖库的源码包地址： <a href="http://oss.oetiker.ch/rrdtool/pub/libs/" target="_blank" rel="external">http://oss.oetiker.ch/rrdtool/pub/libs/</a><br>若未找到cairo库的话，需要安装cairo库<br>安装cairo库时需要安装其依赖库freetype，fontconfig，在安装cairo库时可能出现<br>    <code>could not find libpng in /usr/lib/pkgconfig path</code><br>这时需要设置<br>    <code>export png_REQUIRES=&quot;libpng&quot;</code><br>由于我的系统中已经存在这些库，所以我可以直接编译rrd-tool<br>    <code>./configure --prefix=/usr &amp;&amp; make &amp;&amp; make install</code></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>1.安装rrd，安装前需要查看系统中是否有cairo库，glib库，libpng库，如果这些库都不存在，需要安装，如果已经存在，再去安装，会导致ganglia-web中出现不了图片<br><a href="http://www.centos.bz/2012/05/linux-compile-rrdtool/" target="_blank" rel="external">参照</a></p>
+<p><a href="http://oss.oetiker.ch/rrdtool/pub/libs/" target="_blank" rel="external">rrd依赖库的源码包地址</a><br>若未找到cairo库的话，需要安装cairo库<br>安装cairo库时需要安装其依赖库freetype，fontconfig，在安装cairo库时可能出现<br>    <code>could not find libpng in /usr/lib/pkgconfig path</code><br>这时需要设置<br>    <code>export png_REQUIRES=&quot;libpng&quot;</code><br>由于我的系统中已经存在这些库，所以我可以直接编译rrd-tool<br>    <code>./configure --prefix=/usr &amp;&amp; make &amp;&amp; make install</code></p>
 <p>2.安装 apr-1.4.6<br>  <code>./configure --prefix=/usr &amp;&amp; make &amp;&amp;make install</code></p>
 <p>3.安装confuse-2.7<br>    <code>./configure --prefix=/usr CFLAGS=-fPIC --disable-nls &amp;&amp; make &amp;&amp; make install</code></p>
 <p>4.安装 expat-2.1.0<br>    <code>./configure --prefix=/usr &amp;&amp; make &amp;&amp; make install</code></p>
@@ -355,7 +355,7 @@
 <p><code>Client:</code><br><code>cp gmond/gmond.init /etc/rc.d/init.d/gmond</code><br><code>mkdir /etc/ganglia</code><br><code>gmond --default_config &gt; /etc/ganglia/gmond.conf</code><br><code>chkconfig gmond on</code><br><code>chkconfig --list gmond</code><br><code>mkdir -p /var/lib/ganglia/rrds</code><br><code>chown nobody:nobody /var/lib/ganglia/rrds</code><br>查看是否能够启动gmond， <code>service gmond start</code><br>如果出现动态库链接失败时，执行ldconfig</p>
 <p>9.修改gmetad.conf及gmond.conf的内容<br>    <code>vi /etc/ganglia/gmetad.conf</code><br>#修改data_source  “grid” localhost (如果需要监听其他机器，将需要监听的机器添加到data_source中，需要监听的机器不需要安装gmetad)<br><code>vi /etc/ganglia/gmond.conf</code><br>#修改cluster中name = “grid”</p>
 <p>10.安装ganglia-web<br>直接到ganglia-web下执行<code>make install</code><br>然后执行 <code>mv /var/www/html/ganglia /var/www</code><br>    <code>service httpd restart</code></p>
-<h1 id="jmxtrans-安装"><a href="#jmxtrans-安装" class="headerlink" title="jmxtrans 安装"></a>jmxtrans 安装</h1><p>1、下载jmxtrans<br>  <code>下载地址：https://github.com/jmxtrans/jmxtrans/downloads</code><br>2、安装jmxtrans<br>#判断是否已安装此软件<br>#rpm -qa |grep jmx<br>#卸载软件<br>#rpm -e jmxXXXXXX<br>#安装jmxtrans<br>rpm -ivh<br>说明：</p>
+<h1 id="jmxtrans-安装"><a href="#jmxtrans-安装" class="headerlink" title="jmxtrans 安装"></a>jmxtrans 安装</h1><p>1、下载jmxtrans<br><a href="https://github.com/jmxtrans/jmxtrans/downloads" target="_blank" rel="external">下载地址</a><br>2、安装jmxtrans<br>#判断是否已安装此软件<br>#rpm -qa |grep jmx<br>#卸载软件<br>#rpm -e jmxXXXXXX<br>#安装jmxtrans<br>rpm -ivh<br>说明：</p>
 <pre><code>jmxtrans安装目录：/usr/share/jmxtrans
 
 jmxtrans配置文件 ：/etc/sysconfig/jmxtrans
@@ -368,11 +368,11 @@ json文件默认目录：/var/lib/jmxtrans/
 <p>-Dcom.sun.management.jmxremote<br>-Dcom.sun.management.jmxremote.port=12345<br>-Dcom.sun.management.jmxremote.authenticate=false<br>-Dcom.sun.management.jmxremote.ssl=false</p>
 <h1 id="jmxtrans-json配置"><a href="#jmxtrans-json配置" class="headerlink" title="jmxtrans json配置"></a>jmxtrans json配置</h1><p>待续</p>
 <h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>由于之前在研究ELK。会不由自主的拿ELK和ganglia进行比较。虽然这是不合适的。ELK是一个完整的技术栈，ganglia则相对薄弱。如果对标的话，私以为ELK中的beats + X-pack 可以实现ganglia的功能。只是ELK功能更为强大，而ganglia则更为轻量。</p>
-<h1 id="ref"><a href="#ref" class="headerlink" title="ref"></a>ref</h1><p><strong>ganglia github</strong><br><a href="https://github.com/ganglia/ganglia-web" target="_blank" rel="external">https://github.com/ganglia/ganglia-web</a></p>
-<p><strong>ganglia 简介</strong><br><a href="http://sofar.blog.51cto.com/353572/1367205/" target="_blank" rel="external">http://sofar.blog.51cto.com/353572/1367205/</a></p>
-<p><strong>基于redhat6.2下安装ganglia</strong><br><a href="http://blog.csdn.net/ximeizi/article/details/9225111?locationNum=10" target="_blank" rel="external">http://blog.csdn.net/ximeizi/article/details/9225111?locationNum=10</a></p>
-<p><strong>jmxtrans安装</strong><br><a href="http://www.mamicode.com/info-detail-651326.html" target="_blank" rel="external">http://www.mamicode.com/info-detail-651326.html</a></p>
-<p><strong>jmxtrans github</strong><br><a href="https://github.com/jmxtrans/jmxtrans/" target="_blank" rel="external">https://github.com/jmxtrans/jmxtrans/</a></p>
+<h1 id="ref"><a href="#ref" class="headerlink" title="ref"></a>ref</h1><p><a href="https://github.com/ganglia/ganglia-web" target="_blank" rel="external">ganglia github</a></p>
+<p><a href="http://sofar.blog.51cto.com/353572/1367205/" target="_blank" rel="external">ganglia 简介</a></p>
+<p><a href="http://blog.csdn.net/ximeizi/article/details/9225111?locationNum=10" target="_blank" rel="external">基于redhat6.2下安装ganglia</a></p>
+<p><a href="http://www.mamicode.com/info-detail-651326.html" target="_blank" rel="external">jmxtrans安装</a></p>
+<p><a href="https://github.com/jmxtrans/jmxtrans/" target="_blank" rel="external">jmxtrans github</a></p>
 
       
     </div>
@@ -404,16 +404,16 @@ json文件默认目录：/var/lib/jmxtrans/
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/04/20/flower/" rel="next" title="二月兰开了">
-                <i class="fa fa-chevron-left"></i> 二月兰开了
+              <a href="/2017/02/12/体道/" rel="next" title="体道">
+                <i class="fa fa-chevron-left"></i> 体道
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/07/05/readytowork/" rel="prev" title="readytowork">
-                readytowork <i class="fa fa-chevron-right"></i>
+              <a href="/2017/12/07/note4learnspark/" rel="prev" title="Spark学习笔记汇总">
+                Spark学习笔记汇总 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

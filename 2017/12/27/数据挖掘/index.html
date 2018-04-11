@@ -80,22 +80,22 @@
 
 
 
-<meta name="description" content="之前断断续续，用Spark MLlib 做了将近两个月的数据挖掘，记录点东西。
-1.数据挖掘是有目的的，Spark只是工具在数据挖掘操作前，需要明确，通过这些计算，你希望从这一堆数据中获取到什么。不然只是每个算法跑一遍，也只能证明你调用Spark API 的能力合格了。
- 在最开始的时候，进入了一个误区，以为社区炒的火热的Spark是全知全能的。数据挖掘什么的，Spark就能搞定了。然而，Spar">
+<meta name="description" content="算是前言吧之前断断续续，用Spark MLlib 做了将近两个月的数据挖掘，记录点东西。
+数据挖掘是有目的的，Spark只是工具在数据挖掘操作前，需要明确，通过这些计算，你希望从这一堆数据中获取到什么。不然只是每个算法跑一遍，也只能证明你调用Spark API 的能力合格了。
+在最开始的时候，进入了一个误区，以为社区炒的火热的Spark是全知全能的。数据挖掘什么的，Spark就能搞定了。然而，Sp">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据挖掘 & Spark MLlib 经验记录">
 <meta property="og:url" content="http://yoursite.com/2017/12/27/数据挖掘/index.html">
 <meta property="og:site_name" content="喵十八の小窝">
-<meta property="og:description" content="之前断断续续，用Spark MLlib 做了将近两个月的数据挖掘，记录点东西。
-1.数据挖掘是有目的的，Spark只是工具在数据挖掘操作前，需要明确，通过这些计算，你希望从这一堆数据中获取到什么。不然只是每个算法跑一遍，也只能证明你调用Spark API 的能力合格了。
- 在最开始的时候，进入了一个误区，以为社区炒的火热的Spark是全知全能的。数据挖掘什么的，Spark就能搞定了。然而，Spar">
-<meta property="og:updated_time" content="2018-04-11T14:07:03.396Z">
+<meta property="og:description" content="算是前言吧之前断断续续，用Spark MLlib 做了将近两个月的数据挖掘，记录点东西。
+数据挖掘是有目的的，Spark只是工具在数据挖掘操作前，需要明确，通过这些计算，你希望从这一堆数据中获取到什么。不然只是每个算法跑一遍，也只能证明你调用Spark API 的能力合格了。
+在最开始的时候，进入了一个误区，以为社区炒的火热的Spark是全知全能的。数据挖掘什么的，Spark就能搞定了。然而，Sp">
+<meta property="og:updated_time" content="2018-04-11T15:35:18.893Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据挖掘 & Spark MLlib 经验记录">
-<meta name="twitter:description" content="之前断断续续，用Spark MLlib 做了将近两个月的数据挖掘，记录点东西。
-1.数据挖掘是有目的的，Spark只是工具在数据挖掘操作前，需要明确，通过这些计算，你希望从这一堆数据中获取到什么。不然只是每个算法跑一遍，也只能证明你调用Spark API 的能力合格了。
- 在最开始的时候，进入了一个误区，以为社区炒的火热的Spark是全知全能的。数据挖掘什么的，Spark就能搞定了。然而，Spar">
+<meta name="twitter:description" content="算是前言吧之前断断续续，用Spark MLlib 做了将近两个月的数据挖掘，记录点东西。
+数据挖掘是有目的的，Spark只是工具在数据挖掘操作前，需要明确，通过这些计算，你希望从这一堆数据中获取到什么。不然只是每个算法跑一遍，也只能证明你调用Spark API 的能力合格了。
+在最开始的时候，进入了一个误区，以为社区炒的火热的Spark是全知全能的。数据挖掘什么的，Spark就能搞定了。然而，Sp">
 
 
 
@@ -322,17 +322,17 @@
       
 
       
-        <pre><code>之前断断续续，用Spark MLlib 做了将近两个月的数据挖掘，记录点东西。
-</code></pre><p>1.数据挖掘是有目的的，Spark只是工具<br>在数据挖掘操作前，需要明确，通过这些计算，你希望从这一堆数据中获取到什么。不然只是每个算法跑一遍，也只能证明你调用Spark API 的能力合格了。</p>
-<p> 在最开始的时候，进入了一个误区，以为社区炒的火热的Spark是全知全能的。数据挖掘什么的，Spark就能搞定了。然而，Spark毕竟只是一个工具，使用工具归根结底还是人。最开始，只是想掌握Spark这种技术而已，从而忽视了数据挖掘的目的（当然，这也和团队构成有关，一个产品经理加我一个研发，总觉得和业务相关的事由产品经理去实现就行。。。 图样图森破啊 ）</p>
+        <h1 id="算是前言吧"><a href="#算是前言吧" class="headerlink" title="算是前言吧"></a>算是前言吧</h1><p>之前断断续续，用Spark MLlib 做了将近两个月的数据挖掘，记录点东西。</p>
+<h1 id="数据挖掘是有目的的，Spark只是工具"><a href="#数据挖掘是有目的的，Spark只是工具" class="headerlink" title="数据挖掘是有目的的，Spark只是工具"></a>数据挖掘是有目的的，Spark只是工具</h1><p>在数据挖掘操作前，需要明确，通过这些计算，你希望从这一堆数据中获取到什么。不然只是每个算法跑一遍，也只能证明你调用Spark API 的能力合格了。</p>
+<p>在最开始的时候，进入了一个误区，以为社区炒的火热的Spark是全知全能的。数据挖掘什么的，Spark就能搞定了。然而，Spark毕竟只是一个工具，使用工具归根结底还是人。最开始，只是想掌握Spark这种技术而已，从而忽视了数据挖掘的目的（当然，这也和团队构成有关，一个产品经理加我一个研发，总觉得和业务相关的事由产品经理去实现就行。。。 图样图森破啊 ）</p>
 <p>将Spark MLlib 中的算法能跑的都跑了一遍，得到了许多自己根本不知道意义的数据，才发现，其实做了无用功。</p>
-<p>2.数据可视化很重要<br>看到这个需求的时候，第一反应是找相应的工具。的确有很多数据可视化的工具，画出来的图非常炫。但是，这些工具大部分真的只是画图的工具，需要你将数据整理好输入进去，然后展现出来。然而我需要的则是能够做一些简单汇总计算的操作。于是试过了echarts 、plotyly.js 、R 等等，居然发现是Excel 用的最顺手。然而Excel 却难以处理如此庞大的数据只能进行切割。下一步是该好好学学python了，考虑直接用python on Spark 进行计算，然后对结果画图，这样应该会简单很多。</p>
-<p>3.不要随便造轮子<br>用Spark用了几天，然后被zb推荐用了weka，方才恍然，TMD世界上怎么有真么方便的工具啊，还要Spark MLlib 干蛋啊。各种算法都整合好，数据处理又方便，还能出简单的图，简直完美。</p>
-<p>4.知己知彼<br>接上，既然weka这么完美，那为何还要用Spark呢？归根结底，还是数据量太大，只能使用Spark。这也是Spark的优势所在。即便这个玩意，对机器配置要求高，容易OOM，GC一团乱码，还不稳定。然而做离线的机器学习处理，以上这些劣势who care？只要它够快，处理的数据够大，能出结果就行了。没有工具是万能的，只要他能满足你的需求他就是个好工具。</p>
-<p>5.MLlib VS ML<br>诚然，一开始想上ML的。封装程度更高的API，简洁的Pipeline，一切都是那么美好。然而数据却不是那么美好。很多源数据的清洗没法用SparkSQL 或者 Hive进行。（好吧 我承认我很水，SQL 只是刚会用而已）于是采用了MLlib。</p>
+<h1 id="数据可视化很重要"><a href="#数据可视化很重要" class="headerlink" title="数据可视化很重要"></a>数据可视化很重要</h1><p>看到这个需求的时候，第一反应是找相应的工具。的确有很多数据可视化的工具，画出来的图非常炫。但是，这些工具大部分真的只是画图的工具，需要你将数据整理好输入进去，然后展现出来。然而我需要的则是能够做一些简单汇总计算的操作。于是试过了echarts 、plotyly.js 、R 等等，居然发现是Excel 用的最顺手。然而Excel 却难以处理如此庞大的数据只能进行切割。下一步是该好好学学python了，考虑直接用python on Spark 进行计算，然后对结果画图，这样应该会简单很多。</p>
+<h1 id="不要随便造轮子"><a href="#不要随便造轮子" class="headerlink" title="不要随便造轮子"></a>不要随便造轮子</h1><p>用Spark用了几天，然后被zb推荐用了weka，方才恍然，TMD世界上怎么有真么方便的工具啊，还要Spark MLlib 干蛋啊。各种算法都整合好，数据处理又方便，还能出简单的图，简直完美。</p>
+<h1 id="知己知彼"><a href="#知己知彼" class="headerlink" title="知己知彼"></a>知己知彼</h1><p>接上，既然weka这么完美，那为何还要用Spark呢？归根结底，还是数据量太大，只能使用Spark。这也是Spark的优势所在。即便这个玩意，对机器配置要求高，容易OOM，GC一团乱码，还不稳定。然而做离线的机器学习处理，以上这些劣势who care？只要它够快，处理的数据够大，能出结果就行了。没有工具是万能的，只要他能满足你的需求他就是个好工具。</p>
+<h1 id="MLlib-VS-ML"><a href="#MLlib-VS-ML" class="headerlink" title="MLlib VS ML"></a>MLlib VS ML</h1><p>诚然，一开始想上ML的。封装程度更高的API，简洁的Pipeline，一切都是那么美好。然而数据却不是那么美好。很多源数据的清洗没法用SparkSQL 或者 Hive进行。（好吧 我承认我很水，SQL 只是刚会用而已）于是采用了MLlib。</p>
 <p>因为数据是存在Hive表里的，思路就如下：</p>
 <p>SparkSQL 取数据 -&gt;RDD  （进行清洗）-&gt;MLlib （进行挖掘） -&gt;python (可视化）</p>
-<p>6.讲故事很重要<br>说实话，最后计算出来的数据，其实我是看不懂的，还好zb厉害，能够给出各种合理的解释，然后按照相应的方向进行深挖。</p>
+<h1 id="讲故事很重要"><a href="#讲故事很重要" class="headerlink" title="讲故事很重要"></a>讲故事很重要</h1><p>说实话，最后计算出来的数据，其实我是看不懂的，还好zb厉害，能够给出各种合理的解释，然后按照相应的方向进行深挖。</p>
 
       
     </div>
@@ -519,7 +519,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#算是前言吧"><span class="nav-number">1.</span> <span class="nav-text">算是前言吧</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据挖掘是有目的的，Spark只是工具"><span class="nav-number">2.</span> <span class="nav-text">数据挖掘是有目的的，Spark只是工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据可视化很重要"><span class="nav-number">3.</span> <span class="nav-text">数据可视化很重要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#不要随便造轮子"><span class="nav-number">4.</span> <span class="nav-text">不要随便造轮子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#知己知彼"><span class="nav-number">5.</span> <span class="nav-text">知己知彼</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MLlib-VS-ML"><span class="nav-number">6.</span> <span class="nav-text">MLlib VS ML</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#讲故事很重要"><span class="nav-number">7.</span> <span class="nav-text">讲故事很重要</span></a></li></ol></div>
             
           </div>
         </section>
