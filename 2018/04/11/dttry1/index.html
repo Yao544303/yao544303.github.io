@@ -1,0 +1,649 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Spark改写,工作心得," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="DT代码中的坑连续两周时间都在支持DT以及相关的label的开发能够明显的发现DT提供的代码质量非常之差。列举出来，前事不忘后事之师。
+hard core在spark的代码中，将master 以及入参全部hard core，入参不必说他，将master 设置之后，我spark submit可是会报错的啊。
+不转为String 直接saveAsTextFile常常出现123(ABACD,ADF,1)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DT近期合作爬坑记录">
+<meta property="og:url" content="http://yoursite.com/2018/04/11/dttry1/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="DT代码中的坑连续两周时间都在支持DT以及相关的label的开发能够明显的发现DT提供的代码质量非常之差。列举出来，前事不忘后事之师。
+hard core在spark的代码中，将master 以及入参全部hard core，入参不必说他，将master 设置之后，我spark submit可是会报错的啊。
+不转为String 直接saveAsTextFile常常出现123(ABACD,ADF,1)">
+<meta property="og:updated_time" content="2018-04-11T14:26:18.214Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DT近期合作爬坑记录">
+<meta name="twitter:description" content="DT代码中的坑连续两周时间都在支持DT以及相关的label的开发能够明显的发现DT提供的代码质量非常之差。列举出来，前事不忘后事之师。
+hard core在spark的代码中，将master 以及入参全部hard core，入参不必说他，将master 设置之后，我spark submit可是会报错的啊。
+不转为String 直接saveAsTextFile常常出现123(ABACD,ADF,1)">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> DT近期合作爬坑记录 | 喵十八の小窝 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">喵十八の小窝</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-heartbeat fa-fw"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                DT近期合作爬坑记录
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2018-04-11T22:24:52+08:00" content="2018-04-11">
+              2018-04-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/bigdata/" itemprop="url" rel="index">
+                    <span itemprop="name">bigdata</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="DT代码中的坑"><a href="#DT代码中的坑" class="headerlink" title="DT代码中的坑"></a>DT代码中的坑</h1><p>连续两周时间都在支持DT以及相关的label的开发<br>能够明显的发现DT提供的代码质量非常之差。列举出来，前事不忘后事之师。</p>
+<h2 id="hard-core"><a href="#hard-core" class="headerlink" title="hard core"></a>hard core</h2><p>在spark的代码中，将master 以及入参全部hard core，入参不必说他，将master 设置之后，我spark submit可是会报错的啊。</p>
+<h2 id="不转为String-直接saveAsTextFile"><a href="#不转为String-直接saveAsTextFile" class="headerlink" title="不转为String 直接saveAsTextFile"></a>不转为String 直接saveAsTextFile</h2><p>常常出现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(ABACD,ADF,1)</span><br><span class="line"></span><br><span class="line">[Ljava.long.String;@76abcd405]</span><br></pre></td></tr></table></figure></p>
+<p>前者是元组直接输出，后者输出的是地址，写代码的时候一定需要注意</p>
+<h2 id="集群600G-内存，输入200G-全部cache"><a href="#集群600G-内存，输入200G-全部cache" class="headerlink" title="集群600G 内存，输入200G 全部cache"></a>集群600G 内存，输入200G 全部cache</h2><p>恩 cache 的确可以提高效率，但是你这个样子做，确定不会oom？</p>
+<h2 id="多次join"><a href="#多次join" class="headerlink" title="多次join"></a>多次join</h2><p>输入为 （A,B,C）<br>希望得到的输出 （A,B/sum(B),B,D）<br>做了多次join,开销非常之大<br>在实践之前，可以先进行采样，加入对A进行reduce 之后 ，按key分布的数据量不大，倾斜不严重的情况下，<br>可以将join 转变<br>map 处理为 RDD[String,Map]<br>再reduce， 得到RDD[String,Map]之后，在map内部进行相似逻辑的操作，这样能提高效率。</p>
+<h2 id="不做异常检测"><a href="#不做异常检测" class="headerlink" title="不做异常检测"></a>不做异常检测</h2><p>维表可能存在空值，不做异常检测，直接进行string =》 int 的转化，必然异常。</p>
+<h2 id="过滤数据"><a href="#过滤数据" class="headerlink" title="过滤数据"></a>过滤数据</h2><p>接上，对空值的过滤，需要谨慎再谨慎，每条数据都是很宝贵的，需要非常认真的对待，建议在filter之前，先sample一下，看看数据是什么样子，看看要filter的数据是什么样子，再做决断。</p>
+<h2 id="sample的重要性"><a href="#sample的重要性" class="headerlink" title="sample的重要性"></a>sample的重要性</h2><p>既然用到了spark 处理的数据量级自然不会小，在大数据量测试之前务必使用小数据量进行逻辑的验证，直接用大数据量跑的话，耗时耗资源不去说，万一错了，代价也很大。</p>
+<h1 id="其他非代码的坑"><a href="#其他非代码的坑" class="headerlink" title="其他非代码的坑"></a>其他非代码的坑</h1><h2 id="维表过多"><a href="#维表过多" class="headerlink" title="维表过多"></a>维表过多</h2><p>维表过多，导致管理起来非常困难，一定要协商好一个更新机制</p>
+<h2 id="Spark-submit-脚本"><a href="#Spark-submit-脚本" class="headerlink" title="Spark-submit 脚本"></a>Spark-submit 脚本</h2><p>这个必须有，整理的晚了，每次提交都要重新编写，虽然时间不多，但多几次，很容易让人狂躁<br>整理了如下一个模板<br><a href="https://github.com/Yao544303/shell/blob/master/java/spark_submit.sh" target="_blank" rel="external">spark-submit模板</a></p>
+<h2 id="信息沟通必须及时"><a href="#信息沟通必须及时" class="headerlink" title="信息沟通必须及时"></a>信息沟通必须及时</h2>
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Spark改写/" rel="tag">#Spark改写</a>
+          
+            <a href="/tags/工作心得/" rel="tag">#工作心得</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/11/lookalike/" rel="next" title="Lookalike 技术调研">
+                <i class="fa fa-chevron-left"></i> Lookalike 技术调研
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/11/spark-discuss201803/" rel="prev" title="2018_3月讨论整理">
+                2018_3月讨论整理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/Ruby.png"
+               alt="喵十八" />
+          <p class="site-author-name" itemprop="name">喵十八</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">58</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1525632730" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Yao544303" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#DT代码中的坑"><span class="nav-number">1.</span> <span class="nav-text">DT代码中的坑</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hard-core"><span class="nav-number">1.1.</span> <span class="nav-text">hard core</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不转为String-直接saveAsTextFile"><span class="nav-number">1.2.</span> <span class="nav-text">不转为String 直接saveAsTextFile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群600G-内存，输入200G-全部cache"><span class="nav-number">1.3.</span> <span class="nav-text">集群600G 内存，输入200G 全部cache</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多次join"><span class="nav-number">1.4.</span> <span class="nav-text">多次join</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不做异常检测"><span class="nav-number">1.5.</span> <span class="nav-text">不做异常检测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过滤数据"><span class="nav-number">1.6.</span> <span class="nav-text">过滤数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sample的重要性"><span class="nav-number">1.7.</span> <span class="nav-text">sample的重要性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他非代码的坑"><span class="nav-number">2.</span> <span class="nav-text">其他非代码的坑</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#维表过多"><span class="nav-number">2.1.</span> <span class="nav-text">维表过多</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spark-submit-脚本"><span class="nav-number">2.2.</span> <span class="nav-text">Spark-submit 脚本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#信息沟通必须及时"><span class="nav-number">2.3.</span> <span class="nav-text">信息沟通必须及时</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
