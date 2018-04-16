@@ -1,15 +1,22 @@
-<!doctype html>
+<!DOCTYPE html>
 
 
 
   
 
 
-<html class="theme-next mist use-motion">
+<html class="theme-next mist use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
 
 
 
@@ -27,7 +34,12 @@
 
 
 
-  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
 
 
 
@@ -59,9 +71,11 @@
 
 
 
-<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
 
-<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
   <meta name="keywords" content="Hexo, NexT" />
@@ -73,7 +87,7 @@
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
 
 
 
@@ -92,25 +106,38 @@
 
 
 
-<script type="text/javascript" id="hexo.configuration">
+<script type="text/javascript" id="hexo.configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
+    root: '/',
     scheme: 'Mist',
-    sidebar: {"position":"left","display":"always"},
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
+    tabs: true,
     motion: true,
     duoshuo: {
-      userId: 0,
+      userId: '0',
       author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
     }
   };
 </script>
 
-  <title> 喵十八の小窝 </title>
-</head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
+  <link rel="canonical" href="http://yoursite.com/"/>
+
+
+
+
+
+  <title>喵十八の小窝</title>
   
 
 
@@ -121,37 +148,49 @@
 
 
 
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
     
   
 
-  <div class="container one-collumn sidebar-position-left 
+  <div class="container sidebar-position-left 
    page-home 
  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-meta ">
-  
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
 
-  <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <span class="site-title">喵十八の小窝</span>
-      <span class="logo-line-after"><i></i></span>
-    </a>
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">喵十八の小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
   </div>
-  <p class="site-subtitle"></p>
-</div>
 
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
 </div>
 
 <nav class="site-nav">
@@ -164,7 +203,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
             首页
           </a>
@@ -172,9 +211,9 @@
       
         
         <li class="menu-item menu-item-categories">
-          <a href="/categories" rel="section">
+          <a href="/categories/" rel="section">
             
-              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
             
             分类
           </a>
@@ -182,9 +221,9 @@
       
         
         <li class="menu-item menu-item-about">
-          <a href="/about" rel="section">
+          <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
             
             关于
           </a>
@@ -192,9 +231,9 @@
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
+          <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
             归档
           </a>
@@ -202,9 +241,9 @@
       
         
         <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
+          <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
             标签
           </a>
@@ -212,9 +251,9 @@
       
         
         <li class="menu-item menu-item-commonweal">
-          <a href="/404.html" rel="section">
+          <a href="/404/" rel="section">
             
-              <i class="menu-item-icon fa fa-heartbeat fa-fw"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
             
             公益404
           </a>
@@ -227,6 +266,8 @@
 
   
 </nav>
+
+
 
  </div>
     </header>
@@ -241,13 +282,27 @@
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/16/spark-discuss20180401/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
 
     
       <header class="post-header">
@@ -255,38 +310,42 @@
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2018/04/16/spark-discuss20180401/" itemprop="url">
-                  群内2018_４月讨论整理1
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2018/04/16/spark-discuss20180401/" itemprop="url">群内2018_４月讨论整理1</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-04-16T20:10:06+08:00" content="2018-04-16">
-              2018-04-16
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-16T20:10:06+08:00">
+                2018-04-16
+              </time>
+            
+
+            
+
+            
           </span>
-          
+
           
             <span class="post-category" >
-              &nbsp; | &nbsp;
+            
+              <span class="post-meta-divider">|</span>
+            
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/bigdata/" itemprop="url" rel="index">
                     <span itemprop="name">bigdata</span>
                   </a>
@@ -294,7 +353,6 @@
 
                 
                 
-
               
             </span>
           
@@ -304,16 +362,21 @@
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -327,28 +390,31 @@
 资料TOP 25大常见Hadoop面试题及答案Spark面试题汇总  密码：bcpc
 2018.04.12_01问题描述
           ...
-
-          <div class="post-more-link text-center">
+          <!--noindex-->
+          <div class="post-button text-center">
             <a class="btn" href="/2018/04/16/spark-discuss20180401/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
+          <!--/noindex-->
         
       
     </div>
     
-    <div>
-      
-    </div>
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-     
-    </div>
+    
+
+    
+　　　　<div>
+  　　　
+　　　　</div>
     <footer class="post-footer">
+      
+
       
 
       
@@ -358,6 +424,10 @@
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -365,13 +435,27 @@
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/15/shibaluohan/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
 
     
       <header class="post-header">
@@ -379,38 +463,42 @@
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2018/04/15/shibaluohan/" itemprop="url">
-                  以刀作笔，书众生千面相   化核为心，传香火万世情
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2018/04/15/shibaluohan/" itemprop="url">以刀作笔，书众生千面相   化核为心，传香火万世情</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-04-15T21:52:49+08:00" content="2018-04-15">
-              2018-04-15
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-15T21:52:49+08:00">
+                2018-04-15
+              </time>
+            
+
+            
+
+            
           </span>
-          
+
           
             <span class="post-category" >
-              &nbsp; | &nbsp;
+            
+              <span class="post-meta-divider">|</span>
+            
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/一语/" itemprop="url" rel="index">
                     <span itemprop="name">一语</span>
                   </a>
@@ -418,7 +506,6 @@
 
                 
                 
-
               
             </span>
           
@@ -428,16 +515,21 @@
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -447,7 +539,7 @@
           
             <div class="post-gallery-row">
               <a class="post-gallery-img fancybox"
-                 href="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523810642943&di=97d8993c11b4b2bcca21b64fdaa69351&imgtype=0&src=http%3A%2F%2Fimage.panjiayuan.com%2Fshop%2F2013%2Fqiaogongjiang%2Ff2b850176b1a52607c4635d40021871d.jpg" rel="gallery_cjg27tvwt003c0fx7fwtu2kbt"
+                 href="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523810642943&di=97d8993c11b4b2bcca21b64fdaa69351&imgtype=0&src=http%3A%2F%2Fimage.panjiayuan.com%2Fshop%2F2013%2Fqiaogongjiang%2Ff2b850176b1a52607c4635d40021871d.jpg" rel="gallery_cjg2aetfq003an1x7vaeegv5l"
                  itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
                 <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523810642943&di=97d8993c11b4b2bcca21b64fdaa69351&imgtype=0&src=http%3A%2F%2Fimage.panjiayuan.com%2Fshop%2F2013%2Fqiaogongjiang%2Ff2b850176b1a52607c4635d40021871d.jpg" itemprop="contentUrl"/>
               </a>
@@ -464,28 +556,31 @@
           
           　　穹窿山青郁苍翠，山风啸林间，隐隐似夹杂着朗朗书声与勾戟之音，许是千载前的先贤，俯仰间的风华犹存。　　山脚之下的小村落，亦因千载前，那个名为阖闾的吴王于此种香，而得了一个风雅的名字–香山。，在此造舟舫、练水师而有了一个名字–舟山。　　《香山小志》也有记载：“山梓人，巧者十之五六。又有雕工，专将竹根
           ...
-
-          <div class="post-more-link text-center">
+          <!--noindex-->
+          <div class="post-button text-center">
             <a class="btn" href="/2018/04/15/shibaluohan/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
+          <!--/noindex-->
         
       
     </div>
     
-    <div>
-      
-    </div>
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-     
-    </div>
+    
+
+    
+　　　　<div>
+  　　　
+　　　　</div>
     <footer class="post-footer">
+      
+
       
 
       
@@ -495,6 +590,10 @@
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -502,13 +601,27 @@
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/14/Syrian/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
 
     
       <header class="post-header">
@@ -516,38 +629,42 @@
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2018/04/14/Syrian/" itemprop="url">
-                  中国不是一百多年的中国了，世界还是一百多年前的世界
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2018/04/14/Syrian/" itemprop="url">中国不是一百多年的中国了，世界还是一百多年前的世界</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-04-14T18:41:22+08:00" content="2018-04-14">
-              2018-04-14
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-14T18:41:22+08:00">
+                2018-04-14
+              </time>
+            
+
+            
+
+            
           </span>
-          
+
           
             <span class="post-category" >
-              &nbsp; | &nbsp;
+            
+              <span class="post-meta-divider">|</span>
+            
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/一语/" itemprop="url" rel="index">
                     <span itemprop="name">一语</span>
                   </a>
@@ -555,7 +672,6 @@
 
                 
                 
-
               
             </span>
           
@@ -565,16 +681,21 @@
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -586,28 +707,31 @@
           下午喝完一杯饮料的时间，被叙利亚的新闻刷频了。美国发射了导弹，俄罗斯拦截了部分，剩下的都打在已经疏散了民众的区域内。据报道，受伤了６个人，无人员死亡，万幸。
 想到前几日的看到的叙利亚杜马镇“化物事件”的会议，叙利亚：这些化学物质永远只攻击女人和孩子，它都学会区分武装人员了？！　叙利亚大使压抑着愤怒，
           ...
-
-          <div class="post-more-link text-center">
+          <!--noindex-->
+          <div class="post-button text-center">
             <a class="btn" href="/2018/04/14/Syrian/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
+          <!--/noindex-->
         
       
     </div>
     
-    <div>
-      
-    </div>
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-     
-    </div>
+    
+
+    
+　　　　<div>
+  　　　
+　　　　</div>
     <footer class="post-footer">
+      
+
       
 
       
@@ -617,6 +741,10 @@
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -624,13 +752,27 @@
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/11/dttry1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
 
     
       <header class="post-header">
@@ -638,38 +780,42 @@
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2018/04/11/dttry1/" itemprop="url">
-                  DT近期合作爬坑记录
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2018/04/11/dttry1/" itemprop="url">DT近期合作爬坑记录</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-04-11T22:24:52+08:00" content="2018-04-11">
-              2018-04-11
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-11T22:24:52+08:00">
+                2018-04-11
+              </time>
+            
+
+            
+
+            
           </span>
-          
+
           
             <span class="post-category" >
-              &nbsp; | &nbsp;
+            
+              <span class="post-meta-divider">|</span>
+            
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/bigdata/" itemprop="url" rel="index">
                     <span itemprop="name">bigdata</span>
                   </a>
@@ -677,7 +823,6 @@
 
                 
                 
-
               
             </span>
           
@@ -687,16 +832,21 @@
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -708,28 +858,31 @@
           DT代码中的坑连续两周时间都在支持DT以及相关的label的开发能够明显的发现DT提供的代码质量非常之差。列举出来，前事不忘后事之师。
 hard core在spark的代码中，将master 以及入参全部hard core，入参不必说他，将master 设置之后，我spark submit可是会报错
           ...
-
-          <div class="post-more-link text-center">
+          <!--noindex-->
+          <div class="post-button text-center">
             <a class="btn" href="/2018/04/11/dttry1/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
+          <!--/noindex-->
         
       
     </div>
     
-    <div>
-      
-    </div>
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-     
-    </div>
+    
+
+    
+　　　　<div>
+  　　　
+　　　　</div>
     <footer class="post-footer">
+      
+
       
 
       
@@ -739,6 +892,10 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -746,13 +903,27 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/11/lookalike/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
 
     
       <header class="post-header">
@@ -760,38 +931,42 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2018/04/11/lookalike/" itemprop="url">
-                  Lookalike 技术调研
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2018/04/11/lookalike/" itemprop="url">Lookalike 技术调研</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-04-11T22:20:08+08:00" content="2018-04-11">
-              2018-04-11
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-11T22:20:08+08:00">
+                2018-04-11
+              </time>
+            
+
+            
+
+            
           </span>
-          
+
           
             <span class="post-category" >
-              &nbsp; | &nbsp;
+            
+              <span class="post-meta-divider">|</span>
+            
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/DM/" itemprop="url" rel="index">
                     <span itemprop="name">DM</span>
                   </a>
@@ -799,7 +974,6 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
 
                 
                 
-
               
             </span>
           
@@ -809,16 +983,21 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -829,28 +1008,31 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
           
           What基本上所有的互联网公司都有其广告投放平台，这是给广告主投放广告的一个页面。广告主可以通过广告提交页面提交自己的广告需求，后台会给广告主圈定一部分潜在用户，这个就是我们称为Lookalike的模块。lookalike 不是某一种特定的算法，而是一类方法的统称，这类方法综合运用多种技术，最终达到
           ...
-
-          <div class="post-more-link text-center">
+          <!--noindex-->
+          <div class="post-button text-center">
             <a class="btn" href="/2018/04/11/lookalike/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
+          <!--/noindex-->
         
       
     </div>
     
-    <div>
-      
-    </div>
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-     
-    </div>
+    
+
+    
+　　　　<div>
+  　　　
+　　　　</div>
     <footer class="post-footer">
+      
+
       
 
       
@@ -860,6 +1042,10 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -867,13 +1053,27 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/31/spark-discuss201803/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
 
     
       <header class="post-header">
@@ -881,38 +1081,42 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2018/03/31/spark-discuss201803/" itemprop="url">
-                  群内2018_3月讨论整理
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2018/03/31/spark-discuss201803/" itemprop="url">群内2018_3月讨论整理</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2018-03-31T22:28:09+08:00" content="2018-03-31">
-              2018-03-31
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-31T22:28:09+08:00">
+                2018-03-31
+              </time>
+            
+
+            
+
+            
           </span>
-          
+
           
             <span class="post-category" >
-              &nbsp; | &nbsp;
+            
+              <span class="post-meta-divider">|</span>
+            
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/bigdata/" itemprop="url" rel="index">
                     <span itemprop="name">bigdata</span>
                   </a>
@@ -920,7 +1124,6 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
 
                 
                 
-
               
             </span>
           
@@ -930,16 +1133,21 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -953,28 +1161,31 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
 根据阿里的分享do moredo betterdo exercise如何成为技术大牛
 2018.03.29_02问题描述
           ...
-
-          <div class="post-more-link text-center">
+          <!--noindex-->
+          <div class="post-button text-center">
             <a class="btn" href="/2018/03/31/spark-discuss201803/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
+          <!--/noindex-->
         
       
     </div>
     
-    <div>
-      
-    </div>
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-     
-    </div>
+    
+
+    
+　　　　<div>
+  　　　
+　　　　</div>
     <footer class="post-footer">
+      
+
       
 
       
@@ -984,6 +1195,10 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -991,13 +1206,27 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/27/percentrank/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
 
     
       <header class="post-header">
@@ -1005,38 +1234,42 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2017/12/27/percentrank/" itemprop="url">
-                  Spark 爬坑记录之percent_rank()
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2017/12/27/percentrank/" itemprop="url">Spark 爬坑记录之percent_rank()</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-12-27T23:14:20+08:00" content="2017-12-27">
-              2017-12-27
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-27T23:14:20+08:00">
+                2017-12-27
+              </time>
+            
+
+            
+
+            
           </span>
-          
+
           
             <span class="post-category" >
-              &nbsp; | &nbsp;
+            
+              <span class="post-meta-divider">|</span>
+            
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/bigdata/" itemprop="url" rel="index">
                     <span itemprop="name">bigdata</span>
                   </a>
@@ -1044,7 +1277,6 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
 
                 
                 
-
               
             </span>
           
@@ -1054,16 +1286,21 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -1074,28 +1311,31 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
           
           背景在Kmeans 预处理之前的数据预处理部分，需要做一次类似percent_rank() 操作。举个例子，输入一条记录为user_1,key1,value_1输入多条记录按照key1 聚合之后，结果为key1,list[value1,value2…..]将list 排序，并获取count  结果为
           ...
-
-          <div class="post-more-link text-center">
+          <!--noindex-->
+          <div class="post-button text-center">
             <a class="btn" href="/2017/12/27/percentrank/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
+          <!--/noindex-->
         
       
     </div>
     
-    <div>
-      
-    </div>
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-     
-    </div>
+    
+
+    
+　　　　<div>
+  　　　
+　　　　</div>
     <footer class="post-footer">
+      
+
       
 
       
@@ -1105,6 +1345,10 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -1112,13 +1356,27 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/27/scala版本冲突/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
 
     
       <header class="post-header">
@@ -1126,38 +1384,42 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2017/12/27/scala版本冲突/" itemprop="url">
-                  Spark 爬坑记录之开发Scala版本冲突
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2017/12/27/scala版本冲突/" itemprop="url">Spark 爬坑记录之开发Scala版本冲突</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-12-27T23:14:09+08:00" content="2017-12-27">
-              2017-12-27
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-27T23:14:09+08:00">
+                2017-12-27
+              </time>
+            
+
+            
+
+            
           </span>
-          
+
           
             <span class="post-category" >
-              &nbsp; | &nbsp;
+            
+              <span class="post-meta-divider">|</span>
+            
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/bigdata/" itemprop="url" rel="index">
                     <span itemprop="name">bigdata</span>
                   </a>
@@ -1165,7 +1427,6 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
 
                 
                 
-
               
             </span>
           
@@ -1175,16 +1436,21 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -1195,28 +1461,31 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
           
           若在maven 中配置了123456789101112131415161718&lt;plugin&gt; &lt;groupId&gt;org.scala-tools&lt;/groupId&gt; &lt;artifactId&gt;maven-scala-plugin&lt;/artifact
           ...
-
-          <div class="post-more-link text-center">
+          <!--noindex-->
+          <div class="post-button text-center">
             <a class="btn" href="/2017/12/27/scala版本冲突/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
+          <!--/noindex-->
         
       
     </div>
     
-    <div>
-      
-    </div>
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-     
-    </div>
+    
+
+    
+　　　　<div>
+  　　　
+　　　　</div>
     <footer class="post-footer">
+      
+
       
 
       
@@ -1226,6 +1495,10 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -1233,13 +1506,27 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/27/spark2-x迁移至1-6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
 
     
       <header class="post-header">
@@ -1247,38 +1534,42 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2017/12/27/spark2-x迁移至1-6/" itemprop="url">
-                  将基于Spark 2.x 开发的LDA 程序 迁移至Spark 1.6 的环境
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2017/12/27/spark2-x迁移至1-6/" itemprop="url">将基于Spark 2.x 开发的LDA 程序 迁移至Spark 1.6 的环境</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-12-27T23:10:50+08:00" content="2017-12-27">
-              2017-12-27
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-27T23:10:50+08:00">
+                2017-12-27
+              </time>
+            
+
+            
+
+            
           </span>
-          
+
           
             <span class="post-category" >
-              &nbsp; | &nbsp;
+            
+              <span class="post-meta-divider">|</span>
+            
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/bigdata/" itemprop="url" rel="index">
                     <span itemprop="name">bigdata</span>
                   </a>
@@ -1286,7 +1577,6 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
 
                 
                 
-
               
             </span>
           
@@ -1296,16 +1586,21 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -1316,28 +1611,31 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
           
           前言对方提供的LDA 聚类程序，是基于Spark 2.x 的，但是，我们的生产环境是Spark 1.6。 恩那么问题就来了，怎么让基于Spark 2.x 的代码在Spark 1.6 上跑起来。第一个想法是，只要把SparkSession 改为SparkContext 和 SQLContext 就行了
           ...
-
-          <div class="post-more-link text-center">
+          <!--noindex-->
+          <div class="post-button text-center">
             <a class="btn" href="/2017/12/27/spark2-x迁移至1-6/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
+          <!--/noindex-->
         
       
     </div>
     
-    <div>
-      
-    </div>
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-     
-    </div>
+    
+
+    
+　　　　<div>
+  　　　
+　　　　</div>
     <footer class="post-footer">
+      
+
       
 
       
@@ -1347,6 +1645,10 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -1354,13 +1656,27 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/27/数据挖掘/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
 
     
       <header class="post-header">
@@ -1368,38 +1684,42 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2017/12/27/数据挖掘/" itemprop="url">
-                  数据挖掘 & Spark MLlib 经验记录
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2017/12/27/数据挖掘/" itemprop="url">数据挖掘 & Spark MLlib 经验记录</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-12-27T23:06:33+08:00" content="2017-12-27">
-              2017-12-27
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-27T23:06:33+08:00">
+                2017-12-27
+              </time>
+            
+
+            
+
+            
           </span>
-          
+
           
             <span class="post-category" >
-              &nbsp; | &nbsp;
+            
+              <span class="post-meta-divider">|</span>
+            
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/bigdata/" itemprop="url" rel="index">
                     <span itemprop="name">bigdata</span>
                   </a>
@@ -1407,7 +1727,6 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
 
                 
                 
-
               
             </span>
           
@@ -1417,16 +1736,21 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -1439,28 +1763,31 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
 数据挖掘是有目的的，Spark只是工具在数据挖掘操作前，需要明确，通过这些计算，你希望从这一堆数据中获取到什么。不然只是每个算法跑一遍，也只能证明你调用Spark API 的能力合格了。
 在最开始的时候，进入了
           ...
-
-          <div class="post-more-link text-center">
+          <!--noindex-->
+          <div class="post-button text-center">
             <a class="btn" href="/2017/12/27/数据挖掘/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
+          <!--/noindex-->
         
       
     </div>
     
-    <div>
-      
-    </div>
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-     
-    </div>
+    
+
+    
+　　　　<div>
+  　　　
+　　　　</div>
     <footer class="post-footer">
+      
+
       
 
       
@@ -1470,6 +1797,10 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -1502,31 +1833,39 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
   </div>
 
   <aside id="sidebar" class="sidebar">
+    
     <div class="sidebar-inner">
 
       
 
       
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/Ruby.png"
                alt="喵十八" />
           <p class="site-author-name" itemprop="name">喵十八</p>
-          <p class="site-description motion-element" itemprop="description"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
         </div>
         <nav class="site-state motion-element">
-          <div class="site-state-item site-state-posts">
-            <a href="/archives">
-              <span class="site-state-item-count">28</span>
-              <span class="site-state-item-name">日志</span>
-            </a>
-          </div>
 
           
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
             <div class="site-state-item site-state-categories">
-              <a href="/categories">
+              <a href="/categories/index.html">
                 <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">分类</span>
               </a>
@@ -1534,8 +1873,10 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
           
 
           
+            
+            
             <div class="site-state-item site-state-tags">
-              <a href="/tags">
+              <a href="/tags/index.html">
                 <span class="site-state-item-count">67</span>
                 <span class="site-state-item-name">标签</span>
               </a>
@@ -1550,29 +1891,35 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
           
             
               <span class="links-of-author-item">
-                <a href="http://weibo.com/u/1525632730" target="_blank" title="Weibo">
+                <a href="yao544303963@gmail.com" target="_blank" title="E-Mail">
                   
-                    <i class="fa fa-weibo"></i>
+                    <i class="fa fa-fw fa-envelope"></i>
                   
-                  Weibo
+                    
+                      E-Mail
+                    
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="https://github.com/Yao544303" target="_blank" title="GitHub">
                   
-                    <i class="fa fa-github"></i>
+                    <i class="fa fa-fw fa-github"></i>
                   
-                  GitHub
+                    
+                      GitHub
+                    
                 </a>
               </span>
             
               <span class="links-of-author-item">
                 <a href="" target="_blank" title="Twitter">
                   
-                    <i class="fa fa-twitter"></i>
+                    <i class="fa fa-fw fa-twitter"></i>
                   
-                  Twitter
+                    
+                      Twitter
+                    
                 </a>
               </span>
             
@@ -1585,7 +1932,12 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
         
         
 
+        
+
+
       </section>
+
+      
 
       
 
@@ -1609,8 +1961,9 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
   <span class="author" itemprop="copyrightHolder">喵十八</span>
 </div>
 
+
 <div class="powered-by">
-  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
 </div>
 
 <div class="theme-info">
@@ -1620,15 +1973,20 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
   </a>
 </div>
 
+
         
 
         
       </div>
     </footer>
 
-    <div class="back-to-top">
-      <i class="fa fa-arrow-up"></i>
-    </div>
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
   </div>
 
   
@@ -1651,56 +2009,101 @@ hard core在spark的代码中，将master 以及入参全部hard core，入参�
 
 
 
-  
-  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
-
-  
-  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  
-  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-
-  
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
-
-  
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-  
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
 
-  
 
 
-  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
 
-  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
 
 
 
   
-  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
 
   
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
 
   
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
 
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
 
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
 
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
 
   
 
 
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
 
   
 
 
 
+
+	
+
+
+
+
+
   
+
+
+
+
+
   
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
   
 
   
