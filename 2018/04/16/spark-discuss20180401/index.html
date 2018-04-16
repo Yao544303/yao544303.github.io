@@ -1,0 +1,715 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="aggregate,空文件,PMML,reseve," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="说明以下内容来自群中出现的问题，大家讨论的结果Q群：432600958微信群：加微信w3aboutyun,附上about云铁粉
+2018.04.13_01问题描述面试资源题目分享
+##TOP 25大常见Hadoop面试题及答案Spark面试题汇总  密码：bcpc
+2018.04.12_01问题描述sklearn 训练的模型如何在spark streaming 中使用
+解决思路使用PMML虽然sp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="群内2018_４月讨论整理1">
+<meta property="og:url" content="http://yoursite.com/2018/04/16/spark-discuss20180401/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="说明以下内容来自群中出现的问题，大家讨论的结果Q群：432600958微信群：加微信w3aboutyun,附上about云铁粉
+2018.04.13_01问题描述面试资源题目分享
+##TOP 25大常见Hadoop面试题及答案Spark面试题汇总  密码：bcpc
+2018.04.12_01问题描述sklearn 训练的模型如何在spark streaming 中使用
+解决思路使用PMML虽然sp">
+<meta property="og:updated_time" content="2018-04-16T12:13:11.535Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="群内2018_４月讨论整理1">
+<meta name="twitter:description" content="说明以下内容来自群中出现的问题，大家讨论的结果Q群：432600958微信群：加微信w3aboutyun,附上about云铁粉
+2018.04.13_01问题描述面试资源题目分享
+##TOP 25大常见Hadoop面试题及答案Spark面试题汇总  密码：bcpc
+2018.04.12_01问题描述sklearn 训练的模型如何在spark streaming 中使用
+解决思路使用PMML虽然sp">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 群内2018_４月讨论整理1 | 喵十八の小窝 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">喵十八の小窝</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-heartbeat fa-fw"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                群内2018_４月讨论整理1
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2018-04-16T20:10:06+08:00" content="2018-04-16">
+              2018-04-16
+            </time>
+          </span>
+          
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/bigdata/" itemprop="url" rel="index">
+                    <span itemprop="name">bigdata</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>以下内容来自群中出现的问题，大家讨论的结果<br>Q群：432600958<br>微信群：加微信w3aboutyun,附上about云铁粉</p>
+<h1 id="2018-04-13-01"><a href="#2018-04-13-01" class="headerlink" title="2018.04.13_01"></a>2018.04.13_01</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>面试资源题目分享</p>
+<p>##<br><a href="https://kd.youth.cn/article/s?uid=6552956&amp;app_version=1.2.3&amp;sid=1405269&amp;time=1523783769&amp;signature=p8ebgqKwdz5B3lN0vmO4GjQD2FJ6OkK1EZXnGLQox9rJAkWR2Y&amp;sign=93411672e114e162b3f6c902425db83a" target="_blank" rel="external">TOP 25大常见Hadoop面试题及答案</a><br><a href="https://pan.baidu.com/s/1qKmsd7bJ4PEzMsDXWgzlDg" target="_blank" rel="external">Spark面试题汇总</a>  密码：bcpc</p>
+<h1 id="2018-04-12-01"><a href="#2018-04-12-01" class="headerlink" title="2018.04.12_01"></a>2018.04.12_01</h1><h2 id="问题描述-1"><a href="#问题描述-1" class="headerlink" title="问题描述"></a>问题描述</h2><p>sklearn 训练的模型如何在spark streaming 中使用</p>
+<h2 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h2><p>使用PMML<br>虽然spark streaming 有的模型不支持<br>可以使用 java 导入，调用java类</p>
+<h1 id="2018-04-11-01"><a href="#2018-04-11-01" class="headerlink" title="2018.04.11_01"></a>2018.04.11_01</h1><h2 id="问题描述-2"><a href="#问题描述-2" class="headerlink" title="问题描述"></a>问题描述</h2><p>已经建立好hive表，利用spark-streaming 往对应的hdfs目录写数据，却无法select出来。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>hive建好表，对应的目录为<br>/user/hive/warehouse/testdb.db/cljwifi</p>
+<p>假设文件为file1<br>/user/hive/warehouse/testdb.db/cljwifi/file1<br>这种形式，访问正常</p>
+<p>spark-streaming 落盘数据，假设目录已经存在会报错，因而只能新建一个目录，比如<br>/user/hive/warehouse/testdb.db/cljwifi/dir1/file1<br>这样的情况是无法访问的</p>
+<h2 id="解决思路-1"><a href="#解决思路-1" class="headerlink" title="解决思路"></a>解决思路</h2><ol>
+<li><p>建立分区表<br>这样spark-streaming 落盘的目录，加上分区字段<br>/user/hive/warehouse/testdb.db/cljwifi/day=20180304</p>
+</li>
+<li><p>mv数据<br>spark-streaming 落盘结束之后，编写定时脚本，移动数据</p>
+</li>
+</ol>
+<h1 id="2018-04-10-01"><a href="#2018-04-10-01" class="headerlink" title="2018.04.10_01"></a>2018.04.10_01</h1><h2 id="问题描述-3"><a href="#问题描述-3" class="headerlink" title="问题描述"></a>问题描述</h2><p>在代码中设定了appName<br> val sparkConf = new SparkConf().setAppName(“name1”)<br>提交时用了–name参数<br>spark-submit –master yarn-cluster –name  name2<br>最终在yarn 的监控上显示的name2</p>
+<h2 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h2><p>代码中setMaster永远生效，优先级高于–master<br>代码中的setAppName 当 yarn-client 时，优先级高于–name 当yarn-cluster 模式时，优先级低于–name<br>原因待阅读源码细查</p>
+<h1 id="2018-04-10-02"><a href="#2018-04-10-02" class="headerlink" title="2018.04.10_02"></a>2018.04.10_02</h1><h2 id="问题描述-4"><a href="#问题描述-4" class="headerlink" title="问题描述"></a>问题描述</h2><p>Yarn 监控界面中的Reserve 的作用</p>
+<h2 id="解释-1"><a href="#解释-1" class="headerlink" title="解释"></a>解释</h2><p>An implementation detail of this change that prevents applications from starving under this new flexibility is the notion of reserved containers. Imagine two jobs are running that each have enough tasks to saturate more than the entire cluster. One job wants each of its mappers to get 1GB, and another job wants its mappers to get 2GB. Suppose the first job starts and fills up the entire cluster. Whenever one of its task finishes, it will leave open a 1GB slot. Even though the second job deserves the space, a naive policy will give it to the first one because it’s the only job with tasks that fit. This could cause the second job to be starved indefinitely. </p>
+<p>One big change in the YARN Fair Scheduler is how it defines a “resource”.<br>To prevent this unfortunate situation, when space on a node is offered to an application, if the application cannot immediately use it, it reserves it, and no other application can be allocated a container on that node until the reservation is fulfilled. Each node may have only one reserved container. The total reserved memory amount is reported in the ResourceManager UI. A high number means that it may take longer for new jobs to get space.</p>
+<p>简单来说，就是一个任务在执行的时候，预计还需要一定的资源，先声明了，将这些资源抢了，其他任务就无法使用这部分资源，这些资源就是 resever</p>
+<p>当一个NodeManager上的资源不足以满足当前一个Application的请求却有不得不分配给这个Application时，当前节点会为此Application预留资源，逐渐累加空余的剩余资源直至满足要求后才把资源封装成一个Container发给ApplicationMaster。如果一个Container已经被创建，并且处在剩余资源的累加过程中，它就处于上图中的RESERVED状态。当此Container已经分配给ApplicationMaster，并且此时ApplicationMaster还没发送通知说它已经得到了资源时，此Container处于ALLOCATED状态，直至ApplicationMaster发送通知给ResourceManager说它已经拿到了资源，则状态变为ACQUIRED。</p>
+<p>ref:<br><a href="http://blog.cloudera.com/blog/2013/06/improvements-in-the-hadoop-yarn-fair-scheduler/" target="_blank" rel="external">Improvements in the Hadoop YARN Fair Scheduler</a><br><a href="https://www.cnblogs.com/Scott007/p/3893318.html" target="_blank" rel="external">Yarn中的几种状态机</a></p>
+<h1 id="2018-04-04-01"><a href="#2018-04-04-01" class="headerlink" title="2018.04.04_01"></a>2018.04.04_01</h1><h2 id="问题描述-5"><a href="#问题描述-5" class="headerlink" title="问题描述"></a>问题描述</h2><p>val rdd = sc.parallelize(Array(“a”,”ab”,”abc”,”abcd”,””),2)<br>val rdd3 = rdd.aggregate(“”)((x,y)=&gt;(x.length.toString + y.length.toString),(x,y)=&gt;(x.length.toString + y.length.toString))<br>问rdd3 的结果为什么是”22”</p>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>aggregate 之后，对两个分区分别进行seqOP<br>第一个分区 “a” “ab”<br>“”.length.toString + “a”.length.toString = “0”+”1” = “01”<br>“01”.length.toString + “ab”.length.toString = “2”+”2” = “22”</p>
+<p>第二个分区 “abc” “abcd” “”<br>“”.length.toString + “abc”.length.toString = “0”+”3” = “03”<br>“04”.length.toString + “abcd”.length.toString = “2” + “4” = “24”<br>“24”.length.toString + “”.length.toString = “2” + “0” = “20”</p>
+<p>然后 对 “22” “20” 进行 comOP<br>“”.length.toString + “22”.length.toString = “0” + “2” = “02”<br>“02”.length.toString + “20”.length.toString = “2” + “2” = “22”</p>
+<h2 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h2><ol>
+<li><a href="https://blog.csdn.net/u013514928/article/details/56680825" target="_blank" rel="external">aggregate 算子</a></li>
+<li><a href="https://blog.csdn.net/Dax1n/article/details/72972256" target="_blank" rel="external">序列分区</a><br>1，2，3，4，5  分区 1 2 |3 4 5</li>
+</ol>
+<h1 id="2018-04-04-02"><a href="#2018-04-04-02" class="headerlink" title="2018.04.04_02"></a>2018.04.04_02</h1><h2 id="问题描述-6"><a href="#问题描述-6" class="headerlink" title="问题描述"></a>问题描述</h2><p>请教大家一个问题<br>一个目录下有100个文件，假设都是SequenceFile,但是其中有1个文件为空，大小为0(由于集群限制无法删除)<br>spark 运行时报错 not a SequenceFile<br>（文件名比较奇怪，无法在提交脚本中用正则过滤）<br>请问该如何处理？</p>
+<h2 id="解决思路-2"><a href="#解决思路-2" class="headerlink" title="解决思路"></a>解决思路</h2><p>那相当于在 sc.sequenceFile<a href="inputs">LongWritable,Text</a> 之前 ，先遍历一次inputs，然后其中不为空的文件，放入一个数组input2 ，然后执行sc.sequenceFile<a href="inputs2">LongWritable,Text</a>   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">val file_rdd = sc.sequenceFile[LongWritable,Text](inputs)</span><br></pre></td></tr></table></figure>
+<p>改为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">val conf = new Configuration()</span><br><span class="line">val fileSystem = FileSystem.get(conf)</span><br><span class="line">val children = fileSystem.listStatus(new Path(inputs))</span><br><span class="line">val input2 = for(path &lt;- children if (path.getLen &gt; 0)) yield &#123;path.getPath.toString&#125;</span><br><span class="line">val file_rdd = sc.sequenceFile[LongWritable,Text](input2.mkString(&quot;,&quot;))</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+<div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton", disable="enable", onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}", style="cursor: pointer; border: 0; outline: 0; border-radius: 100%; padding: 0; margin: 0; letter-spacing: normal; text-transform: none; text-indent: 0px; text-shadow: none">
+    <span onmouseover="this.style.color='rgb(236,96,0)';this.style.background='rgb(204,204,204)'" onMouseOut="this.style.color='#fff';this.style.background='rgb(236,96,0)'" style="display: inline-block; width: 70px; height: 70px; border-radius: 100%; line-height: 81px; color: #fff; font: 400 35px/75px 'microsofty'; background: rgb(236,96,0)">赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://upload-images.jianshu.io/upload_images/3698622-25f1d9a52c499f9a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喵十八 WeChat Pay" style="width: 200px; max-width: 100%; display: inline-block"/>
+        <p>微信打赏</p>
+      </div>
+    
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://upload-images.jianshu.io/upload_images/3698622-833f4ed0c41f117a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喵十八 Alipay" style="width: 200px; max-width: 100%; display: inline-block"/>
+        <p>支付宝打赏</p>
+      </div>
+    
+  </div>
+</div>
+
+      
+    </div>
+
+    <div>
+     
+       
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<span style="font-weight:blod">版权声明: </span>
+由<a href="http://yao544303.github.io" style="color:#258FC6">十八</a>创作并维护的<a href="http://yao544303.github.io" style="color:#258FC6">喵十八の小窝</a>采用<a href="https://creativecommons.org/licenses/by-nc/3.0/cn/legalcode" style="color:#258FC6">署名-非商业性使用 3.0中国大陆</a>进行许可<br/>
+欢迎转载!  请注明出处!<br/>
+本文首发于<a href="http://yao544303.github.io" style="color:#258FC6">喵十八の小窝</a></p>
+
+
+     
+    </div>
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/aggregate/" rel="tag">#aggregate</a>
+          
+            <a href="/tags/空文件/" rel="tag">#空文件</a>
+          
+            <a href="/tags/PMML/" rel="tag">#PMML</a>
+          
+            <a href="/tags/reseve/" rel="tag">#reseve</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/15/shibaluohan/" rel="next" title="以刀作笔，书众生千面相   化核为心，传香火万世情">
+                <i class="fa fa-chevron-left"></i> 以刀作笔，书众生千面相   化核为心，传香火万世情
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+ 	<div id="gitalk-container"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/Ruby.png"
+               alt="喵十八" />
+          <p class="site-author-name" itemprop="name">喵十八</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">67</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1525632730" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Yao544303" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#说明"><span class="nav-number">1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2018-04-13-01"><span class="nav-number">2.</span> <span class="nav-text">2018.04.13_01</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述"><span class="nav-number">2.1.</span> <span class="nav-text">问题描述</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2018-04-12-01"><span class="nav-number">3.</span> <span class="nav-text">2018.04.12_01</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述-1"><span class="nav-number">3.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决思路"><span class="nav-number">3.2.</span> <span class="nav-text">解决思路</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2018-04-11-01"><span class="nav-number">4.</span> <span class="nav-text">2018.04.11_01</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述-2"><span class="nav-number">4.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析"><span class="nav-number">4.2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决思路-1"><span class="nav-number">4.3.</span> <span class="nav-text">解决思路</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2018-04-10-01"><span class="nav-number">5.</span> <span class="nav-text">2018.04.10_01</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述-3"><span class="nav-number">5.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解释"><span class="nav-number">5.2.</span> <span class="nav-text">解释</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2018-04-10-02"><span class="nav-number">6.</span> <span class="nav-text">2018.04.10_02</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述-4"><span class="nav-number">6.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解释-1"><span class="nav-number">6.2.</span> <span class="nav-text">解释</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2018-04-04-01"><span class="nav-number">7.</span> <span class="nav-text">2018.04.04_01</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述-5"><span class="nav-number">7.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过程"><span class="nav-number">7.2.</span> <span class="nav-text">过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拓展"><span class="nav-number">7.3.</span> <span class="nav-text">拓展</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2018-04-04-02"><span class="nav-number">8.</span> <span class="nav-text">2018.04.04_02</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述-6"><span class="nav-number">8.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决思路-2"><span class="nav-number">8.2.</span> <span class="nav-text">解决思路</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
