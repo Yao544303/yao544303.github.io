@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="数据科学,机器学习模型上线,数据工程,业务与工程," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="机器学习业务与工程的区别以及模型上线方案学习
+前言先声明，我是数据驱动和计算驱动派的
+数据，即特征工程 决定了模型的上限，所有模型都是去拟合这个上限
+计算能力，决定了模型能够拟合这个上限到什么程度
+综述在真实的数据科学世界里，我们会有两个极端，一个是业务，一个是工程。
+偏向业务的数据科学被称为数据分析（Data Analysis），也就是A型数据科学。
+偏向工程的数据科学被称为数据构建(Data">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习业务与工程的区别以及模型上线方案学习">
+<meta property="og:url" content="http://yoursite.com/2018/05/30/ml-online/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="机器学习业务与工程的区别以及模型上线方案学习
+前言先声明，我是数据驱动和计算驱动派的
+数据，即特征工程 决定了模型的上限，所有模型都是去拟合这个上限
+计算能力，决定了模型能够拟合这个上限到什么程度
+综述在真实的数据科学世界里，我们会有两个极端，一个是业务，一个是工程。
+偏向业务的数据科学被称为数据分析（Data Analysis），也就是A型数据科学。
+偏向工程的数据科学被称为数据构建(Data">
+<meta property="og:updated_time" content="2018-05-30T15:30:05.691Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习业务与工程的区别以及模型上线方案学习">
+<meta name="twitter:description" content="机器学习业务与工程的区别以及模型上线方案学习
+前言先声明，我是数据驱动和计算驱动派的
+数据，即特征工程 决定了模型的上限，所有模型都是去拟合这个上限
+计算能力，决定了模型能够拟合这个上限到什么程度
+综述在真实的数据科学世界里，我们会有两个极端，一个是业务，一个是工程。
+偏向业务的数据科学被称为数据分析（Data Analysis），也就是A型数据科学。
+偏向工程的数据科学被称为数据构建(Data">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/30/ml-online/"/>
+
+
+
+
+
+  <title>机器学习业务与工程的区别以及模型上线方案学习 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">喵十八の小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/30/ml-online/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">机器学习业务与工程的区别以及模型上线方案学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-30T23:24:11+08:00">
+                2018-05-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/bigdata/" itemprop="url" rel="index">
+                    <span itemprop="name">bigdata</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>机器学习业务与工程的区别以及模型上线方案学习</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>先声明，我是数据驱动和计算驱动派的</p>
+<p>数据，即特征工程 决定了模型的上限，所有模型都是去拟合这个上限</p>
+<p>计算能力，决定了模型能够拟合这个上限到什么程度</p>
+<h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>在真实的数据科学世界里，我们会有两个极端，一个是业务，一个是工程。</p>
+<p>偏向业务的数据科学被称为数据分析（Data Analysis），也就是A型数据科学。</p>
+<p>偏向工程的数据科学被称为数据构建(Data Building)，也就是B型数据科学。</p>
+<p>一般称之为数据科学家 和 数据工程师</p>
+<h2 id="软件工程师，数据工程师，数据科学家-数据分析师的区别"><a href="#软件工程师，数据工程师，数据科学家-数据分析师的区别" class="headerlink" title="软件工程师，数据工程师，数据科学家 数据分析师的区别"></a>软件工程师，数据工程师，数据科学家 数据分析师的区别</h2><p>国外 ETL 服务商 Stitch 的 CEO Jake Stein，近日对这个话题进行了总结。他还绘制了一张工具图，来呈现他们在日常工具使用上的不同。</p>
+<p><strong>软件工程师</strong></p>
+<p>软件工程师干的活儿是开发应用和系统。这过程中的每一个环节，从设计、写代码、测试到检查，开发者都要参与。生成数据的产品都是他们开发的。软件工程是三个角色中最古老的一个，并且有相当成熟的方法体系和工具库。</p>
+<p>工作内容包括：<br>前端、后端开发  网页应用 移动应用 操作系统开发 软件设计 </p>
+<p><strong>数据工程师</strong></p>
+<p>数据工程师需要开发能对数据进行整合、存储和提取的系统，并从软件工程师开发的应用和系统中获取数据。数据工程的诞生，是作为软件工程大类下的一个更细分的技能类别。据雷锋网了解，根据国外统计，40% 的数据工程师原本是软件工程师。</p>
+<p>工作内容包括：<br>高级数据结构 分布式计算 并发程序设计 使用 Hadoop, Spark, Kafka, Hive 等新工具 开发ETL/数据流水线（data pipelines）</p>
+<p><strong>数据科学家</strong></p>
+<p>数据科学家的职责是基于数据作分析。优秀的数据科学家应该全面理解商业运作和数据之于实现高级目标的价值。</p>
+<p>工作内容包括：<br>数据建模 机器学习 算法 商业智能的 dashboards</p>
+<p><strong>数据分析师</strong></p>
+<p>数据科学家和数据分析师的区别在于，后者不负责编程，统计建模，机器学习等。两者所使用的工具也有很大的区别。数据分析师使用的商业智能工具包括： Microsoft Excel , Tableau, SAS, SAP, Qlik 等。 就数据挖掘和数据建模而言，数据分析师大多使用BM SPSS Modeler, Rapid Miner, SAS, KNIME.；数据科学家倾向于使用R和Python。</p>
+<p><strong>工具链</strong></p>
+<p>从工具上来看，按由业务到工程的顺序，这个链条是：EXCEL &gt;&gt; R &gt;&gt; Python &gt;&gt; Scala</p>
+<h2 id="Data-Building-的重要性"><a href="#Data-Building-的重要性" class="headerlink" title="Data Building 的重要性"></a>Data Building 的重要性</h2><p>在大数据时代，数据工程师的角色愈发地重要。也许，数据架构师的称谓更准确。和数据分析师不同，他们不太关注统计、分析技能、建模等。他们的工作重点在于数据架构、计算、数据存储、数据流等。 因此，数据工程师必须具备相当强的编程能力—包括编写数据查询程序的能力。也就是说，他们的能力必须达到开发高手的级别。 </p>
+<p>数据工程师还负责数据库设计，数据仓储，建立数据湖。 这就意味着，他们必须十分熟悉现有的数据库技术和数据管理系统，比如和大数据有关的Hadoop与HBase 等。</p>
+<p>同时，对模型的实现原理，也必须有所涉及。</p>
+<p>此外，非功能性的基础设施问题，如数据的可扩展性、可靠性、韧性、有效性，备份等也由数据工程师来负责。</p>
+<p>具体到dpi数据现在的工作，就是从特征的选择，到提取转化，到模型上线。</p>
+<p>此外我们希望能够设计出一套更快速的迭代出特征的方法，方便公司其他同事，有选取一些好的特征的想法时，就能快速的实现，并进行建模测试。</p>
+<h2 id="实际的工作"><a href="#实际的工作" class="headerlink" title="实际的工作"></a>实际的工作</h2><p>实际中，训练集的大小，正样本的大小也就1万多条，算上负样本，也就3万，现在单点计算能力，基本可以hold住，随便玩。但是面对预测集合呢？<br>需要注意的是，你对训练集进行的一些特征处理的手段，是要应用到训练集上的一旦使用了一些异常值处理，比如计算分位数，这些，sortby 之后再操作，开销是非常可观。</p>
+<p>同时，因为分布式计算的特性，所以一些算法，在spark 训练时，效率和性能 都不如 R python 单机训练，这也需要对Spark本身进行优化</p>
+<h1 id="模型上线实现方案-及-遇到的坑"><a href="#模型上线实现方案-及-遇到的坑" class="headerlink" title="模型上线实现方案 及 遇到的坑"></a>模型上线实现方案 及 遇到的坑</h1><h2 id="R-server"><a href="#R-server" class="headerlink" title="R server"></a>R server</h2><p>因为做数据分析的，大部分是使用R的，但是R这个语言，是搞统计的写的，并不能很好的工程化。</p>
+<p>微软买了个R server,类似于提供了一个接口，去调用R训练好的模型。<br>R Server其实是对开源R从研究角度向工业生产角度的一种努力。微软的R其实包括了微软R Open和R Server。 ROpen是基于开源R的一个改进实现，对开源R从底层基于（英特尔数学核心函数库）提供了多线程的支持。RServer其实主要有两个最重要的功能，第一个是分布式，第二是DeployR，也就是部署。RServer能够支持分析任务运行的时候，数据能够从磁盘读取，不需要在任务开始时就把所有数据加载到内存。在这个基础之上，R Server就可以通过多台机器协同工作进行分布式的R分析任务。这个支持是通过ScaleR完成，并不是所有的开源R包都能实现分布式。DeployR主要是指开发完R脚本之后可以通过简单的Publish Service就把R发布成web服务提供服务，不需要额外的开发和运维成本。</p>
+<p><strong>通过三种模式提供R Server服务</strong></p>
+<p>第一种是在物理机或者虚拟机上安装R Server， 这种R Server可以提供Web结点和Compute 结点，其中Web结点用来发布模型提供Web 服务，Compute Node则主要用于计算。这两种Node是逻辑概念，可以部署在同一物理机上。多台机器可以组成R Server的服务集群，应对大量请求和Fail Over，通过DeployR发布web服务主要推荐这种方式。</p>
+<p>第二种是在Azure上将HDInsight集群和R Server结合, 在Spark的基础之上提供R的分析能力，在这种模式，HDInsight提供了Edge Node作为R的开发环境，开发完成的Rscript可以直接通过rxSetComputeContext切换到 Spark Context在Spark的大数据集上分布式运行。运行结果可以通过DeployR发布在Edge Node或者其他R Server集群上。 Edge Node的发布不具备fail over的能力。</p>
+<p>第三种就是SQL Server +R 的模式，这种模式可以把完成开发之后的Rscript嵌入到Sql Server的存储过程中，通过存储过程调用的方式对SQL server数据进行分析，简化了数据移动和处理的过程。在Sql Server上运行R也能支持ScaleR, 但是目前ScaleR的高性能和分布式只有企业版支持，其他版本相对较低。</p>
+<p><strong>优势</strong><br>可以直接使用R模型</p>
+<p><strong>缺点</strong><br>无法处理大规模数据量 R本身的局限性， 环境要求特殊</p>
+<h2 id="python-sklearn"><a href="#python-sklearn" class="headerlink" title="python sklearn"></a>python sklearn</h2><p>sklearn是机器学习中一个常用的python第三方模块，里面对一些常用的机器学习方法进行了封装，在进行机器学习任务时，并不需要每个人都实现所有的算法，只需要简单的调用sklearn里的模块就可以实现大多数机器学习任务。</p>
+<p><strong>优势</strong><br>包很多，资源很丰富，发展快</p>
+<p><strong>缺点</strong><br>无法处理大规模的数据</p>
+<h2 id="模型转化pmml"><a href="#模型转化pmml" class="headerlink" title="模型转化pmml"></a>模型转化pmml</h2><p>全称（Predictive Model Markup Language），利用XML描述和存储数据挖掘模型，是一个已经被W3C所接受的标准。MML是一种基于XML的语言，用来定义预测模型。</p>
+<p>它为各个公司定义预测模型和在不同的应用程序之间共享模型提供了一种快速并且简单的方式。通过使用标准的XML解析器对PMML进行解析，应用程序能够决定模型输入和输出的数据类型，模型详细的格式，并且按照标准的数据挖掘术语来解释模型的结果。　</p>
+<p>PMML提供了一个灵活机制来定义预测模型的模式，同时支持涉及多个预测模型的模型选择和模型平衡（model averaging）。对于那些需要全部学习（ensemble learning）、部分学习（partitioned learning）和分布式学习（distributed learning）的应用程序，这种语言被证明是非常有用的。另外，它使得在不同的应用程序和系统之间移动预测模型变得容易、方便。</p>
+<p><strong>优势</strong><br>跨语言，跨平台</p>
+<p><strong>缺点</strong></p>
+<ul>
+<li>当模型表述比较复杂的时候，如 随机森林，PMML会过大，加载报错</li>
+<li>使用PMML 需要字段名、字段类型完全匹配</li>
+<li>当特征名过多时，创建DataFrame 不可行 （通过hive 建表，然后从hive 读取的方式，但是编写schema 太过冗长，且整个过程过于冗长）</li>
+<li>PMML 版本问题，spark 1.6.3 只支持4.2</li>
+<li>模型必须是单纯的模型，不能包含任何特征处理，如果有特征处理，必须归入pipeline</li>
+<li>不同环境下，模型的支持情况不同</li>
+</ul>
+<p><strong>Tips</strong></p>
+<ul>
+<li>想要使用PMML进行模型跨环境使用，需要满足下列条件</li>
+<li>表述模型的兼容性</li>
+<li>表述模型的复杂性不可过高</li>
+<li>表述模型的字段名，字段类型必须保持一致，这个涉及到各环境模型训练的细节，必须在训练前先设计好</li>
+</ul>
+<h2 id="pyspark-amp-Rspark"><a href="#pyspark-amp-Rspark" class="headerlink" title="pyspark  &amp;  Rspark"></a>pyspark  &amp;  Rspark</h2><ul>
+<li>版本的坑</li>
+<li>API的坑</li>
+<li>环境的坑</li>
+</ul>
+<h2 id="Scala-写-Spark"><a href="#Scala-写-Spark" class="headerlink" title="Scala 写 Spark"></a>Scala 写 Spark</h2><p><strong>优势</strong></p>
+<ul>
+<li>无缝衔接</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>效率低，准确度低，慢，难以收敛</li>
+<li>API 中坑，没有办法存文件</li>
+<li>版本的坑，新版的api 支持的功能更多。比如 去除outlier 之后的 MaxAbsScaler，多项式展开 PolynomialExpansion</li>
+</ul>
+<h2 id="直接写一个java类"><a href="#直接写一个java类" class="headerlink" title="直接写一个java类"></a>直接写一个java类</h2><ul>
+<li>需要对模型有深入了解</li>
+<li>需要编程能力较强</li>
+</ul>
+<h1 id="ref"><a href="#ref" class="headerlink" title="ref"></a>ref</h1><p><a href="http://tech.sina.com.cn/roll/2017-03-21/doc-ifycnpvh5201784.shtml" target="_blank" rel="external">一张图看懂数据科学家、数据工程师和软件工程师之间的区别</a><br><a href="https://segmentfault.com/a/1190000004879349" target="_blank" rel="external">[原]深入对比数据科学工具箱：Python和R之争[2016版]</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://upload-images.jianshu.io/upload_images/3698622-25f1d9a52c499f9a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喵十八 WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://upload-images.jianshu.io/upload_images/3698622-833f4ed0c41f117a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喵十八 Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+　　　　<div>
+  　　　
+    　　
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<span style="font-weight:blod">版权声明: </span>
+由<a href="http://yao544303.github.io" style="color:#258FC6">十八</a>创作并维护的<a href="http://yao544303.github.io" style="color:#258FC6">喵十八の小窝</a>采用<a href="https://creativecommons.org/licenses/by-nc/3.0/cn/legalcode" style="color:#258FC6">署名-非商业性使用 3.0中国大陆</a>进行许可<br/>
+欢迎转载!  请注明出处!<br/>
+本文首发于<a href="http://yao544303.github.io" style="color:#258FC6">喵十八の小窝</a></p>
+
+
+  　　　
+　　　　</div>
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据科学/" rel="tag"># 数据科学</a>
+          
+            <a href="/tags/机器学习模型上线/" rel="tag"># 机器学习模型上线</a>
+          
+            <a href="/tags/数据工程/" rel="tag"># 数据工程</a>
+          
+            <a href="/tags/业务与工程/" rel="tag"># 业务与工程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/30/spark-discuss201805/" rel="next" title="群内2018_5月讨论整理">
+                <i class="fa fa-chevron-left"></i> 群内2018_5月讨论整理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+ 　　　　　<div id="gitalk-container"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/Ruby.png"
+               alt="喵十八" />
+          <p class="site-author-name" itemprop="name">喵十八</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">77</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="yao544303963@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Yao544303" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                    
+                      Twitter
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#综述"><span class="nav-number">2.</span> <span class="nav-text">综述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#软件工程师，数据工程师，数据科学家-数据分析师的区别"><span class="nav-number">2.1.</span> <span class="nav-text">软件工程师，数据工程师，数据科学家 数据分析师的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Data-Building-的重要性"><span class="nav-number">2.2.</span> <span class="nav-text">Data Building 的重要性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实际的工作"><span class="nav-number">2.3.</span> <span class="nav-text">实际的工作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型上线实现方案-及-遇到的坑"><span class="nav-number">3.</span> <span class="nav-text">模型上线实现方案 及 遇到的坑</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#R-server"><span class="nav-number">3.1.</span> <span class="nav-text">R server</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python-sklearn"><span class="nav-number">3.2.</span> <span class="nav-text">python sklearn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型转化pmml"><span class="nav-number">3.3.</span> <span class="nav-text">模型转化pmml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pyspark-amp-Rspark"><span class="nav-number">3.4.</span> <span class="nav-text">pyspark  &  Rspark</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scala-写-Spark"><span class="nav-number">3.5.</span> <span class="nav-text">Scala 写 Spark</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#直接写一个java类"><span class="nav-number">3.6.</span> <span class="nav-text">直接写一个java类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ref"><span class="nav-number">4.</span> <span class="nav-text">ref</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: '2fbc96c0bbe149b498b5',
+          clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+          repo: 'Yao544303.github.io',
+          owner: 'Yao544303',
+          admin: ['Yao544303'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

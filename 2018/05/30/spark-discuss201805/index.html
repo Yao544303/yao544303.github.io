@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="工作感悟,机器学习算法优化,资源分享," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="说明以下内容来自群中出现的问题，大家讨论的结果
+Q群：432600958
+微信群：加微信w3aboutyun,附上about云铁粉
+部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。五月一直在加班，整理的东西有限
+如何从小白快速蜕变为大佬时间2018.05.03
+内容这是一些经验，主要有两点1、 培养自己的阅读习惯2、 提高对新技术的敏感力文章末附了很多公众">
+<meta property="og:type" content="article">
+<meta property="og:title" content="群内2018_5月讨论整理">
+<meta property="og:url" content="http://yoursite.com/2018/05/30/spark-discuss201805/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="说明以下内容来自群中出现的问题，大家讨论的结果
+Q群：432600958
+微信群：加微信w3aboutyun,附上about云铁粉
+部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。五月一直在加班，整理的东西有限
+如何从小白快速蜕变为大佬时间2018.05.03
+内容这是一些经验，主要有两点1、 培养自己的阅读习惯2、 提高对新技术的敏感力文章末附了很多公众">
+<meta property="og:updated_time" content="2018-05-30T15:27:38.708Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="群内2018_5月讨论整理">
+<meta name="twitter:description" content="说明以下内容来自群中出现的问题，大家讨论的结果
+Q群：432600958
+微信群：加微信w3aboutyun,附上about云铁粉
+部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。五月一直在加班，整理的东西有限
+如何从小白快速蜕变为大佬时间2018.05.03
+内容这是一些经验，主要有两点1、 培养自己的阅读习惯2、 提高对新技术的敏感力文章末附了很多公众">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/30/spark-discuss201805/"/>
+
+
+
+
+
+  <title>群内2018_5月讨论整理 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">喵十八の小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/30/spark-discuss201805/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">群内2018_5月讨论整理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-30T23:02:09+08:00">
+                2018-05-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/bigdata/" itemprop="url" rel="index">
+                    <span itemprop="name">bigdata</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>以下内容来自群中出现的问题，大家讨论的结果</p>
+<p>Q群：432600958</p>
+<p>微信群：加微信w3aboutyun,附上about云铁粉</p>
+<p>部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。<br><del>五月一直在加班，整理的东西有限</del></p>
+<h1 id="如何从小白快速蜕变为大佬"><a href="#如何从小白快速蜕变为大佬" class="headerlink" title="如何从小白快速蜕变为大佬"></a>如何从小白快速蜕变为大佬</h1><h2 id="时间"><a href="#时间" class="headerlink" title="时间"></a>时间</h2><p>2018.05.03</p>
+<h2 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h2><p>这是一些经验，主要有两点<br>1、 培养自己的阅读习惯<br>2、 提高对新技术的敏感力<br>文章末附了很多公众号</p>
+<p><a href="https://mp.weixin.qq.com/s/glPjf3S7j7uCX2_zgDr2jg" target="_blank" rel="external">ref</a></p>
+<h1 id="Spark-读取本地文件"><a href="#Spark-读取本地文件" class="headerlink" title="Spark 读取本地文件"></a>Spark 读取本地文件</h1><h2 id="时间-1"><a href="#时间-1" class="headerlink" title="时间"></a>时间</h2><p>2018.05.03</p>
+<h2 id="讨论内容"><a href="#讨论内容" class="headerlink" title="讨论内容"></a>讨论内容</h2><p>Spark 作为一个分布式系统，如果读取本地文件，则要求该文件在所有节点都存在，并且目录都要求一致。</p>
+<ul>
+<li>解决方法1：分发到所有节点（麻烦）</li>
+<li>解决方法2：将文件传到hdfs，读取hdfs路径</li>
+<li>解决方法3：使用addfile方法<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><a href="https://www.iteblog.com/archives/1704.html" target="_blank" rel="external">Spark中函数addFile 和 addJar函数介绍</a></li>
+</ul>
+<h1 id="机器学习优化算法讨论-–-by-木东居士-ref"><a href="#机器学习优化算法讨论-–-by-木东居士-ref" class="headerlink" title="机器学习优化算法讨论  – by 木东居士 ref"></a>机器学习优化算法讨论  – by 木东居士 <a href="https://wx.zsxq.com/mweb/views/topicdetail/topicdetail.html?topic_id=15454141825552&amp;user_id=48512221855458" target="_blank" rel="external">ref</a></h1><h2 id="时间-2"><a href="#时间-2" class="headerlink" title="时间"></a>时间</h2><p>2018.05.03</p>
+<h2 id="讨论内容-1"><a href="#讨论内容-1" class="headerlink" title="讨论内容"></a>讨论内容</h2><p>机器学习的算法其实比运筹算法要简单，更偏重应用场景，更多的时间在做特征工程</p>
+<p>机器学习算法里基本都有用到二阶特性（牛顿法要求hessian矩阵），都是一阶的（如梯度下降）</p>
+<p>大规模学习来说，障碍往往在于算法的计算能力不足，而不是数据不够，所以也可以说传统额统计学习方法都不适合大规模数据处理</p>
+<p>在样本量比较多的时候，线性分类方法的劣势小很多，例如可以通过手工拆分/离散化特征来模拟非线性关系。而且有个经验是，在数据量大的时候，一些看起来粗暴无脑的方法反而有令人惊奇的效果。</p>
+<p>SVM 计算复杂度O(n^2)，存在两个超参数，只能通过穷举实验来求，计算时间要高于不少非线性分类器<br>随机森林 计算复杂度O(nlogn)</p>
+<h1 id="资源分享"><a href="#资源分享" class="headerlink" title="资源分享"></a>资源分享</h1><h2 id="时间-3"><a href="#时间-3" class="headerlink" title="时间"></a>时间</h2><p>2018.05.08</p>
+<h2 id="内容-1"><a href="#内容-1" class="headerlink" title="内容"></a>内容</h2><p><a href="https://pan.baidu.com/s/11TeYq09tY9JRz2R1pILx9g" target="_blank" rel="external">经典算法大全</a> 密码 ce85</p>
+<p><a href="https://pan.baidu.com/share/init?surl=sjI1HVJ" target="_blank" rel="external">算法导论中文版.pdf</a> 密码 2ygr</p>
+<p><a href="https://pan.baidu.com/s/1LztUJ56WU9JjqZWNejvaoQ" target="_blank" rel="external">python资源分享</a>  密码：ll7q</p>
+<p>内容包括：《Python 2.7 Tutorial 中文版》《Python3程序开发指南(第二版)》《Python高级编程》《python核心笔记》《python核心编程第二版笔记》《Python技术手册（第2版）》《Python源码剖析》《quantsp研究计划书》《笨办法学Python》<br>by 小青年 </p>
+<h1 id="工作感悟"><a href="#工作感悟" class="headerlink" title="工作感悟"></a>工作感悟</h1><h2 id="时间-4"><a href="#时间-4" class="headerlink" title="时间"></a>时间</h2><p>2018.05.12</p>
+<h2 id="内容-2"><a href="#内容-2" class="headerlink" title="内容"></a>内容</h2><h3 id="工作的意义"><a href="#工作的意义" class="headerlink" title="工作的意义"></a>工作的意义</h3><p>最近在思考一个问题，工作的意义，一份工作最终目的究竟不该是一份简单的工资，而是这个公司能赋予你的资源，另一个是这份资源的成果转换对于市场的冲击力，对人，对社会的贡献度，人终究是需要处理社会活动的。</p>
+<p>职业背景和职业活动的限制，换句话说，工作本身是用来解决社会问题的，个人可能觉得只是天天码代码，做工作量，但它的成效简直太小了，一眼可以看到他的发展和未来。但如果说直面社会问题，去为解决问题而去选择走向，我个人理解人是会不去换不同的工作和行业，最终形成一套解决方案的，另一个角度，如果是为了盈利，这个解决方案的出发点一开始就是针对购买力的问题，你做的是服务和解决方案的路子。触手伸的越广，收益越大。</p>
+<p>即使是办企业也一样，仔细去看每个企业的基本描述类似，但核心针对点不一样，不管是个人也好，企业也罢，需要求同存异，找出自己的突破点，这个时代不是靠努力，而是靠挖掘力，执行力。</p>
+<p> by 道友 枫柚master </p>
+<h1 id="Spark-persist-DISK-ONLY-产生的问题"><a href="#Spark-persist-DISK-ONLY-产生的问题" class="headerlink" title="Spark persist(DISK_ONLY)产生的问题"></a>Spark persist(DISK_ONLY)产生的问题</h1><h2 id="时间-5"><a href="#时间-5" class="headerlink" title="时间"></a>时间</h2><p>2018.05.30</p>
+<h2 id="内容-3"><a href="#内容-3" class="headerlink" title="内容"></a>内容</h2><p>在Spark 的代码中增加persist(DISK_ONLY) 之后，会出现多个task failed,错误原因为container memoryOverhead</p>
+<p>去掉persist(DISK_ONLY) 就不再报这个错误，没有task failed, 并且运行速度提升。<br>此外，对比每个stage的IO,发现DISK_ONLY的有部分stage的IO是去掉persist的两倍。</p>
+<p><strong>猜想原因</strong></p>
+<p>DISK_ONLY 是将不做序列化的对象直接存入DISK,这部分产生大量IO,会占用内存。</p>
+<p><a href="https://blog.csdn.net/qq_20641565/article/details/76216417" target="_blank" rel="external">Spark中cache和persist的作用以及存储级别</a></p>
+<h1 id="Spark-代码优化"><a href="#Spark-代码优化" class="headerlink" title="Spark 代码优化"></a>Spark 代码优化</h1><ul>
+<li>使用更高效的数据结构  BitSet、OpenHashSet、OpenHashMap</li>
+<li>inline</li>
+<li>一些汉字字符串，做维表映射之后，变成数字编号</li>
+</ul>
+<p><a href="https://www.jianshu.com/p/de8bb509b6f5" target="_blank" rel="external">Spark 高效数据结构</a></p>
+<h1 id="人工智能主要三块-大数据、NLP、CV"><a href="#人工智能主要三块-大数据、NLP、CV" class="headerlink" title="人工智能主要三块  大数据、NLP、CV"></a>人工智能主要三块  大数据、NLP、CV</h1><h1 id="分布式发号器选择方案"><a href="#分布式发号器选择方案" class="headerlink" title="分布式发号器选择方案"></a>分布式发号器选择方案</h1><ul>
+<li>UUID</li>
+<li>DB</li>
+<li>SnowFlake</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://upload-images.jianshu.io/upload_images/3698622-25f1d9a52c499f9a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喵十八 WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://upload-images.jianshu.io/upload_images/3698622-833f4ed0c41f117a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喵十八 Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+　　　　<div>
+  　　　
+    　　
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<span style="font-weight:blod">版权声明: </span>
+由<a href="http://yao544303.github.io" style="color:#258FC6">十八</a>创作并维护的<a href="http://yao544303.github.io" style="color:#258FC6">喵十八の小窝</a>采用<a href="https://creativecommons.org/licenses/by-nc/3.0/cn/legalcode" style="color:#258FC6">署名-非商业性使用 3.0中国大陆</a>进行许可<br/>
+欢迎转载!  请注明出处!<br/>
+本文首发于<a href="http://yao544303.github.io" style="color:#258FC6">喵十八の小窝</a></p>
+
+
+  　　　
+　　　　</div>
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/工作感悟/" rel="tag"># 工作感悟</a>
+          
+            <a href="/tags/机器学习算法优化/" rel="tag"># 机器学习算法优化</a>
+          
+            <a href="/tags/资源分享/" rel="tag"># 资源分享</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/01/spark-discuss20180402/" rel="next" title="群内2018_４月讨论整理2">
+                <i class="fa fa-chevron-left"></i> 群内2018_４月讨论整理2
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/30/ml-online/" rel="prev" title="机器学习业务与工程的区别以及模型上线方案学习">
+                机器学习业务与工程的区别以及模型上线方案学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+ 　　　　　<div id="gitalk-container"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/Ruby.png"
+               alt="喵十八" />
+          <p class="site-author-name" itemprop="name">喵十八</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">77</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="yao544303963@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Yao544303" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                    
+                      Twitter
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#说明"><span class="nav-number">1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何从小白快速蜕变为大佬"><span class="nav-number">2.</span> <span class="nav-text">如何从小白快速蜕变为大佬</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#时间"><span class="nav-number">2.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内容"><span class="nav-number">2.2.</span> <span class="nav-text">内容</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spark-读取本地文件"><span class="nav-number">3.</span> <span class="nav-text">Spark 读取本地文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#时间-1"><span class="nav-number">3.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#讨论内容"><span class="nav-number">3.2.</span> <span class="nav-text">讨论内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展"><span class="nav-number">3.3.</span> <span class="nav-text">扩展</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#机器学习优化算法讨论-–-by-木东居士-ref"><span class="nav-number">4.</span> <span class="nav-text">机器学习优化算法讨论  – by 木东居士 ref</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#时间-2"><span class="nav-number">4.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#讨论内容-1"><span class="nav-number">4.2.</span> <span class="nav-text">讨论内容</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#资源分享"><span class="nav-number">5.</span> <span class="nav-text">资源分享</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#时间-3"><span class="nav-number">5.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内容-1"><span class="nav-number">5.2.</span> <span class="nav-text">内容</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#工作感悟"><span class="nav-number">6.</span> <span class="nav-text">工作感悟</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#时间-4"><span class="nav-number">6.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内容-2"><span class="nav-number">6.2.</span> <span class="nav-text">内容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#工作的意义"><span class="nav-number">6.2.1.</span> <span class="nav-text">工作的意义</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spark-persist-DISK-ONLY-产生的问题"><span class="nav-number">7.</span> <span class="nav-text">Spark persist(DISK_ONLY)产生的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#时间-5"><span class="nav-number">7.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内容-3"><span class="nav-number">7.2.</span> <span class="nav-text">内容</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spark-代码优化"><span class="nav-number">8.</span> <span class="nav-text">Spark 代码优化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#人工智能主要三块-大数据、NLP、CV"><span class="nav-number">9.</span> <span class="nav-text">人工智能主要三块  大数据、NLP、CV</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分布式发号器选择方案"><span class="nav-number">10.</span> <span class="nav-text">分布式发号器选择方案</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: '2fbc96c0bbe149b498b5',
+          clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+          repo: 'Yao544303.github.io',
+          owner: 'Yao544303',
+          admin: ['Yao544303'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
