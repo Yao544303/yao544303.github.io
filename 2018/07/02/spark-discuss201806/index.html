@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="图计算,hive迁移,依赖冲突," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="说明以下内容来自群中出现的问题，大家讨论的结果Q群：432600958微信群：加微信w3aboutyun,附上about云铁粉部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。
+两个集群间迁徙hive数据有什么方案 –by 阿黄生时间2018.06.01
+内容Step1：迁移hdfs数据至新集群,通过distcp实现
+Step2：源集群metastore数据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="群内2018_6月讨论整理">
+<meta property="og:url" content="http://yoursite.com/2018/07/02/spark-discuss201806/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="说明以下内容来自群中出现的问题，大家讨论的结果Q群：432600958微信群：加微信w3aboutyun,附上about云铁粉部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。
+两个集群间迁徙hive数据有什么方案 –by 阿黄生时间2018.06.01
+内容Step1：迁移hdfs数据至新集群,通过distcp实现
+Step2：源集群metastore数据">
+<meta property="og:updated_time" content="2018-07-02T15:34:48.427Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="群内2018_6月讨论整理">
+<meta name="twitter:description" content="说明以下内容来自群中出现的问题，大家讨论的结果Q群：432600958微信群：加微信w3aboutyun,附上about云铁粉部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。
+两个集群间迁徙hive数据有什么方案 –by 阿黄生时间2018.06.01
+内容Step1：迁移hdfs数据至新集群,通过distcp实现
+Step2：源集群metastore数据">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/02/spark-discuss201806/"/>
+
+
+
+
+
+  <title>群内2018_6月讨论整理 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">喵十八の小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/02/spark-discuss201806/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">群内2018_6月讨论整理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-02T23:22:01+08:00">
+                2018-07-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/bigdata/" itemprop="url" rel="index">
+                    <span itemprop="name">bigdata</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>以下内容来自群中出现的问题，大家讨论的结果<br>Q群：432600958<br>微信群：加微信w3aboutyun,附上about云铁粉<br>部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。</p>
+<h1 id="两个集群间迁徙hive数据有什么方案-–by-阿黄生"><a href="#两个集群间迁徙hive数据有什么方案-–by-阿黄生" class="headerlink" title="两个集群间迁徙hive数据有什么方案 –by 阿黄生"></a>两个集群间迁徙hive数据有什么方案 –by 阿黄生</h1><h2 id="时间"><a href="#时间" class="headerlink" title="时间"></a>时间</h2><p>2018.06.01</p>
+<h2 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h2><p><strong>Step1</strong>：<br>迁移hdfs数据至新集群,通过distcp实现</p>
+<p><strong>Step2</strong>：<br>源集群metastore数据备份导出(mysql导出)</p>
+<p><strong>Step3</strong>：<br>新的集群导入metastore数据(mysql导入)</p>
+<p><strong>Step4</strong>：<br>升级hive内容库(如果hive版本需要升级操作，同版本不需要操作)</p>
+<p><strong>Step5</strong>：<br>修改 metastore 内容库的集群信息（重要）</p>
+<h2 id="REF"><a href="#REF" class="headerlink" title="REF"></a>REF</h2><p><a href="https://blog.csdn.net/yinansheng1/article/details/78402459" target="_blank" rel="external">Distcp</a><br><a href="https://blog.csdn.net/levy_cui/article/details/70156682" target="_blank" rel="external">hadoop跨集群之间迁移hive数据</a></p>
+<h1 id="Scala优雅的实现"><a href="#Scala优雅的实现" class="headerlink" title="Scala优雅的实现"></a>Scala优雅的实现</h1><h2 id="时间-1"><a href="#时间-1" class="headerlink" title="时间"></a>时间</h2><p>2018.06.01</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>存在一个Array[String]  例如 Array(“A”,”B”,”C”,”D”,…..”Z”)<br>现在希望替换B为 b1,b2,b3,b4,b5，然后转为String<br>即生成如下结果</p>
+<blockquote>
+<p>Ab1CDEF…Z<br>Ab2CDEF…Z<br>Ab3CDEF…Z<br>Ab4CDEF…Z<br>Ab5CDEF…Z  </p>
+</blockquote>
+<p>怎么能写的优雅点？ </p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>生成一个可变的Array，替换array(2) 然后mkString</p>
+<h1 id="创建SparkContext-两种写法"><a href="#创建SparkContext-两种写法" class="headerlink" title="创建SparkContext 两种写法"></a>创建SparkContext 两种写法</h1><h2 id="时间-2"><a href="#时间-2" class="headerlink" title="时间"></a>时间</h2><p>2018.06.05</p>
+<h2 id="内容-1"><a href="#内容-1" class="headerlink" title="内容"></a>内容</h2><p>第一种写法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">val sc = new SparkContext(sparkConf)</span><br></pre></td></tr></table></figure></p>
+<p>第二种写法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">val sc = SparkContext,getOrCreate(conf)</span><br></pre></td></tr></table></figure></p>
+<p>两者的区别在于，第一种写法是根据SparkConf 新建一个sparkContext,这里注意一旦设置完成SparkConf，就不可被使用者修改。<br>第二种写法，是先使用现用的SparkContext,没有再创建一个。主要用于多applications共享SparkContext。<br>api解释：</p>
+<blockquote>
+<p>This function may be used to get or instantiate a SparkContext and register it as a singleton object. Because we can only have one active SparkContext per JVM, this is useful when applications may wish to share a SparkContext.<br>This method allows not passing a SparkConf (useful if just retrieving).<br>Note: This function cannot be used to create multiple SparkContext instances even if multiple contexts are allowed.</p>
+</blockquote>
+<p>在实际应用中，如果没有多applications 共享sparkContext的业务需求，两者无差别。(不过getOrCreate这种写法看着好像厉害点)</p>
+<h1 id="编写应用的jar包-和-spark自带的jar包冲突"><a href="#编写应用的jar包-和-spark自带的jar包冲突" class="headerlink" title="编写应用的jar包 和 spark自带的jar包冲突"></a>编写应用的jar包 和 spark自带的jar包冲突</h1><h2 id="时间-3"><a href="#时间-3" class="headerlink" title="时间"></a>时间</h2><p>2018.06.10</p>
+<h2 id="内容-2"><a href="#内容-2" class="headerlink" title="内容"></a>内容</h2><h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>使用jpmml 报错如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">java.lang.NoSuchMethodError: org.jpmml.model.JAXBUtil.createFilteredSource(Lorg/xml/sax/InputSource;[Lorg/xml/sax/XMLFilter;)Ljavax/xml/transform/sax/SAXSource;</span><br><span class="line">        at org.jpmml.model.filters.ImportFilter.apply(ImportFilter.java:94)</span><br><span class="line">        at org.jpmml.model.PMMLUtil.unmarshal(PMMLUtil.java:33)</span><br></pre></td></tr></table></figure></p>
+<p>查看jar包，能够发现有这个类。</p>
+<p>查看依赖是否有冲突<br>mvn -Dverbose dependency:tree –&gt; tree.txt</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[INFO] +- org.jpmml:pmml-evaluator:jar:1.4.1:compile</span><br><span class="line">[INFO] |  +- (org.jpmml:pmml-model:jar:1.4.1:compile - omitted for conflict with 1.2.15)</span><br><span class="line">[INFO] |  +- com.google.guava:guava:jar:24.0-jre:compile</span><br></pre></td></tr></table></figure>
+<p>可以发现，使用jpmml时，使用的pmml的版本为1.4.1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.jpmml&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;pmml-evaluator&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.4.1&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+<p>但是spark mllib 中自带的jpmml的版本为1.2.15，直接使用的时候，会因为jar包依赖冲突报错</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>具体思路是使用shade。</p>
+<p><strong>Step1</strong><br>新建一个空的项目，将jpmml以及它的相关依赖包以shade的打包成一个独立的jar包，对应jpmml相关类的使用均从此jar包引用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.jpmml&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;pmml-evaluator&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;1.4.1&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.jpmml&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;pmml-evaluator-extension&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;1.4.1&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;maven-shade-plugin&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;2.4.2&lt;/version&gt;</span><br><span class="line">            &lt;configuration&gt;</span><br><span class="line">                &lt;createDependencyReducedPom&gt;false&lt;/createDependencyReducedPom&gt;</span><br><span class="line">            &lt;/configuration&gt;</span><br><span class="line">            &lt;executions&gt;</span><br><span class="line">                &lt;execution&gt;</span><br><span class="line">                    &lt;phase&gt;package&lt;/phase&gt;</span><br><span class="line">                    &lt;goals&gt;</span><br><span class="line">                        &lt;goal&gt;shade&lt;/goal&gt;</span><br><span class="line">                    &lt;/goals&gt;</span><br><span class="line">                    &lt;configuration&gt;</span><br><span class="line">                        &lt;relocations&gt;</span><br><span class="line">                            &lt;relocation&gt;</span><br><span class="line">                                &lt;pattern&gt;org.jpmml&lt;/pattern&gt;</span><br><span class="line">                                &lt;shadedPattern&gt;my.pmml.jpmml&lt;/shadedPattern&gt;</span><br><span class="line">                            &lt;/relocation&gt;</span><br><span class="line">                            &lt;relocation&gt;</span><br><span class="line">                                &lt;pattern&gt;org.dmg&lt;/pattern&gt;</span><br><span class="line">                                &lt;shadedPattern&gt;my.pmml.dmg&lt;/shadedPattern&gt;</span><br><span class="line">                            &lt;/relocation&gt;</span><br><span class="line"></span><br><span class="line">                        &lt;/relocations&gt;</span><br><span class="line">                    &lt;/configuration&gt;</span><br><span class="line">                &lt;/execution&gt;</span><br><span class="line">            &lt;/executions&gt;</span><br><span class="line">        &lt;/plugin&gt;</span><br><span class="line">    &lt;/plugins&gt;</span><br><span class="line">&lt;/build&gt;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>将org.jpmml映射为my.pmml.jpmml</li>
+<li>将org.dmg映射为my.pmml.dmg<br>然后利用mvn clean install命令进行打包得到jpmml-base-1.0-SNAPSHOT.jar，创建一个属于你自己版本的jpmml包。之后将该包上传到私服maven镜像。</li>
+</ul>
+<p><strong>Step2</strong><br>在工程中使用自己的jpmml包<br>原始的maven 依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.jpmml&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;pmml-evaluator&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.4.1&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+<p>新的maven 依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;my.pmml.jpmml&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;pmml-evaluator&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+<p>原来的import<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import org.dmg.pmml.FieldName;</span><br><span class="line">import org.dmg.pmml.PMML;</span><br><span class="line">import org.jpmml.evaluator.ModelEvaluator;</span><br><span class="line">import org.jpmml.evaluator.ModelEvaluatorFactory;</span><br><span class="line">import org.jpmml.model.PMMLUtil;</span><br></pre></td></tr></table></figure></p>
+<p>新的import<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import my.pmml.dmg.pmml.FieldName;</span><br><span class="line">import my.pmml.dmg.pmml.PMML;</span><br><span class="line">import my.pmml.jpmml.evaluator.*;</span><br><span class="line">import my.pmml.jpmml.model.PMMLUtil;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h3><p><a href="https://github.com/jpmml/jpmml-evaluator" target="_blank" rel="external">jpmml</a><br><a href="https://blog.csdn.net/lkforce/article/details/62429998" target="_blank" rel="external">用dependency:tree查看maven引入jar包的传递依赖</a><br><a href="https://www.jianshu.com/p/d9fb7afa634d" target="_blank" rel="external">java 依赖包冲突，使用maven的Shade方式解决</a></p>
+<h1 id="关于图计算"><a href="#关于图计算" class="headerlink" title="关于图计算"></a>关于图计算</h1><h2 id="时间-4"><a href="#时间-4" class="headerlink" title="时间"></a>时间</h2><p>2018.06.26</p>
+<h2 id="内容-3"><a href="#内容-3" class="headerlink" title="内容"></a>内容</h2><ul>
+<li>spark graphx实现的算法都比较简单，复杂的一般都得自己再写</li>
+<li>如果，数据量不大，java之类的都有一些开源的图计算jar包，能够支持</li>
+<li>我们对关系计算，引入了neo4j数据库，大数据量就在库中查询实现，小数据量引用开源图算法包</li>
+</ul>
+<h1 id="一个奇怪的问题：-A-master-URL-must-be-set-in-your-configuration"><a href="#一个奇怪的问题：-A-master-URL-must-be-set-in-your-configuration" class="headerlink" title="一个奇怪的问题： A master URL must be set in your configuration"></a>一个奇怪的问题： A master URL must be set in your configuration</h1><h2 id="时间-5"><a href="#时间-5" class="headerlink" title="时间"></a>时间</h2><p>2018.06.28</p>
+<h2 id="内容-4"><a href="#内容-4" class="headerlink" title="内容"></a>内容</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val sparkConf = new SparkConf().setAppName(&quot;XXXX&quot;)</span><br><span class="line">val sc = new SparkContext(sparkConf)</span><br></pre></td></tr></table></figure>
+<p>这个放在main方法外面就会报异常。非常诡异。</p>
+<h2 id="REF-1"><a href="#REF-1" class="headerlink" title="REF"></a>REF</h2><p><a href="https://blog.csdn.net/sinat_33761963/article/details/51723175" target="_blank" rel="external">异常解决：A master URL must be set in your configuration</a></p>
+<h1 id="资料分享"><a href="#资料分享" class="headerlink" title="资料分享"></a>资料分享</h1><h2 id="Spark-Summits介绍及如何下载相关视频资料"><a href="#Spark-Summits介绍及如何下载相关视频资料" class="headerlink" title="Spark Summits介绍及如何下载相关视频资料"></a>Spark Summits介绍及如何下载相关视频资料</h2><p><a href="https://pan.baidu.com/s/15ScF3brxRQGszmo-Jv1I6A" target="_blank" rel="external">链接</a> 密码：kuxh</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://upload-images.jianshu.io/upload_images/3698622-25f1d9a52c499f9a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喵十八 WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://upload-images.jianshu.io/upload_images/3698622-833f4ed0c41f117a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喵十八 Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+　　　　<div>
+  　　　
+    　　
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<span style="font-weight:blod">版权声明: </span>
+由<a href="http://yao544303.github.io" style="color:#258FC6">十八</a>创作并维护的<a href="http://yao544303.github.io" style="color:#258FC6">喵十八の小窝</a>采用<a href="https://creativecommons.org/licenses/by-nc/3.0/cn/legalcode" style="color:#258FC6">署名-非商业性使用 3.0中国大陆</a>进行许可<br/>
+欢迎转载!  请注明出处!<br/>
+本文首发于<a href="http://yao544303.github.io" style="color:#258FC6">喵十八の小窝</a></p>
+
+
+  　　　
+　　　　</div>
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/图计算/" rel="tag"># 图计算</a>
+          
+            <a href="/tags/hive迁移/" rel="tag"># hive迁移</a>
+          
+            <a href="/tags/依赖冲突/" rel="tag"># 依赖冲突</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/05/readnotes4may/" rel="next" title="201805读书笔记">
+                <i class="fa fa-chevron-left"></i> 201805读书笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/07/02/readnotes4june/" rel="prev" title="201806读书笔记">
+                201806读书笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+ 　　　　　<div id="gitalk-container"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/Ruby.png"
+               alt="喵十八" />
+          <p class="site-author-name" itemprop="name">喵十八</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">80</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="yao544303963@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Yao544303" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                    
+                      Twitter
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#说明"><span class="nav-number">1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#两个集群间迁徙hive数据有什么方案-–by-阿黄生"><span class="nav-number">2.</span> <span class="nav-text">两个集群间迁徙hive数据有什么方案 –by 阿黄生</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#时间"><span class="nav-number">2.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内容"><span class="nav-number">2.2.</span> <span class="nav-text">内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#REF"><span class="nav-number">2.3.</span> <span class="nav-text">REF</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Scala优雅的实现"><span class="nav-number">3.</span> <span class="nav-text">Scala优雅的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#时间-1"><span class="nav-number">3.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">3.2.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思路"><span class="nav-number">3.3.</span> <span class="nav-text">思路</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建SparkContext-两种写法"><span class="nav-number">4.</span> <span class="nav-text">创建SparkContext 两种写法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#时间-2"><span class="nav-number">4.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内容-1"><span class="nav-number">4.2.</span> <span class="nav-text">内容</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编写应用的jar包-和-spark自带的jar包冲突"><span class="nav-number">5.</span> <span class="nav-text">编写应用的jar包 和 spark自带的jar包冲突</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#时间-3"><span class="nav-number">5.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内容-2"><span class="nav-number">5.2.</span> <span class="nav-text">内容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题描述"><span class="nav-number">5.2.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案"><span class="nav-number">5.2.2.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ref"><span class="nav-number">5.2.3.</span> <span class="nav-text">Ref</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于图计算"><span class="nav-number">6.</span> <span class="nav-text">关于图计算</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#时间-4"><span class="nav-number">6.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内容-3"><span class="nav-number">6.2.</span> <span class="nav-text">内容</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一个奇怪的问题：-A-master-URL-must-be-set-in-your-configuration"><span class="nav-number">7.</span> <span class="nav-text">一个奇怪的问题： A master URL must be set in your configuration</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#时间-5"><span class="nav-number">7.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内容-4"><span class="nav-number">7.2.</span> <span class="nav-text">内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#REF-1"><span class="nav-number">7.3.</span> <span class="nav-text">REF</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#资料分享"><span class="nav-number">8.</span> <span class="nav-text">资料分享</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Spark-Summits介绍及如何下载相关视频资料"><span class="nav-number">8.1.</span> <span class="nav-text">Spark Summits介绍及如何下载相关视频资料</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: '2fbc96c0bbe149b498b5',
+          clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+          repo: 'Yao544303.github.io',
+          owner: 'Yao544303',
+          admin: ['Yao544303'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
