@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="PMML," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="说明
+基于PMML Version4.3
+基本可以视为官方文档的一个翻译
+如有疏漏，请联系yao544303963@gmail.com
+
+基本结构PMML使用XML来表示数据挖掘模型。模型的结构用一个XML Schema来描述。一个PMML文档中可以包含多个数据挖掘模型。一个PMML文档本质就是一个XML文档，其根元素是一个PMML类型的元素。其基本结构如下：1234567891011&amp;lt;?x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PMML文档翻译 基本结构（GeneralStructure）">
+<meta property="og:url" content="http://yoursite.com/2018/07/08/pmml-GeneralStructure/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="说明
+基于PMML Version4.3
+基本可以视为官方文档的一个翻译
+如有疏漏，请联系yao544303963@gmail.com
+
+基本结构PMML使用XML来表示数据挖掘模型。模型的结构用一个XML Schema来描述。一个PMML文档中可以包含多个数据挖掘模型。一个PMML文档本质就是一个XML文档，其根元素是一个PMML类型的元素。其基本结构如下：1234567891011&amp;lt;?x">
+<meta property="og:updated_time" content="2018-07-08T10:43:45.186Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PMML文档翻译 基本结构（GeneralStructure）">
+<meta name="twitter:description" content="说明
+基于PMML Version4.3
+基本可以视为官方文档的一个翻译
+如有疏漏，请联系yao544303963@gmail.com
+
+基本结构PMML使用XML来表示数据挖掘模型。模型的结构用一个XML Schema来描述。一个PMML文档中可以包含多个数据挖掘模型。一个PMML文档本质就是一个XML文档，其根元素是一个PMML类型的元素。其基本结构如下：1234567891011&amp;lt;?x">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/08/pmml-GeneralStructure/"/>
+
+
+
+
+
+  <title>PMML文档翻译 基本结构（GeneralStructure） | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">喵十八の小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/08/pmml-GeneralStructure/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">PMML文档翻译 基本结构（GeneralStructure）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-08T18:42:42+08:00">
+                2018-07-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PMML/" itemprop="url" rel="index">
+                    <span itemprop="name">PMML</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><ul>
+<li>基于PMML Version4.3</li>
+<li>基本可以视为官方文档的一个翻译</li>
+<li>如有疏漏，请联系yao544303963@gmail.com</li>
+</ul>
+<h1 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h1><p>PMML使用XML来表示数据挖掘模型。模型的结构用一个XML Schema来描述。一个PMML文档中可以包含多个数据挖掘模型。一个PMML文档本质就是一个XML文档，其根元素是一个PMML类型的元素。其基本结构如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot;?&gt;</span><br><span class="line">&lt;PMML version=&quot;4.3&quot;</span><br><span class="line">  xmlns=&quot;http://www.dmg.org/PMML-4_3&quot; </span><br><span class="line">  xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;</span><br><span class="line"></span><br><span class="line">  &lt;Header copyright=&quot;Example.com&quot;/&gt;</span><br><span class="line">  &lt;DataDictionary&gt; ... &lt;/DataDictionary&gt;</span><br><span class="line"></span><br><span class="line">  ... a model ...</span><br><span class="line"></span><br><span class="line">&lt;/PMML&gt;</span><br></pre></td></tr></table></figure></p>
+<p>命名空间定义如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:schema</span><br><span class="line">  xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;</span><br><span class="line">  targetNamespace=&quot;http://www.dmg.org/PMML-4_3&quot;</span><br><span class="line">  xmlns=&quot;http://www.dmg.org/PMML-4_3&quot;</span><br><span class="line">  elementFormDefault=&quot;unqualified&quot;&gt;</span><br></pre></td></tr></table></figure></p>
+<p>这里需要注意，因为命名空间在当前形式中声明，所以PMML中不能使用不同的命名空间。<br>关于命名空间，详见<a href="http://www.w3school.com.cn/xml/xml_namespaces.asp" target="_blank" rel="external">XML 命名空间</a></p>
+<p>尽管一个PMML文件必须严格符合PMML XSD的定义，然而并不需要额外的解析器。为了确保是一个有效的XML文档，PMML 需要遵循一些额外的规则。更多的内容参见<a href="http://dmg.org/pmml/v4-3/Conformance.html" target="_blank" rel="external">conformance rules </a></p>
+<p>PMML文档的根元素，必须是PMML 类型的。如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:element name=&quot;PMML&quot;&gt;</span><br><span class="line">  &lt;xs:complexType&gt;</span><br><span class="line">    &lt;xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Header&quot;/&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;MiningBuildTask&quot; minOccurs=&quot;0&quot;/&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;DataDictionary&quot;/&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;TransformationDictionary&quot; minOccurs=&quot;0&quot;/&gt;</span><br><span class="line">      &lt;xs:sequence minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;&gt;</span><br><span class="line">        &lt;xs:group ref=&quot;MODEL-ELEMENT&quot;/&gt;</span><br><span class="line">      &lt;/xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Extension&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">    &lt;/xs:sequence&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;version&quot; type=&quot;xs:string&quot; use=&quot;required&quot;/&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:group name=&quot;MODEL-ELEMENT&quot;&gt;</span><br><span class="line">  &lt;xs:choice&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;AssociationModel&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;BayesianNetworkModel&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;BaselineModel&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;ClusteringModel&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;GaussianProcessModel&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;GeneralRegressionModel&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;MiningModel&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;NaiveBayesModel&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;NearestNeighborModel&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;NeuralNetwork&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;RegressionModel&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;RuleSetModel&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;SequenceModel&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;Scorecard&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;SupportVectorMachineModel&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;TextModel&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;TimeSeriesModel&quot;/&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;TreeModel&quot;/&gt;</span><br><span class="line">  &lt;/xs:choice&gt;</span><br><span class="line">&lt;/xs:group&gt;</span><br></pre></td></tr></table></figure></p>
+<p>其中，模型部分由如下定义<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:sequence minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;&gt;</span><br><span class="line">    &lt;xs:group ref=&quot;MODEL-ELEMENT&quot;/&gt;</span><br><span class="line">&lt;/xs:sequence&gt;</span><br></pre></td></tr></table></figure></p>
+<p>可以看出，一个PMML文档可以包含不止一个模型。如果应用系统提供了模型的命名，并且PMML的消费者指定了该模型的命名。否则会使用第一个模型。<br>minOccurs=”0”,这个参数表示，模型列表可以为空。模型为空时，表示该PMML用来传输原始数据。不包含模型的PMML对于PMML消费者而言，意义不大。  </p>
+<p>对于PMML4.3，属性<strong>version</strong>的值，必须为4.3。</p>
+<p>元素MiningBuildTask 包含生成该模型时及训练阶段的配置参数的描述。该信息不是必要的，但许多情况下，对于模型的维护和理解很有帮助。MiningBuildTask中特有的结构，不是由PMML定义的。示例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:element name=&quot;MiningBuildTask&quot;&gt;</span><br><span class="line">  &lt;xs:complexType&gt;</span><br><span class="line">    &lt;xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Extension&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">    &lt;/xs:sequence&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br></pre></td></tr></table></figure></p>
+<p>通常来讲，PMML中的字段名是独一无二的。避免字段名重复是一个好习惯，可以使消费者使用起来更为简便，减少异常的发生。</p>
+<p>某一类型的PMML模型都有其特定的用途，例如神经网络或者逻辑回归。有的用于回归，有的用于分类。因此PMML定义了5种不同类型的MINING-FUNCTION，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:simpleType name=&quot;MINING-FUNCTION&quot;&gt;</span><br><span class="line">  &lt;xs:restriction base=&quot;xs:string&quot;&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;associationRules&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;sequences&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;classification&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;regression&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;clustering&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;timeSeries&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;mixed&quot;/&gt;</span><br><span class="line">  &lt;/xs:restriction&gt;</span><br><span class="line">&lt;/xs:simpleType&gt;</span><br></pre></td></tr></table></figure></p>
+<p>分别为关联规则，序列，分类，聚类，回归。时间序列和混合，是上述5种的组合。</p>
+<p>所有的PMML模型的顶层元素，都类似如下结构<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:element name=&quot;ExampleModel&quot;&gt;</span><br><span class="line">   &lt;xs:complexType&gt;</span><br><span class="line">     &lt;xs:sequence&gt;</span><br><span class="line">       &lt;xs:element ref=&quot;Extension&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">       &lt;xs:element ref=&quot;MiningSchema&quot;/&gt;</span><br><span class="line">       &lt;xs:element ref=&quot;Output&quot; minOccurs=&quot;0&quot;/&gt;</span><br><span class="line">       &lt;xs:element ref=&quot;ModelStats&quot; minOccurs=&quot;0&quot;/&gt;</span><br><span class="line">       &lt;xs:element ref=&quot;Targets&quot; minOccurs=&quot;0&quot;/&gt;</span><br><span class="line">       &lt;xs:element ref=&quot;LocalTransformations&quot; minOccurs=&quot;0&quot; /&gt;</span><br><span class="line">       ...</span><br><span class="line">       &lt;xs:element ref=&quot;ModelVerification&quot; minOccurs=&quot;0&quot;/&gt;</span><br><span class="line">       &lt;xs:element ref=&quot;Extension&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">     &lt;/xs:sequence&gt;</span><br><span class="line">     &lt;xs:attribute name=&quot;modelName&quot; type=&quot;xs:string&quot; use=&quot;optional&quot;/&gt;</span><br><span class="line">     &lt;xs:attribute name=&quot;functionName&quot; type=&quot;MINING-FUNCTION&quot; use=&quot;required&quot;/&gt;</span><br><span class="line">     &lt;xs:attribute name=&quot;algorithmName&quot; type=&quot;xs:string&quot; use=&quot;optional&quot;/&gt;</span><br><span class="line">   &lt;/xs:complexType&gt;</span><br><span class="line"> &lt;/xs:element&gt;</span><br></pre></td></tr></table></figure></p>
+<p>MiningSchema 是一个由模型使用到的字段组成的非空列表。<br>Output 模型的计算结果，比如预测概率或置信度等。<br>ModelStats 是字段的一个统计属性。<br>Targets 包含了目标值，以及相关的信息，如 0 1分类中，属于各个分类的概率。<br>LocalTransformations 包含了在本地转换操作用到的追加字段。<br>…(其他一些元素的定义)<br>ModelVerification 给出了样例数据以及模型结果样例，便于消费者验证有效性。</p>
+<p><strong>属性</strong><br><strong>modelName</strong> 属性代表模型名字，用来确保该模型在PMML文件中的唯一性。该字段不是必要的。消费者可以根据需要，自由的管理模型名</p>
+<p><strong>functionName</strong> 和 <strong>algorithmName</strong> 描述了数据挖掘模型的类型，例如是聚类模型还是分类模型。<strong>algorithmName</strong> 是自由类型的且只用于说明，可以包含任何用于描述该该算法和模型的内容。</p>
+<h1 id="约束"><a href="#约束" class="headerlink" title="约束"></a>约束</h1><p>尽管非常罕见，分类模型可能出现多个解的情况。在这些情况下，PMML没有定义特殊的处理流程，只是按照DataFiled 中对类别的排序，推荐先出现的类别。</p>
+<h1 id="命名规范"><a href="#命名规范" class="headerlink" title="命名规范"></a>命名规范</h1><p>PMML的命名规范如下：</p>
+<ul>
+<li>元素名，首字母大写</li>
+<li>属性名，首字母小写</li>
+<li>常量，首字母小写</li>
+<li>简单类型，全部大写</li>
+</ul>
+<p>为避免和减号产生歧义，’-‘不建议使用。</p>
+<h1 id="扩展机制"><a href="#扩展机制" class="headerlink" title="扩展机制"></a>扩展机制</h1><p>在PMML Schema中可以通过Extension元素扩展模型内容。Extension元素必须出现在第一个子元素，或者组中第一的位置。这为了保证该元素中接下来的内容都受Extension元素的影响。每一个主要的元素都必须包含Extension元素作为第一个和最后一个子元素，来确保其最大的扩展性。</p>
+<p>Extension Schema如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:element name=&quot;Extension&quot;&gt;</span><br><span class="line">  &lt;xs:complexType&gt;</span><br><span class="line">    &lt;xs:complexContent mixed=&quot;true&quot;&gt;</span><br><span class="line">      &lt;xs:restriction base=&quot;xs:anyType&quot;&gt;</span><br><span class="line">        &lt;xs:sequence&gt;</span><br><span class="line">          &lt;xs:any processContents=&quot;skip&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">        &lt;/xs:sequence&gt; </span><br><span class="line">        &lt;xs:attribute name=&quot;extender&quot; type=&quot;xs:string&quot; use=&quot;optional&quot;/&gt;</span><br><span class="line">        &lt;xs:attribute name=&quot;name&quot; type=&quot;xs:string&quot; use=&quot;optional&quot;/&gt;</span><br><span class="line">        &lt;xs:attribute name=&quot;value&quot; type=&quot;xs:string&quot; use=&quot;optional&quot;/&gt;</span><br><span class="line">      &lt;/xs:restriction&gt;</span><br><span class="line">    &lt;/xs:complexContent&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br></pre></td></tr></table></figure></p>
+<p>这些扩展的元素都含有一个ANY类型的模型来指向扩展的模型。不过这些元素的类型名必须以X开头，来避免和PMML后续增加的内容产生冲突。<br>相应的，Extension元素也有<strong>name</strong> 和 <strong>value</strong> 属性来指定字段名和值。</p>
+<h2 id="样例"><a href="#样例" class="headerlink" title="样例"></a>样例</h2><p>扩展属性format可以通过如下方式在DataField内追加：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;DataField name=&quot;foo&quot; dataType=&quot;double&quot; optype=&quot;continuous&quot;&gt;</span><br><span class="line">  &lt;Extension name=&quot;format&quot; value=&quot;%9.2f&quot;/&gt;</span><br><span class="line">&lt;/DataField&gt;</span><br></pre></td></tr></table></figure></p>
+<p>扩展元素 DataFieldSource 可以通过如下方式追加到DataField中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;DataField name=&quot;foo&quot; dataType=&quot;double&quot; optype=&quot;continuous&quot;&gt;</span><br><span class="line">  &lt;Extension&gt;</span><br><span class="line">    &lt;DataFieldSource sourceKnown=&quot;yes&quot;&gt;</span><br><span class="line">      &lt;Source&gt;derivedFromInput&lt;/Source&gt;</span><br><span class="line">    &lt;/DataFieldSource&gt;</span><br><span class="line">  &lt;/Extension&gt;</span><br><span class="line">&lt;/DataField&gt;</span><br></pre></td></tr></table></figure></p>
+<h1 id="基础数据类型和对象"><a href="#基础数据类型和对象" class="headerlink" title="基础数据类型和对象"></a>基础数据类型和对象</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:simpleType name=&quot;NUMBER&quot;&gt;</span><br><span class="line">  &lt;xs:restriction base=&quot;xs:double&quot;&gt;</span><br><span class="line">  &lt;/xs:restriction&gt;</span><br><span class="line">&lt;/xs:simpleType&gt;</span><br></pre></td></tr></table></figure>
+<p>该定义常用来区别数值和其他类型的值。数值通常会包含符号，小数点，指数。XML Schema中float类型支持INF，-INF 和 NaN的表示。这些在NUMBER中是不支持的。除了NUMBER还有一些定义更严格的类型，类似于NUMBER的子类型。</p>
+<p><strong>INT-NUMBER</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:simpleType name=&quot;INT-NUMBER&quot;&gt;</span><br><span class="line">  &lt;xs:restriction base=&quot;xs:integer&quot;&gt;</span><br><span class="line">  &lt;/xs:restriction&gt;</span><br><span class="line">&lt;/xs:simpleType&gt;</span><br></pre></td></tr></table></figure></p>
+<p>必须是整数，不能是小数或指数。</p>
+<p><strong>REAL-NUMBER</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:simpleType name=&quot;REAL-NUMBER&quot;&gt;</span><br><span class="line">  &lt;xs:restriction base=&quot;xs:double&quot;&gt;</span><br><span class="line">  &lt;/xs:restriction&gt;</span><br><span class="line">&lt;/xs:simpleType&gt;</span><br></pre></td></tr></table></figure></p>
+<p>实数型，可以覆盖C/C++中 float、long或者double类型。科学计数法，如 1，23e4 也是支持的。INF,-INF，NaN 是不支持的。</p>
+<p><strong>PROB-NUMBER</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:simpleType name=&quot;PROB-NUMBER&quot;&gt;</span><br><span class="line">  &lt;xs:restriction base=&quot;xs:double&quot;&gt;</span><br><span class="line">  &lt;/xs:restriction&gt;</span><br><span class="line">&lt;/xs:simpleType&gt;</span><br></pre></td></tr></table></figure></p>
+<p>概率型，值在[0.0,1.0]之间，通常用来表示预测概率。</p>
+<p><strong>PERCENTAGE-NUMBER</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:simpleType name=&quot;PERCENTAGE-NUMBER&quot;&gt;</span><br><span class="line">  &lt;xs:restriction base=&quot;xs:double&quot;&gt;</span><br><span class="line">  &lt;/xs:restriction&gt;</span><br><span class="line">&lt;/xs:simpleType&gt;</span><br></pre></td></tr></table></figure></p>
+<p>百分比型，[0.0,100.0]之间的一个实数。</p>
+<p>注意到这些对象并不强制XML解析器来检查他们的数据类型。但在PMML文档中定义了其有效性校验的相关操作。<br>许多元素都有输入字段的引用。PMML不使用<a href="https://blog.csdn.net/sweatlove/article/details/1681648" target="_blank" rel="external">IDERF</a>来表示字段名，就是因为XML 标识的有效性校验不是必须的。而通过如下定义:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:simpleType name=&quot;FIELD-NAME&quot;&gt;</span><br><span class="line">  &lt;xs:restriction base=&quot;xs:string&quot;&gt;</span><br><span class="line">  &lt;/xs:restriction&gt;</span><br><span class="line">&lt;/xs:simpleType&gt;</span><br></pre></td></tr></table></figure></p>
+<p>则可以进行相关引用的校验。</p>
+<h1 id="简单数组"><a href="#简单数组" class="headerlink" title="简单数组"></a>简单数组</h1><p>模型中通常包含一大堆数值组成的集合。Array 的定义和C or Java中的数组类似，Schema如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:complexType name=&quot;ArrayType&quot; mixed=&quot;true&quot;&gt;</span><br><span class="line">  &lt;xs:attribute name=&quot;n&quot; type=&quot;INT-NUMBER&quot; use=&quot;optional&quot;/&gt;</span><br><span class="line">  &lt;xs:attribute name=&quot;type&quot; use=&quot;required&quot;&gt;</span><br><span class="line">    &lt;xs:simpleType&gt;</span><br><span class="line">      &lt;xs:restriction base=&quot;xs:string&quot;&gt;</span><br><span class="line">        &lt;xs:enumeration value=&quot;int&quot;/&gt;</span><br><span class="line">        &lt;xs:enumeration value=&quot;real&quot;/&gt;</span><br><span class="line">        &lt;xs:enumeration value=&quot;string&quot;/&gt;</span><br><span class="line">      &lt;/xs:restriction&gt;</span><br><span class="line">    &lt;/xs:simpleType&gt;</span><br><span class="line">  &lt;/xs:attribute&gt;</span><br><span class="line">&lt;/xs:complexType&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:element name=&quot;Array&quot; type=&quot;ArrayType&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
+<p>Array 的内容是一组以空格分割的值，多个空格和单个空格效果一致。<br><strong>n</strong>：该属性定义了该序列的值数量。如果<strong>n</strong>的值给出了，那和值的数量必须保持一致，否则该pmml文档视为无效。<br><strong>type</strong>：该属性是必须的，指定类型便于后续解析。<br>特殊的，在String中存在空格 和 “ ,需要使用转义符，例子如下：<br><strong>例子</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;Array n=&quot;3&quot; type=&quot;int&quot;&gt;1 22 3&lt;/Array&gt;</span><br><span class="line">&lt;Array n=&quot;3&quot; type=&quot;string&quot;&gt;ab  &quot;a b&quot;   &quot;with \&quot;quotes\&quot; &quot;&lt;/Array&gt;</span><br></pre></td></tr></table></figure></p>
+<p>类似上面NUMBER有很多子类型，Array 也有，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:group name=&quot;NUM-ARRAY&quot;&gt;</span><br><span class="line">  &lt;xs:choice&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;Array&quot;/&gt;</span><br><span class="line">  &lt;/xs:choice&gt;</span><br><span class="line">&lt;/xs:group&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:group name=&quot;INT-ARRAY&quot;&gt;</span><br><span class="line">  &lt;xs:choice&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;Array&quot;/&gt;</span><br><span class="line">  &lt;/xs:choice&gt;</span><br><span class="line">&lt;/xs:group&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:group name=&quot;REAL-ARRAY&quot;&gt;</span><br><span class="line">  &lt;xs:choice&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;Array&quot;/&gt;</span><br><span class="line">  &lt;/xs:choice&gt;</span><br><span class="line">&lt;/xs:group&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:group name=&quot;STRING-ARRAY&quot;&gt;</span><br><span class="line">  &lt;xs:choice&gt;</span><br><span class="line">    &lt;xs:element ref=&quot;Array&quot;/&gt;</span><br><span class="line">  &lt;/xs:choice&gt;</span><br><span class="line">&lt;/xs:group&gt;</span><br></pre></td></tr></table></figure></p>
+<h1 id="稀疏数组"><a href="#稀疏数组" class="headerlink" title="稀疏数组"></a>稀疏数组</h1><p>只记录非0值的数组，类似系数矩阵<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:element name=&quot;INT-SparseArray&quot;&gt;</span><br><span class="line">  &lt;xs:complexType&gt;</span><br><span class="line">    &lt;xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Indices&quot; minOccurs=&quot;0&quot;/&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;INT-Entries&quot; minOccurs=&quot;0&quot;/&gt;</span><br><span class="line">    &lt;/xs:sequence&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;n&quot; type=&quot;INT-NUMBER&quot; use=&quot;optional&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;defaultValue&quot; type=&quot;INT-NUMBER&quot; use=&quot;optional&quot; default=&quot;0&quot;/&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:element name=&quot;REAL-SparseArray&quot;&gt;</span><br><span class="line">  &lt;xs:complexType&gt;</span><br><span class="line">    &lt;xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Indices&quot; minOccurs=&quot;0&quot;/&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;REAL-Entries&quot; minOccurs=&quot;0&quot;/&gt;</span><br><span class="line">    &lt;/xs:sequence&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;n&quot; type=&quot;INT-NUMBER&quot; use=&quot;optional&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;defaultValue&quot; type=&quot;REAL-NUMBER&quot; use=&quot;optional&quot; default=&quot;0&quot;/&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:element name=&quot;Indices&quot;&gt;</span><br><span class="line">  &lt;xs:simpleType&gt;</span><br><span class="line">    &lt;xs:list itemType=&quot;xs:int&quot;/&gt;</span><br><span class="line">  &lt;/xs:simpleType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:element name=&quot;INT-Entries&quot;&gt;</span><br><span class="line">  &lt;xs:simpleType&gt;</span><br><span class="line">    &lt;xs:list itemType=&quot;xs:int&quot;/&gt;</span><br><span class="line">  &lt;/xs:simpleType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:element name=&quot;REAL-Entries&quot;&gt;</span><br><span class="line">  &lt;xs:simpleType&gt;</span><br><span class="line">    &lt;xs:list itemType=&quot;xs:double&quot;/&gt;</span><br><span class="line">  &lt;/xs:simpleType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br></pre></td></tr></table></figure></p>
+<p><strong>n</strong> 该属性指定了稀疏数组的长度，这在没有指定数组最后一个对象的情况下，会非常有用。<br><strong>defaultValue</strong> 该属性指定了整个数组中，没有指定值情况下的默认值。<br>稀疏数组其实是由两个数组组成，索引数组Indices和值数组INT-Entries 或者 REAL-Entries。<br>索引数组从1开始，包含了值不为默认值的索引。<br>值数组是索引数组对应编号位的值。因此索引数组和值数组的长度必须保持一致。<br>形成稀疏数组的结构  如 1:3 2:6 8:9的索引数组为[1,2,8] 值数组为[3,6,9]。<br>综上，索引数组和值数组是成对出现的，否则PMML会视为无效。</p>
+<h2 id="样例-1"><a href="#样例-1" class="headerlink" title="样例"></a>样例</h2><p>数组 0 3 0 0 42 0 0 可以用如下形式表示<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;INT-SparseArray n=&quot;7&quot;&gt;</span><br><span class="line">  &lt;Indices&gt;2 5&lt;/Indices&gt;</span><br><span class="line">  &lt;INT-Entries&gt;3 42&lt;/INT-Entries&gt;</span><br><span class="line">&lt;/INT-SparseArray&gt;</span><br></pre></td></tr></table></figure></p>
+<p>数组 0 0 0 0 0 0 0 可以用如下形式表示<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;INT-SparseArray n=&quot;7&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
+<h1 id="矩阵"><a href="#矩阵" class="headerlink" title="矩阵"></a>矩阵</h1><p>为了节省空间，一个矩阵会以对角矩阵或者稀疏矩阵的形式存储。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:element name=&quot;Matrix&quot;&gt;</span><br><span class="line">  &lt;xs:complexType&gt;</span><br><span class="line">    &lt;xs:choice minOccurs=&quot;0&quot;&gt;</span><br><span class="line">      &lt;xs:group ref=&quot;NUM-ARRAY&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;MatCell&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">    &lt;/xs:choice&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;kind&quot; use=&quot;optional&quot; default=&quot;any&quot;&gt;</span><br><span class="line">      &lt;xs:simpleType&gt;</span><br><span class="line">        &lt;xs:restriction base=&quot;xs:string&quot;&gt;</span><br><span class="line">          &lt;xs:enumeration value=&quot;diagonal&quot;/&gt;</span><br><span class="line">          &lt;xs:enumeration value=&quot;symmetric&quot;/&gt;</span><br><span class="line">          &lt;xs:enumeration value=&quot;any&quot;/&gt;</span><br><span class="line">        &lt;/xs:restriction&gt;</span><br><span class="line">      &lt;/xs:simpleType&gt;</span><br><span class="line">    &lt;/xs:attribute&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;nbRows&quot; type=&quot;INT-NUMBER&quot; use=&quot;optional&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;nbCols&quot; type=&quot;INT-NUMBER&quot; use=&quot;optional&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;diagDefault&quot; type=&quot;REAL-NUMBER&quot; use=&quot;optional&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;offDiagDefault&quot; type=&quot;REAL-NUMBER&quot; use=&quot;optional&quot;/&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:element name=&quot;MatCell&quot;&gt;</span><br><span class="line">  &lt;xs:complexType&gt;</span><br><span class="line">    &lt;xs:simpleContent&gt;</span><br><span class="line">      &lt;xs:extension base=&quot;xs:string&quot;&gt;</span><br><span class="line">        &lt;xs:attribute name=&quot;row&quot; type=&quot;INT-NUMBER&quot; use=&quot;required&quot;/&gt;</span><br><span class="line">        &lt;xs:attribute name=&quot;col&quot; type=&quot;INT-NUMBER&quot; use=&quot;required&quot;/&gt;</span><br><span class="line">      &lt;/xs:extension&gt;</span><br><span class="line">    &lt;/xs:simpleContent&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br></pre></td></tr></table></figure></p>
+<p>矩阵通常用一个数组的序列（二维数组）或者矩阵元素的序列来表示。如果用数组表示，每个数组表示矩阵的一行。<br><strong>MatCells</strong> 矩阵元素通过行、列索引来指定对应位置的值。行、列索引从1开始。<br><strong>diagDefault</strong> 和 <strong>offDiagDefault</strong> 属性在使用稀疏矩阵时，必须设定。<br><strong>nbRows</strong> 和 <strong>nbCols</strong> 属性指定了矩阵的维度。如果其中一个属性没有指定，那便有矩阵表示（数组或者矩阵元素）的定义隐式定义。如使用了矩阵元素，那么矩阵的维度就是能容纳该元素得的维度值。</p>
+<p><strong>kind</strong> 属性触发了矩阵的实际表示：</p>
+<ul>
+<li>diagonal: 只有一个数组，用来表示矩阵对角线元素</li>
+<li>symmetric: 对称矩阵，用二维数组表示，第一个数组表示坐标(0,0)处元素, 第二个数组表示坐标(1，0)和(1，1)处元素，以此类推。描述整个左下半三角区。右上半三角区由对称求得。</li>
+<li>any: 通过二维数组或者矩阵元素指定矩阵。</li>
+</ul>
+<h2 id="样例-2"><a href="#样例-2" class="headerlink" title="样例"></a>样例</h2><p>矩阵<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0  0  0 42  0</span><br><span class="line">0  1  0  0  0</span><br><span class="line">5  0  0  0  0</span><br><span class="line">0  0  0  0  7</span><br><span class="line">0  0  9  0  0</span><br></pre></td></tr></table></figure></p>
+<p>可以用如下定义来表述：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;Matrix nbRows=&quot;5&quot; nbCols=&quot;5&quot;&gt;</span><br><span class="line">  &lt;Array type=&quot;real&quot;&gt;0 0 0 42 0&lt;/Array&gt;</span><br><span class="line">  &lt;Array type=&quot;real&quot;&gt;0 1 0 0 0&lt;/Array&gt;</span><br><span class="line">  &lt;Array type=&quot;real&quot;&gt;5 0 0 0 0&lt;/Array&gt;</span><br><span class="line">  &lt;Array type=&quot;real&quot;&gt;0 0 0 0 7&lt;/Array&gt;</span><br><span class="line">  &lt;Array type=&quot;real&quot;&gt;0 0 9 0 0&lt;/Array&gt;</span><br><span class="line">&lt;/Matrix&gt;</span><br><span class="line">&lt;Matrix diagDefault=&quot;0&quot; offDiagDefault=&quot;0&quot;&gt;</span><br><span class="line">  &lt;MatCell row=&quot;1&quot; col=&quot;4&quot;&gt;42&lt;/MatCell&gt;</span><br><span class="line">  &lt;MatCell row=&quot;2&quot; col=&quot;2&quot;&gt;1&lt;/MatCell&gt;</span><br><span class="line">  &lt;MatCell row=&quot;3&quot; col=&quot;1&quot;&gt;5&lt;/MatCell&gt;</span><br><span class="line">  &lt;MatCell row=&quot;4&quot; col=&quot;5&quot;&gt;7&lt;/MatCell&gt;</span><br><span class="line">  &lt;MatCell row=&quot;5&quot; col=&quot;3&quot;&gt;9&lt;/MatCell&gt;</span><br><span class="line">&lt;/Matrix&gt;</span><br></pre></td></tr></table></figure></p>
+<h1 id="无评分模型"><a href="#无评分模型" class="headerlink" title="无评分模型"></a>无评分模型</h1><p>找寻一个有效模型的道路通常是曲折和充满荆棘的。生成可部署的模型的尝试中出现失败是很正常的。在早期的试验阶段，会进行非常多的测试来寻找有用的特征。或者，从基础的角度说，训练模型使用的数据有问题的话，最后也无法生成正确的模型。相对，许多数据挖掘工具都会自动排除那些不符合要求的特征，或者制定一个最低限度的标准来确保模型可以被部署。</p>
+<p>PMML包含许多帮助使用者了解模型质量的特征性，比如Statics 和 Model Explanation。这些描述性的元素对于验证模型的有效性，以及理解模型运行失败的原因很有包住。</p>
+<p>反过来看，PMML既能产生好的结果，也能产生坏的结果，尤其是在整个系统中，PMML只是承担了接口人的角色，联接了模型生成者和模型消费者。这也就要求模型的消费者能够辨别PMML中是否包含一个有效的模型，或者PMML不能用于判断得分。<br>举个例子，如回归模型中，所有的独立变量都不能满足最小的重要性验证。在追加的描述信息中，应该有所体现，并且说明为何这些变量会被排除。或者，如果模型不能满足某些验证，模型的生成者需要将这些说明增加在Model Explanation中。<br>综上，存在这样一些模型，最后的产生的结果都是一样的，无法用于评分。模型消费者可以选择不去部署这些模型，或者部署他们只为加深理解，而不用于评分。</p>
+<h1 id="REF"><a href="#REF" class="headerlink" title="REF"></a>REF</h1><p><a href="http://dmg.org/pmml/v4-3/GeneralStructure.html" target="_blank" rel="external">PMML 4.3 - General Structure</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://upload-images.jianshu.io/upload_images/3698622-25f1d9a52c499f9a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喵十八 WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://upload-images.jianshu.io/upload_images/3698622-833f4ed0c41f117a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喵十八 Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+　　　　<div>
+  　　　
+    　　
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<span style="font-weight:blod">版权声明: </span>
+由<a href="http://yao544303.github.io" style="color:#258FC6">十八</a>创作并维护的<a href="http://yao544303.github.io" style="color:#258FC6">喵十八の小窝</a>采用<a href="https://creativecommons.org/licenses/by-nc/3.0/cn/legalcode" style="color:#258FC6">署名-非商业性使用 3.0中国大陆</a>进行许可<br/>
+欢迎转载!  请注明出处!<br/>
+本文首发于<a href="http://yao544303.github.io" style="color:#258FC6">喵十八の小窝</a></p>
+
+
+  　　　
+　　　　</div>
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/PMML/" rel="tag"># PMML</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/08/pmml-DataDictionary/" rel="next" title="PMML文档翻译 数据字典（DataDictionary）">
+                <i class="fa fa-chevron-left"></i> PMML文档翻译 数据字典（DataDictionary）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+ 　　　　　<div id="gitalk-container"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/Ruby.png"
+               alt="喵十八" />
+          <p class="site-author-name" itemprop="name">喵十八</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">83</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="yao544303963@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Yao544303" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                    
+                      Twitter
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#说明"><span class="nav-number">1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本结构"><span class="nav-number">2.</span> <span class="nav-text">基本结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#约束"><span class="nav-number">3.</span> <span class="nav-text">约束</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#命名规范"><span class="nav-number">4.</span> <span class="nav-text">命名规范</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#扩展机制"><span class="nav-number">5.</span> <span class="nav-text">扩展机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#样例"><span class="nav-number">5.1.</span> <span class="nav-text">样例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基础数据类型和对象"><span class="nav-number">6.</span> <span class="nav-text">基础数据类型和对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简单数组"><span class="nav-number">7.</span> <span class="nav-text">简单数组</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#稀疏数组"><span class="nav-number">8.</span> <span class="nav-text">稀疏数组</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#样例-1"><span class="nav-number">8.1.</span> <span class="nav-text">样例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#矩阵"><span class="nav-number">9.</span> <span class="nav-text">矩阵</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#样例-2"><span class="nav-number">9.1.</span> <span class="nav-text">样例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#无评分模型"><span class="nav-number">10.</span> <span class="nav-text">无评分模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#REF"><span class="nav-number">11.</span> <span class="nav-text">REF</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: '2fbc96c0bbe149b498b5',
+          clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+          repo: 'Yao544303.github.io',
+          owner: 'Yao544303',
+          admin: ['Yao544303'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
