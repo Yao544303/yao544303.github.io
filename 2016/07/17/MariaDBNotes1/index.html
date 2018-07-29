@@ -396,19 +396,19 @@ MariaDB数据库管理系统是MySQL的一个分支，主要由开源社区在�
 $sudo apt-get install mariadb-server
 </code></pre><p>安装完之后需要设置root的密码，然后就可以浪了…</p>
 <h3 id="MariaDB-下的MySQL命令行"><a href="#MariaDB-下的MySQL命令行" class="headerlink" title="MariaDB 下的MySQL命令行"></a>MariaDB 下的MySQL命令行</h3><p>作为MySQL的分支，大部分情况下是兼容的，正好做下复习。<br>1.连接数据库</p>
-<pre><code>$mysql -h [host] -u [username] -p&apos;[password]&apos;
+<pre><code>$mysql -h [host] -u [username] -p&#39;[password]&#39;
 </code></pre><p>2.退出数据库</p>
 <pre><code>$exit
 </code></pre><p>3.修改密码</p>
-<pre><code>$mysqladmin -u [username] -p&apos;[old pwd]&apos; password &apos;[new pwd]&apos;
+<pre><code>$mysqladmin -u [username] -p&#39;[old pwd]&#39; password &#39;[new pwd]&#39;
 </code></pre><p>4.增加新用户（一下开始都以分号结尾）<br>    方法一：直接授权并创建</p>
-<pre><code>grant all privileges on phplampDB.* to phplamp@localhost identified by &apos;1234&apos;;
+<pre><code>grant all privileges on phplampDB.* to phplamp@localhost identified by &#39;1234&#39;;
 </code></pre><p>方法二：先创建</p>
-<pre><code>insert into mysql.user(Host,User,Password) values(&apos;localhost&apos;,&apos;phplamp&apos;,password(&apos;1234&apos;));
+<pre><code> insert into mysql.user(Host,User,Password) values(&#39;localhost&#39;,&#39;phplamp&#39;,password(&#39;1234&#39;));
 </code></pre><p> 查询数据库中所有用户</p>
-<pre><code>SELECT DISTINCT CONCAT(&apos;User: &apos;&apos;&apos;,user,&apos;&apos;&apos;@&apos;&apos;&apos;,host,&apos;&apos;&apos;;&apos;) AS query FROM mysql.user;
+<pre><code>SELECT DISTINCT CONCAT(&#39;User: &#39;&#39;&#39;,user,&#39;&#39;&#39;@&#39;&#39;&#39;,host,&#39;&#39;&#39;;&#39;) AS query FROM mysql.user;
 </code></pre><p>查询某个用户权限</p>
-<pre><code>show grants for &apos;cactiuser&apos;@&apos;%&apos;;    
+<pre><code>show grants for &#39;cactiuser&#39;@&#39;%&#39;;    
 </code></pre><p>查看user 表结构</p>
 <pre><code>desc mysql.user;
 </code></pre><p>5.创建,使用,数据库</p>
@@ -422,11 +422,11 @@ select database();
 mysql&gt; create table MyClass(
      &gt;id int(4) not null primary key auto_increment,
      &gt;name char(20) not null,
-     &gt;sex int(4) not null default &apos;0&apos;,
+     &gt;sex int(4) not null default &#39;0&#39;,
      &gt;degree double(16,2));
 </code></pre><p>7.表插入数据</p>
 <pre><code>insert into &lt;表名&gt; [( &lt;字段名1&gt;[,..&lt;字段名n &gt; ])] values ( 值1 )[, ( 值n )]
-mysql&gt; insert into MyClass values(1,&apos;Tom&apos;,96.45),(2,&apos;Joan&apos;,82.99), (2,&apos;Wang&apos;, 96.59);
+mysql&gt; insert into MyClass values(1,&#39;Tom&#39;,96.45),(2,&#39;Joan&#39;,82.99), (2,&#39;Wang&#39;, 96.59);
 </code></pre><p>8.查询</p>
 <pre><code>select &lt;字段1，字段2，...&gt; from &lt;表名&gt; where &lt;表达式&gt;
 </code></pre><p>9.删除</p>
@@ -602,7 +602,7 @@ mysql&gt; insert into MyClass values(1,&apos;Tom&apos;,96.45),(2,&apos;Joan&apos
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">41</span>
+                <span class="site-state-item-count">43</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -613,7 +613,7 @@ mysql&gt; insert into MyClass values(1,&apos;Tom&apos;,96.45),(2,&apos;Joan&apos
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -624,7 +624,7 @@ mysql&gt; insert into MyClass values(1,&apos;Tom&apos;,96.45),(2,&apos;Joan&apos
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">88</span>
+                <span class="site-state-item-count">90</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -884,6 +884,8 @@ mysql&gt; insert into MyClass values(1,&apos;Tom&apos;,96.45),(2,&apos;Joan&apos
   
 
   
+  
+
 
   
 

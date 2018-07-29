@@ -427,7 +427,7 @@ jmxtrans配置文件 ：/etc/sysconfig/jmxtrans
 json文件默认目录：/var/lib/jmxtrans/
 </code></pre><p>3、配置开机启动</p>
 <pre><code>jmxtrans配置文件增加JAVA_HOME的配置，例如：
-</code></pre><p>vi /etc/sysconfig/jmxtrans<br>export JAVA_HOME=/opt/jdk1.7<br>chkconfig –add jmxtrans<br>chkconfig jmxtrans on<br>service jmxtrans start<br>#启动日志的文件在/var/log/jmxtrans/jmxtrans.log，大家可以通过查看日志来判断是否可以接收数据</p>
+</code></pre><p>vi /etc/sysconfig/jmxtrans<br>export JAVA_HOME=/opt/jdk1.7<br>chkconfig —add jmxtrans<br>chkconfig jmxtrans on<br>service jmxtrans start<br>#启动日志的文件在/var/log/jmxtrans/jmxtrans.log，大家可以通过查看日志来判断是否可以接收数据</p>
 <p>4、监控jvm应用需要增加以下jvm启动参数</p>
 <p>-Dcom.sun.management.jmxremote<br>-Dcom.sun.management.jmxremote.port=12345<br>-Dcom.sun.management.jmxremote.authenticate=false<br>-Dcom.sun.management.jmxremote.ssl=false</p>
 <h1 id="jmxtrans-json配置"><a href="#jmxtrans-json配置" class="headerlink" title="jmxtrans json配置"></a>jmxtrans json配置</h1><p>待续</p>
@@ -601,7 +601,7 @@ json文件默认目录：/var/lib/jmxtrans/
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">41</span>
+                <span class="site-state-item-count">43</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -612,7 +612,7 @@ json文件默认目录：/var/lib/jmxtrans/
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -623,7 +623,7 @@ json文件默认目录：/var/lib/jmxtrans/
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">88</span>
+                <span class="site-state-item-count">90</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -883,6 +883,8 @@ json文件默认目录：/var/lib/jmxtrans/
   
 
   
+  
+
 
   
 

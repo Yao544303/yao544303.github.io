@@ -403,8 +403,8 @@
 <p>spark-streaming 落盘数据，假设目录已经存在会报错，因而只能新建一个目录，比如<br>/user/hive/warehouse/testdb.db/cljwifi/dir1/file1<br>这样的情况是无法访问的</p>
 <h2 id="解决思路-1"><a href="#解决思路-1" class="headerlink" title="解决思路"></a>解决思路</h2><h3 id="1-建立分区表"><a href="#1-建立分区表" class="headerlink" title="1 建立分区表"></a>1 建立分区表</h3><p>这样spark-streaming 落盘的目录，加上分区字段<br>/user/hive/warehouse/testdb.db/cljwifi/day=20180304</p>
 <h3 id="2-mv数据"><a href="#2-mv数据" class="headerlink" title="2 mv数据"></a>2 mv数据</h3><p>spark-streaming 落盘结束之后，编写定时脚本，移动数据</p>
-<h1 id="2018-04-10-01"><a href="#2018-04-10-01" class="headerlink" title="2018.04.10_01"></a>2018.04.10_01</h1><h2 id="问题描述-3"><a href="#问题描述-3" class="headerlink" title="问题描述"></a>问题描述</h2><p>在代码中设定了appName<br> val sparkConf = new SparkConf().setAppName(“name1”)<br>提交时用了–name参数<br>spark-submit –master yarn-cluster –name  name2<br>最终在yarn 的监控上显示的name2</p>
-<h2 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h2><p>代码中setMaster永远生效，优先级高于–master<br>代码中的setAppName 当 yarn-client 时，优先级高于–name 当yarn-cluster 模式时，优先级低于–name<br>原因待阅读源码细查</p>
+<h1 id="2018-04-10-01"><a href="#2018-04-10-01" class="headerlink" title="2018.04.10_01"></a>2018.04.10_01</h1><h2 id="问题描述-3"><a href="#问题描述-3" class="headerlink" title="问题描述"></a>问题描述</h2><p>在代码中设定了appName<br> val sparkConf = new SparkConf().setAppName(“name1”)<br>提交时用了—name参数<br>spark-submit —master yarn-cluster —name  name2<br>最终在yarn 的监控上显示的name2</p>
+<h2 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h2><p>代码中setMaster永远生效，优先级高于—master<br>代码中的setAppName 当 yarn-client 时，优先级高于—name 当yarn-cluster 模式时，优先级低于—name<br>原因待阅读源码细查</p>
 <h1 id="2018-04-10-02"><a href="#2018-04-10-02" class="headerlink" title="2018.04.10_02"></a>2018.04.10_02</h1><h2 id="问题描述-4"><a href="#问题描述-4" class="headerlink" title="问题描述"></a>问题描述</h2><p>Yarn 监控界面中的Reserve 的作用</p>
 <h2 id="解释-1"><a href="#解释-1" class="headerlink" title="解释"></a>解释</h2><p>An implementation detail of this change that prevents applications from starving under this new flexibility is the notion of reserved containers. Imagine two jobs are running that each have enough tasks to saturate more than the entire cluster. One job wants each of its mappers to get 1GB, and another job wants its mappers to get 2GB. Suppose the first job starts and fills up the entire cluster. Whenever one of its task finishes, it will leave open a 1GB slot. Even though the second job deserves the space, a naive policy will give it to the first one because it’s the only job with tasks that fit. This could cause the second job to be starved indefinitely. </p>
 <p>One big change in the YARN Fair Scheduler is how it defines a “resource”.<br>To prevent this unfortunate situation, when space on a node is offered to an application, if the application cannot immediately use it, it reserves it, and no other application can be allocated a container on that node until the reservation is fulfilled. Each node may have only one reserved container. The total reserved memory amount is reported in the ResourceManager UI. A high number means that it may take longer for new jobs to get space.</p>
@@ -591,7 +591,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">41</span>
+                <span class="site-state-item-count">43</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -602,7 +602,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -613,7 +613,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">88</span>
+                <span class="site-state-item-count">90</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -873,6 +873,8 @@
   
 
   
+  
+
 
   
 

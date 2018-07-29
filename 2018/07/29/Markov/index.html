@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="马尔科夫链," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="原文：prob140/textbook/notebooks/ch_10
+译者：喵十八
+协议：CC BY-NC-SA 4.0
+自豪地采用谷歌翻译
+
+术语说明条件概率分布（Conditional Probability Distribution，或者条件分布，Conditional Distribution）是现代概率论中的概念：已知两个相关的随机变量X和Y，随机变量Y在条件{X=x}下的条件概率分">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【翻译活动】面向数据科学的概率论-10.马尔科夫链">
+<meta property="og:url" content="http://yoursite.com/2018/07/29/Markov/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="原文：prob140/textbook/notebooks/ch_10
+译者：喵十八
+协议：CC BY-NC-SA 4.0
+自豪地采用谷歌翻译
+
+术语说明条件概率分布（Conditional Probability Distribution，或者条件分布，Conditional Distribution）是现代概率论中的概念：已知两个相关的随机变量X和Y，随机变量Y在条件{X=x}下的条件概率分">
+<meta property="og:image" content="http://yoursite.com/image/10-1-trans_refl.png">
+<meta property="og:image" content="http://yoursite.com/image/10-2-output.png">
+<meta property="og:image" content="http://yoursite.com/image/10-1-trans_refl.png">
+<meta property="og:image" content="http://yoursite.com/image/10-3-trans_circle.png">
+<meta property="og:image" content="http://yoursite.com/image/10-4-output.png">
+<meta property="og:updated_time" content="2018-07-29T11:27:21.752Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【翻译活动】面向数据科学的概率论-10.马尔科夫链">
+<meta name="twitter:description" content="原文：prob140/textbook/notebooks/ch_10
+译者：喵十八
+协议：CC BY-NC-SA 4.0
+自豪地采用谷歌翻译
+
+术语说明条件概率分布（Conditional Probability Distribution，或者条件分布，Conditional Distribution）是现代概率论中的概念：已知两个相关的随机变量X和Y，随机变量Y在条件{X=x}下的条件概率分">
+<meta name="twitter:image" content="http://yoursite.com/image/10-1-trans_refl.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/29/Markov/"/>
+
+
+
+
+
+  <title>【翻译活动】面向数据科学的概率论-10.马尔科夫链 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">喵十八の小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/29/Markov/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【翻译活动】面向数据科学的概率论-10.马尔科夫链</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-29T17:54:22+08:00">
+                2018-07-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">翻译</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>原文：<a href="https://nbviewer.jupyter.org/github/prob140/textbook/blob/gh-pages/notebooks/Chapter_10/" target="_blank" rel="external">prob140/textbook/notebooks/ch_10</a></p>
+<p>译者：<a href="https://github.com/Yao544303" target="_blank" rel="external">喵十八</a></p>
+<p>协议：<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external">CC BY-NC-SA 4.0</a></p>
+<p>自豪地采用<a href="https://translate.google.cn/" target="_blank" rel="external">谷歌翻译</a></p>
+</blockquote>
+<h1 id="术语说明"><a href="#术语说明" class="headerlink" title="术语说明"></a>术语说明</h1><p><em>条件概率分布</em>（Conditional Probability Distribution，或者<em>条件分布</em>，Conditional Distribution）是现代概率论中的概念：已知两个相关的随机变量X和Y，随机变量Y在条件{X=x}下的条件概率分布是指当已知X的取值为某个特定值x之时，Y的概率分布。 如果Y在条件{X=x}下的条件概率分布是连续分布，那么其密度函数称作Y在条件{X=x}下的条件概率密度函数（条件分布密度、条件密度函数）。与条件分布有关的概念，常常以“条件”作为前缀，如条件期望、条件方差等等。</p>
+<p><em>转移</em> 与<em>转移概率</em>：从状态1变为状态2，称之为状态转移，其对应的概率称之为转移概率。</p>
+<p><em>可数无穷</em>：是指集合中的元素可以与自然数一一对应,也就是说可以用自然数来”数”它的数量,从而其数量为可数无穷. </p>
+<h1 id="本章所需python包"><a href="#本章所需python包" class="headerlink" title="本章所需python包"></a>本章所需python包</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line"><span class="keyword">from</span> datascience <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> prob140 <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">plt.style.use(<span class="string">'fivethirtyeight'</span>)</span><br><span class="line">%matplotlib inline</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">from</span> scipy <span class="keyword">import</span> stats</span><br><span class="line"><span class="keyword">from</span> scipy <span class="keyword">import</span> misc</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line">s = np.arange(<span class="number">1</span>, <span class="number">6</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">refl_walk_probs</span><span class="params">(i, j)</span>:</span></span><br><span class="line">    <span class="comment"># staying in the same state</span></span><br><span class="line">    <span class="keyword">if</span> i-j == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.5</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># moving left or right</span></span><br><span class="line">    <span class="keyword">elif</span> <span class="number">2</span> &lt;= i &lt;= <span class="number">4</span>:</span><br><span class="line">        <span class="keyword">if</span> abs(i-j) == <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0.25</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        </span><br><span class="line">    <span class="comment"># moving right from 1</span></span><br><span class="line">    <span class="keyword">elif</span> i == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">if</span> j == <span class="number">2</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0.5</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># moving left from 5</span></span><br><span class="line">    <span class="keyword">elif</span> i == <span class="number">5</span>:</span><br><span class="line">        <span class="keyword">if</span> j == <span class="number">4</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0.5</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">reflecting_walk = MarkovChain.from_transition_function(s, refl_walk_probs)</span><br></pre></td></tr></table></figure>
+<h1 id="马尔科夫链"><a href="#马尔科夫链" class="headerlink" title="马尔科夫链"></a>马尔科夫链</h1><p>一个 <em>随机过程</em> 是某一概率空间（这里的空间，理解为域更合适，是指一系列随机状态的合集。不是与时间相对的空间，后面的时间也类似）中一系列随机状态的集合。我们将研究一种在<em>离散时间</em>域内演化过程，即有如下随机状态 $X_0, X_1, X_2, \ldots $。想象一下，从时刻0的状态 $X_0$ 开始,不断执行对应时间的操作，状态随之转移。以此类推，在时刻$n$ 时，转移为状态 $n$。</p>
+<p>我们已经见过这种过程的例子。例如伯努利实验中，一系列的抛硬币事件构成的独立同分布的序列，就形成这样的过程。每次事件在0和1两个值之间来回传递，每个值都独立于所有其他值。但在许多有趣的过程中，未来的事件的值依赖于当前事件的值，以及过去事件的值。我们可以使用过去和现在来预测未来。</p>
+<p>马尔科夫链，是以<a href="https://en.wikipedia.org/wiki/Andrey_Markov" target="_blank" rel="external">安德烈·马尔科夫</a>的名字命名的一类随机过程。一个非正式的描述如下，对于马尔科夫链而言，将来的状态的值只取决于当前状态的值，而与如何达到当前状态的值无关。这被称为<em>马尔科夫性质</em>。从形式上看</p>
+<ul>
+<li>对于任一$n \ge 1$， $X_{n+1}$ 的条件分布，只取决于 $X_0, X_1, \ldots , X_n$中的$X_n$</li>
+<li>也就是说，对于每一个可能值的序列$i_0, i_1, \ldots, i_n, i_{n+1}$,</li>
+</ul>
+<script type="math/tex; mode=display">P(X_{n+1} = i_{n+1} \mid X_0 = i_0, X_1 = i_1 , \ldots, X_{n-1} = i_{n-1}, X_n = i_n) = P(X_{n+1} = i_{n+1} \mid X_n = i_n)</script><p>例如在一个随机漫步试验中，赌徒以a美元的财富开始，然后连续投掷一枚公平的硬币（正反面概率都为50%）。如果硬币为正面，他就获得1美元，如果是反面，他就输掉1美元。<br>设$X_{0} = a$，则$n &gt; 0$令$X_{n+1} = X_n + I_n$，其中$I_1, I_2, \ldots $是伯努利实验中的独立同分布序列。马尔科夫性质适用于整个过程：给出赌徒在时刻$n$的财富数，那他在时刻$n+1$时的财富数的取值只与其在时刻$n$时的财富数有关，与$n$之前无关。所以该过程$X_0, X_1, X_2, \ldots $是一个马尔科夫链，代表着赌徒的财富随时间的演变。</p>
+<p>马尔可夫链的<em>状态空间</em>是链中状态可能值的集合。上述随机漫步的状态空间是所有整数的集合。在本课程中，我们将状态空间限制为离散且有限的。</p>
+<h3 id="条件独立"><a href="#条件独立" class="headerlink" title="条件独立"></a>条件独立</h3><p>两个随机变量$X$和$Y$是相互独立是指，$X$处于条件$Y$的情况的条件分布和不处于$Y$的情况下的条件分布是一致的。<br>随机变量$X$和$Y$<em>相对于$Z$条件独立</em> 是指，$X$在条件$Y$和$Z$的情况下的条件分布和在条件$Z$的情况下的条件分布式一致。也就是说，$Z$这一关于$Y$的额外条件，不会影响$X$的值。</p>
+<p>在马尔可夫链中，如果定义时刻$n$为现在，定义时刻$n+1$为未来，时刻序列$0$到$n-1$作为过去，马尔科夫性质意味着过去和未来是条件独立的。</p>
+<h2 id="转移"><a href="#转移" class="headerlink" title="转移"></a>转移</h2><p>设$X_0, X_1, X_2, \ldots $为状态空间$S$中马尔科夫链。根据马尔科夫性质，有限长度的<em>路径</em>或<em>轨迹</em>的概率如下：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+& P(X_0 = i_0, X_1 = i_1, X_2 = i_2, \ldots, X_n = i_n) \\
+& = ~ 
+P(X_0 = i_0)P(X_1 = i_1 \mid X_0 = i_0)P(X_2 = i_2 \mid X_1 = i_1) \cdots
+P(X_n = i_n \mid X_{n-1} = i_{n-1})
+\end{align*}</script><p>上式中的条件概率，也被称为<em>转移概率</em>。对于状态$i$和$j$，条件概率$P(X_{n+1} = j \mid X_n = i)$被称为<em>时刻$n$时的一阶转移概率</em>。</p>
+<p>对于许多链，例如随机漫步，这些一阶转移概率仅仅由状态$i$和$j$决定，而与时刻$n$无关。<br>示例：</p>
+<script type="math/tex; mode=display">
+\begin{equation}
+P(X_{n+1} = j \mid X_n = i) = 
+ \begin{cases} 
+      \frac{1}{2} & \text{if } j = i-1 \text{ or } j = i+1 \\
+      0 & \text{ otherwise}
+   \end{cases}
+\end{equation}</script><p>对所有的$n$都与时刻无关。 </p>
+<h3 id="固定转移概率"><a href="#固定转移概率" class="headerlink" title="固定转移概率"></a>固定转移概率</h3><p>当一阶转移概率与时刻$n$无关时，称之为<em>固定</em>或者<em>时间同质</em>的。我们将在本课程中学习的所有马尔可夫链都具有时间同质的转移概率。<br>对于这样的链，定义<em>一阶转移概率</em>如下：  </p>
+<script type="math/tex; mode=display">
+P(i, j) ~ = ~ P(X_{n+1} = j \mid X_n = i) ~ = ~ P(X_1 = j \mid X_0 = i)</script><p>Then</p>
+<script type="math/tex; mode=display">
+P(X_0 = i_0, X_1 = i_1, X_2 = i_2, \ldots, X_n = i_n)
+~ = ~ P(X_0 = i_0)P(i_0, i_1)P(i_1, i_2) \cdots P(i_{n-1}, i_n)</script><p>一阶转移概率可以表示为矩阵的元素。这不仅仅是为了符号的紧凑-它导致了一个强大的理论。</p>
+<h3 id="一阶转移矩阵"><a href="#一阶转移矩阵" class="headerlink" title="一阶转移矩阵"></a>一阶转移矩阵</h3><p>链的<em>一阶转移矩阵</em>描述如下，矩阵$\mathbb{P}$，其中$(i, j)$位置处的元素是$P(i, j) = P(X_1 = j \mid X_0 = i)$。</p>
+<p>通常，$\mathbb{P}$简称为<em>转移矩阵</em>。注意两个重要属性：</p>
+<ul>
+<li>$\mathbb{P}$是一个正方形矩阵: 它的行和列都由状态空间索引构成。</li>
+<li>$\mathbb{P}$的每一行: 对任一状态$i$, 和时刻$n$, 行$i$ 包含了在$X_n = i$ 情况下，$X_{n+1}$的条件分布。 因为它的每一行的和都为1， $\mathbb{P}$ 也被称为 <em>随机矩阵</em>.</li>
+</ul>
+<p>让我们看一下示例中转移矩阵的样子。 </p>
+<h3 id="粘性反转随机漫步"><a href="#粘性反转随机漫步" class="headerlink" title="粘性反转随机漫步"></a>粘性反转随机漫步</h3><p>通常，马尔可夫链的转移行为更容易在<em>转移图</em>而不是矩阵中描述。下面是状态1,2,3,4和5上的链的转移图。该图显示了一阶转移概率。</p>
+<ul>
+<li>如果链条处于任何状态，它移动到原有状态的概率为0.5。</li>
+<li>如果链处于状态2到4，则它移动到其两个相邻状态中的一个的概率为0.25。</li>
+<li>如果链处于状态1或5，则它移动到其相邻状态的概率为0.5。</li>
+</ul>
+<p><img src="/image/10-1-trans_refl.png" alt="Reflecting Lazy Walk"></p>
+<p>我们称其为<em>反转</em>是在状态1和5可以反转掉头进行转移。整个漫步过程有<em>粘性</em>是指其可能移动到原有状态。</p>
+<p>转移图非常适合理解链移动的规则。但是，对于计算，转移矩阵更有帮助。</p>
+<p>要开始构造矩阵，我们将数组<code>s</code>设置为状态集，并为转移函数<code>refl_walk_probs</code> 设置成入参为$i$和$j$，返回值为$P(i, j)$的形式。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">s = np.arange(<span class="number">1</span>, <span class="number">6</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">refl_walk_probs</span><span class="params">(i, j)</span>:</span></span><br><span class="line">    <span class="comment"># staying in the same state</span></span><br><span class="line">    <span class="keyword">if</span> i-j == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.5</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># moving left or right</span></span><br><span class="line">    <span class="keyword">elif</span> <span class="number">2</span> &lt;= i &lt;= <span class="number">4</span>:</span><br><span class="line">        <span class="keyword">if</span> abs(i-j) == <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0.25</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        </span><br><span class="line">    <span class="comment"># moving right from 1</span></span><br><span class="line">    <span class="keyword">elif</span> i == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">if</span> j == <span class="number">2</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0.5</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># moving left from 5</span></span><br><span class="line">    <span class="keyword">elif</span> i == <span class="number">5</span>:</span><br><span class="line">        <span class="keyword">if</span> j == <span class="number">4</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0.5</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>您可以使用<code>prob140</code>库来构造<code>MarkovChain</code>对象。<code>from_transition_function</code>方法有两个参数：</p>
+<ul>
+<li>状态构成的数组</li>
+<li>转移函数</li>
+</ul>
+<p>并显示<code>MarkovChain</code>对象的一阶转移矩阵。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reflecting_walk = MarkovChain.from_transition_function(s, refl_walk_probs)</span><br><span class="line">reflecting_walk</span><br></pre></td></tr></table></figure>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.50</td>
+      <td>0.50</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.25</td>
+      <td>0.50</td>
+      <td>0.25</td>
+      <td>0.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.00</td>
+      <td>0.25</td>
+      <td>0.50</td>
+      <td>0.25</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.25</td>
+      <td>0.50</td>
+      <td>0.25</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.50</td>
+      <td>0.50</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p>比较转移矩阵$\mathbb{P}$和转移图，并确认它们包含的有关转移概率的信息一致。</p>
+<p>为了找到从状态$i$转移到$j$的概率，只需找矩阵$i$行$j$列的值即可。</p>
+<p>如果您知道起始状态，则可以使用$\mathbb{P}$找到任何有限路径的概率。例如，假设从1开始，那么它具有路径[2,2,3,4,3]的概率是</p>
+<script type="math/tex; mode=display">
+P(1, 2)P(2, 2)P(2, 3)P(3, 4)P(4, 3) \approx 0.4\%</script><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0.5</span> * <span class="number">0.5</span> * <span class="number">0.25</span> * <span class="number">0.25</span> * <span class="number">0.25</span></span><br></pre></td></tr></table></figure>
+<pre><code>0.00390625
+</code></pre><p><code>MarkovChain</code>对象的<code>prob_of_path</code>方法可以省去写乘法的麻烦。它将起始状态和路径的其余部分（在列表或数组中）作为其参数，并返回路径的概率。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reflecting_walk.prob_of_path(<span class="number">1</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">3</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>0.00390625
+</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reflecting_walk.prob_of_path(<span class="number">1</span>, [<span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">5</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>0.0
+</code></pre><p>您可以使用<code>simulate_path</code>方法模拟链的路径。它有两个参数：起始状态和路径的步数。默认情况下，它返回一个由路径中的状态序列组成的数组。可选参数<code>plot_path=True</code>绘制模拟路径。运行几次下面的单元格，看看输出如何变化。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reflecting_walk.simulate_path(<span class="number">1</span>, <span class="number">7</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>array([1, 2, 1, 2, 2, 2, 3, 2])
+</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reflecting_walk.simulate_path(<span class="number">1</span>, <span class="number">10</span>, plot_path=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="/image/10-2-output.png" alt="png"></p>
+<h3 id="n-阶转移矩阵"><a href="#n-阶转移矩阵" class="headerlink" title="$n$-阶转移矩阵"></a>$n$-阶转移矩阵</h3><p>对于状态$i$和$j$, 耗费$n$步，从状态$i$转移为状态$j$的可能性，称为从$i$到$j$的$n$-阶转移概率。 形式上定义为：</p>
+<script type="math/tex; mode=display">
+P_n(i, j) ~ = ~ P(X_n = j \mid X_0 = i)</script><p>在这种表示方法中，一阶转移概率$P(i, j)$也可以写作$P_1(i, j)$。</p>
+<p>$n$-阶转移概率$P_n(i, j)$可以使用$n$-阶转移矩阵$(i, j)$位置处的元素表示。对于任意状态$i$，$n$-阶转移矩阵的第$i$行包含了从状态$i$开始的链的条件分布$X_n$</p>
+<p> <code>MarkovChain</code>的<code>transition_matrix</code>方法，使用$n$作为入参，并返回一个$n$-阶转移矩阵。以下是本节前面定义的粘性反转随机漫步的两阶转移矩阵。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reflecting_walk.transition_matrix(<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.3750</td>
+      <td>0.5000</td>
+      <td>0.125</td>
+      <td>0.0000</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.2500</td>
+      <td>0.4375</td>
+      <td>0.250</td>
+      <td>0.0625</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.0625</td>
+      <td>0.2500</td>
+      <td>0.375</td>
+      <td>0.2500</td>
+      <td>0.0625</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.0000</td>
+      <td>0.0625</td>
+      <td>0.250</td>
+      <td>0.4375</td>
+      <td>0.2500</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.0000</td>
+      <td>0.0000</td>
+      <td>0.125</td>
+      <td>0.5000</td>
+      <td>0.3750</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p>你可以轻松地手动计算各个条目。例如，$(1, 1)$是分两步从状态1进入状态1的可能性。有两种方法可以实现这一目标：</p>
+<ul>
+<li>[1, 1, 1]</li>
+<li>[1, 2, 1]</li>
+</ul>
+<p>假设1是起始状态，则两条路径的总概率为$(0.5 \times 0.5) + (0.5 \times 0.25) = 0.375$.</p>
+<p>由于马尔科夫性质，基于一阶转移概率，就能得到二阶转移概率。</p>
+<p>一般而言，我们可以通过调节链条在时刻1时的位置，来计算$P_2(i, j)$</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+P_2(i, j) ~ &= ~ P(X_2 = j \mid X_0 = i) \\
+&= ~ \sum_k P(X_1 = k, X_2 = j \mid X_0 = i) \\
+&= ~ \sum_k P(X_1 = k \mid X_0 = i)P(X_2 = j \mid X_1 = k) \\
+&= ~ \sum_k P(i, k)P(k, j)
+\end{align*}</script><p>如上结果为$\mathbb{P} \times \mathbb{P} = \mathbb{P}^2$矩阵的$(i, j)$位置处元素。因此，二阶转移矩阵为$\mathbb{P}^2$。</p>
+<p>通过归纳证明，能总结出，$n$-阶转移矩阵为$\mathbb{P}^n$。</p>
+<p>这是粘性反转随机漫步的5步转移矩阵。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reflecting_walk.transition_matrix(<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.246094</td>
+      <td>0.410156</td>
+      <td>0.234375</td>
+      <td>0.089844</td>
+      <td>0.019531</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.205078</td>
+      <td>0.363281</td>
+      <td>0.250000</td>
+      <td>0.136719</td>
+      <td>0.044922</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.117188</td>
+      <td>0.250000</td>
+      <td>0.265625</td>
+      <td>0.250000</td>
+      <td>0.117188</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.044922</td>
+      <td>0.136719</td>
+      <td>0.250000</td>
+      <td>0.363281</td>
+      <td>0.205078</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.019531</td>
+      <td>0.089844</td>
+      <td>0.234375</td>
+      <td>0.410156</td>
+      <td>0.246094</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p>这是一个表示方法，但要使用矩阵，我们必须以Python识别为矩阵的形式表示它。方法<code>get_transition_matrix</code>为我们做到了这一点。需要步数$n$作为入参，并以numpy矩阵的格式返回$n$-阶转移矩阵。</p>
+<p>对于粘性反转随机漫步，我们将从提取$\mathbb{P}$开始P作为矩阵<code>refl_walk_P</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">refl_walk_P = reflecting_walk.get_transition_matrix(<span class="number">1</span>)</span><br><span class="line">refl_walk_P</span><br></pre></td></tr></table></figure>
+<pre><code>array([[ 0.5 ,  0.5 ,  0.  ,  0.  ,  0.  ],
+       [ 0.25,  0.5 ,  0.25,  0.  ,  0.  ],
+       [ 0.  ,  0.25,  0.5 ,  0.25,  0.  ],
+       [ 0.  ,  0.  ,  0.25,  0.5 ,  0.25],
+       [ 0.  ,  0.  ,  0.  ,  0.5 ,  0.5 ]])
+</code></pre><p>让我们检查前面显示的5-阶转移矩阵是否与$\mathbb{P}^5$相同。您可以使用<code>np.linalg.matrix_power</code>将计算矩阵的非负整数次幂。第一个参数是矩阵，第二个参数是幂。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.linalg.matrix_power(refl_walk_P, <span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>array([[ 0.24609375,  0.41015625,  0.234375  ,  0.08984375,  0.01953125],
+       [ 0.20507812,  0.36328125,  0.25      ,  0.13671875,  0.04492188],
+       [ 0.1171875 ,  0.25      ,  0.265625  ,  0.25      ,  0.1171875 ],
+       [ 0.04492188,  0.13671875,  0.25      ,  0.36328125,  0.20507812],
+       [ 0.01953125,  0.08984375,  0.234375  ,  0.41015625,  0.24609375]])
+</code></pre><p>这确实与<code>transition_matrix</code>显示的矩阵相同，但难以阅读。</p>
+<p>当我们想要在计算中使用$\mathbb{P}$，我们将使用此矩阵表示。对于显示和阅读，<code>transition_matrix</code> 则更好。</p>
+<h3 id="长期运行"><a href="#长期运行" class="headerlink" title="长期运行"></a>长期运行</h3><p>要理解马尔科夫链的长跑行为，令$n$变大，并检查对于开始状态的每个$X_n$值。这些都包含在$n$-阶转移矩阵$\mathbb{P}^n$中。</p>
+<p>如下展示了随机漫步中，$n = 25, 50$, 和 $100$情况下的$\mathbb{P}^n$ 。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reflecting_walk.transition_matrix(<span class="number">25</span>)</span><br></pre></td></tr></table></figure>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.129772</td>
+      <td>0.256749</td>
+      <td>0.25</td>
+      <td>0.243251</td>
+      <td>0.120228</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.128374</td>
+      <td>0.254772</td>
+      <td>0.25</td>
+      <td>0.245228</td>
+      <td>0.121626</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.125000</td>
+      <td>0.250000</td>
+      <td>0.25</td>
+      <td>0.250000</td>
+      <td>0.125000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.121626</td>
+      <td>0.245228</td>
+      <td>0.25</td>
+      <td>0.254772</td>
+      <td>0.128374</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.120228</td>
+      <td>0.243251</td>
+      <td>0.25</td>
+      <td>0.256749</td>
+      <td>0.129772</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reflecting_walk.transition_matrix(<span class="number">50</span>)</span><br></pre></td></tr></table></figure>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.125091</td>
+      <td>0.250129</td>
+      <td>0.25</td>
+      <td>0.249871</td>
+      <td>0.124909</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.125064</td>
+      <td>0.250091</td>
+      <td>0.25</td>
+      <td>0.249909</td>
+      <td>0.124936</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.125000</td>
+      <td>0.250000</td>
+      <td>0.25</td>
+      <td>0.250000</td>
+      <td>0.125000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.124936</td>
+      <td>0.249909</td>
+      <td>0.25</td>
+      <td>0.250091</td>
+      <td>0.125064</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.124909</td>
+      <td>0.249871</td>
+      <td>0.25</td>
+      <td>0.250129</td>
+      <td>0.125091</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reflecting_walk.transition_matrix(<span class="number">100</span>)</span><br></pre></td></tr></table></figure>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.125</td>
+      <td>0.25</td>
+      <td>0.25</td>
+      <td>0.25</td>
+      <td>0.125</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.125</td>
+      <td>0.25</td>
+      <td>0.25</td>
+      <td>0.25</td>
+      <td>0.125</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.125</td>
+      <td>0.25</td>
+      <td>0.25</td>
+      <td>0.25</td>
+      <td>0.125</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.125</td>
+      <td>0.25</td>
+      <td>0.25</td>
+      <td>0.25</td>
+      <td>0.125</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.125</td>
+      <td>0.25</td>
+      <td>0.25</td>
+      <td>0.25</td>
+      <td>0.125</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p>$\mathbb{P}^{100}$中每一行都一样！这意味着，对于随机漫步而言，在时刻100时的条件分布不依赖于其起始状态。<em>链忘了他的起始点</em></p>
+<p>你可以增加$n$，并且会看到$n$-阶转移矩阵保持一致。说明链已经<em>达到稳定</em></p>
+<p>稳定性是许多马尔可夫链的显着特性，也是本章的主题。</p>
+<h2 id="析构链"><a href="#析构链" class="headerlink" title="析构链"></a>析构链</h2><p>设$S$为一个有限状态或者可数无穷状态组成的集合。任一由集合$S$来索引行、列的随机矩阵，都是状态空间$S$下的某一马尔科夫链的转移矩阵。马尔可夫链的转移行为与矩阵变化保持一致。设置术语以讨论其中一些行为很有帮助。</p>
+<h3 id="连通"><a href="#连通" class="headerlink" title="连通"></a>连通</h3><p>如果链可以从状态$i$转移到状态$j$，称之为<em>$i$可达$j$</em>，记作$i \rightarrow j$。通常，你能通过检查链的转移图来判定$i$ 是否可达$j$。一个$i \rightarrow j$正式的定义为：</p>
+<ul>
+<li>存在一条转移路径，从$i$开始，到$j$结束。</li>
+<li>等价的, 存在 $n &gt; 0$ 使得 $P_n(i, j) &gt; 0$。</li>
+</ul>
+<p>当$i \rightarrow j$ 并且 $j \rightarrow i$时，称<em>$i$连通$j$</em> 记作$i \leftrightarrow j$。</p>
+<p>如果链的所有状态彼此连通，则该链被称为<em>不可约</em>。</p>
+<p>上一节的粘性反转随机漫步是不可约的，因为链条可能从每个状态相互之间都是连通的。</p>
+<h3 id="周期"><a href="#周期" class="headerlink" title="周期"></a>周期</h3><p>在离散时间工作存在缺陷。其中一点就是<em>周期性</em>。让我们从随机漫步的例子开始，其中每个步骤是基于公平硬币的投掷。假设从状态0开始。然后定义只能在如下时刻返回状态0：正面和反面出现的数量完全相等，因此投掷的数量必须是偶数。我们说状态0 <em>有周期2</em></p>
+<p>当链从状态$i$开始，并且经过$d$的倍数次数后能回到状态$i$，则称状态$i$ 有<em>周期</em> $d$。$d$是所有能使 $P_n(i, i) &gt; 0$的 $n$ 的最大公约数。</p>
+<p>在上述描述的随机漫步中，所有的状态有周期2。</p>
+<p>周期会导致长期行为的描述出现问题。例如：当状态$i$有周期3,序列$P_n(i, i)$可能看起来像”0, 0, positive, 0, 0, positive, $\ldots$”，因此限制声明可能会变得复杂。</p>
+<p>在本课程中，我们将研究链条的长期行为，其中所有状态都是<em>非周期性的</em>，即它们具有周期1.换句话说，链条上无环。</p>
+<p>你如何检查所有状态是否具有周期性？如果链是不可约的，那所有状态必须具有相同的周期。这个的证据并不困难，但我们不会这样做。因为这意味着如果一个链是不可约的，你就要找出其中每一个状态的周期，然后保证所有他状态都必须有相同的周期。</p>
+<p>有些状态是很容易识别为非周期性的。如果1-阶转移概率$P(i, i)$ 为正，那么状态$i$是非周期性的。因为链可以保持在状态$i$任意长时间，其返回的结果是不成环的。</p>
+<h3 id="样例：析构链"><a href="#样例：析构链" class="headerlink" title="样例：析构链"></a>样例：析构链</h3><p>考虑具有转移矩阵的链</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>a</strong></th>
+<th><strong>b</strong></th>
+<th><strong>c</strong></th>
+<th><strong>d</strong></th>
+<th><strong>e</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>a</strong></td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>b</strong></td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>c</strong></td>
+<td>0</td>
+<td>1/3</td>
+<td>1/3</td>
+<td>1/3</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>d</strong></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1/3</td>
+<td>2/3</td>
+</tr>
+<tr>
+<td><strong>e</strong></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>4/5</td>
+<td>1/5</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li>状态$a$和$b$相互连通，并且不和其他状态可达。因此称为<em>连通类</em>。小矩阵</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>a</strong></th>
+<th><strong>b</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>a</strong></td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>b</strong></td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>本身就是一个转移矩阵。尽管描述的是一个无聊的链，在状态$a$ 和$b$之间循环。$a$和$b$都有周期2。</p>
+<ul>
+<li>状态$d$和$e$构成连通类，并且是非周期性的。</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>d</strong></th>
+<th><strong>e</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>d</strong></td>
+<td>1/3</td>
+<td>2/3</td>
+</tr>
+<tr>
+<td><strong>e</strong></td>
+<td>4/5</td>
+<td>1/5</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li>状态$c$与自己连通，一旦转移为状态$b$或$d$, 就无法再返回。</li>
+</ul>
+<p>在本课程中，我们将只使用<em>有限状态空间上的不可约的非周期马尔可夫链</em>。我们所说的大部分内容也适用于周期链，以及具有可数无限状态空间的链。</p>
+<h2 id="长期运行行为"><a href="#长期运行行为" class="headerlink" title="长期运行行为"></a>长期运行行为</h2><p>每个具有有限状态空间的不可约和非周期性的马尔可夫链在状态转移一段时间后会表现出惊人的规律性。以下收敛定理的证明超出了本课程的范围，但您已经通过计算看到了结果。对于某些类别无限多个状态的马氏链，所有结果都更为正确。</p>
+<h3 id="收敛性"><a href="#收敛性" class="headerlink" title="收敛性"></a>收敛性</h3><p>设$X_0, X_1, \ldots$ 是有限状态空间$S$上的不可约，非周期性的马尔科夫链。那么对于所有的状态$i$和$j$有</p>
+<script type="math/tex; mode=display">
+P_n(i, j) \to \pi(j) ~~~ \text{as } n \to \infty</script><p>换言之，对于$S$中任意的$i$和$j$，从$i$到$j$的$n$-阶转移概率会逼近一个极限，并且不依赖于$i$。<br>此外</p>
+<ul>
+<li><p>对所有的状态$j$都有$\pi(j) &gt; 0$ ，和</p>
+</li>
+<li><p>$\sum_{j \in S} \pi(j) = 1$</p>
+</li>
+</ul>
+<p>也就是说，当$n \to \infty$， $n$-阶转移矩阵$\mathbb{P}^n$的中每一行的值都会等于同一个向量$\pi$，其中每一项都为正值。</p>
+<h3 id="限制特性"><a href="#限制特性" class="headerlink" title="限制特性"></a>限制特性</h3><p><strong>(i)</strong> 向量$\pi$是<em>平衡方程</em> $\pi \mathbb{P} = \pi$的唯一解。</p>
+<p><strong>(ii)</strong> 如果对某些$n$，$X_n$的分布为$\pi$，那么，对于$m &gt; n$，其分布 $X_m$ 也同样是$\pi$。因此，称$\pi$为链的<em>静态</em>或<em>稳态</em>分布。</p>
+<p><strong>(iii)</strong> 对于每一个状态$j$, 向量$\pi$的第$j$th 元素$\pi(j)$是链的长期值在$j$的预期。</p>
+<p>我们假设收敛定理是正确的; 然后其他相关的特性推断起来就相对容易了。在本节的其余部分，我们将建立这些特性并查看它们的使用方式。</p>
+<h3 id="平衡方程"><a href="#平衡方程" class="headerlink" title="平衡方程"></a>平衡方程</h3><p>另$n \ge 0$，$i$和$j$是两个状态。然后</p>
+<script type="math/tex; mode=display">
+P_{n+1}(i, j) = \sum_{k \in S} P_n(i, k)P(k, j)</script><p>因此</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+\lim_{n \to \infty} P_{n+1}(i, j) &= \lim_{n \to \infty} \sum_{k \in S} P_n(i, k)P(k, j) \\ \\
+&= \sum_{k \in S} \big{(} \lim_{n \to \infty} P_n(i, k) \big{)} P(k, j)
+\end{align*}</script><p>因为$S$是有限的，我们可以交换极限与和。现在将收敛定理应用于平稳性：</p>
+<script type="math/tex; mode=display">
+\pi(j) = \sum_{k \in S} \pi(k)P(k, j)</script><p>这被称为<em>平衡方程</em>。</p>
+<p>在矩阵表示方法中，如果你把$\pi$当做行向量，方程可以写为</p>
+<script type="math/tex; mode=display">
+\pi = \pi \mathbb{P} ~~~~~ \text{或者，等价的} ~~~~~ \pi\mathbb{P} = \pi</script><p>这有助于计算$\pi$时没有限制。</p>
+<p><strong>注意:</strong> 稳态不是状态空间$S$的元素。这是链条运行很长一段时间后的状况。让我们进一步研究这个问题。</p>
+<h3 id="平衡态和稳态"><a href="#平衡态和稳态" class="headerlink" title="平衡态和稳态"></a>平衡态和稳态</h3><p>要想看看这些方程中的“平衡”是什么，就需要想象一下这个链的大量独立复制。例如，根据粘性反转随机漫步的转移概率，想象大量的粒子在状态1到5之间移动，并假设所有粒子在时刻1,2,3，……… 都彼此独立。</p>
+<p>然后在任何时刻和任何状态$j$，有一些比例的粒子离开$j$，和另一些比例的粒子进入$j$。平衡方程表明这两个比例是相等的。</p>
+<p>让我们通过再次查看方程来检查：对于任何状态$j$,</p>
+<script type="math/tex; mode=display">
+\pi(j) = \sum_{k \in S} \pi(k)P(k, j)</script><p>对于每一个$k \in S$ (包括 $k=j$)，以$\pi(k)$ 作为链运行很长一段时间后离开状态$k$的粒子的比例。等式左边是离开状态$j$的粒子的比例。等式右边求和的每一项都是离开状态$k$并转向状态$j$的粒子比例。求和之后，就是所有进入状态$j$的粒子。等式成立时，链是<em>平衡的</em>。</p>
+<p>收敛于平稳性的定理表明，当$n$变大时，链趋于平衡。当链确实达到平衡时，对于$n$，其分布$X_n$为$\pi$，然后它保持平衡。原因：</p>
+<script type="math/tex; mode=display">
+P(X_{n+1} = j) = \sum_{i \in S} P(X_n = i)P(i, j) = \sum_{i \in S} \pi(i)P(i, j) = \pi(j)</script><p>通过平衡方程。现在使用归纳法。</p>
+<p>特别是，如果链以其静止分布$\pi$开始，那么之后每一个$n$的分布$X_n$都是$\pi$。</p>
+<h3 id="唯一性"><a href="#唯一性" class="headerlink" title="唯一性"></a>唯一性</h3><p>不难表明,如果平衡方程有解，那么它必须是$\pi$，$X_n$的边际分布的极限。我们不会做证明; 它基本上重复了我们用来推导平衡方程的步骤。你应该意识到，一个不可约的，非周期的，有限状态马尔可夫链只有一个稳态分布。</p>
+<p>如果您碰巧猜测到平衡方程的解，这将特别有用。如果您猜到了一个概率分布解，那么您已经找到了链的稳态分布。</p>
+<h3 id="长期运行时各个状态占比"><a href="#长期运行时各个状态占比" class="headerlink" title="长期运行时各个状态占比"></a>长期运行时各个状态占比</h3><p>有状态$j$ ，令$I_m(j)$代表事件$\{X_m = j\}$。<em>链花费在状态$j$处转移次数比例</em>，当转移次数从1至$n$，表述如下：</p>
+<script type="math/tex; mode=display">
+\frac{1}{n} \sum_{m=1}^n I_m(j)</script><p>因此，当链从状态$i$开始，<em>链花费在状态$j$处转移次数比例预期</em>为</p>
+<script type="math/tex; mode=display">
+\frac{1}{n} \sum_{m=1}^n E(I_m(j) \mid X_0 = i) 
+= \frac{1}{n} \sum_{m=1}^n P(X_m = j \mid X_0 = i) 
+= \frac{1}{n} \sum_{m=1}^n P_m(i, j)</script><p>现在回想一下实数序列的收敛性质：当$n \to \infty$时，$x_n \to x$，那么序列的均值也会收敛于$x$</p>
+<script type="math/tex; mode=display">
+\frac{1}{n} \sum_{m=1}^n x_m \to x ~~~ \text{as } n \to \infty</script><p>令$x_n = P_n(i, j)$。通过收敛性可得</p>
+<script type="math/tex; mode=display">
+P_n(i, j) \to \pi(j) ~~~ \text{as } n \to \infty</script><p>因此平均值也会收敛:</p>
+<script type="math/tex; mode=display">
+\frac{1}{n} \sum_{m=1}^n P_m(i, j) \to \pi(j) ~~~ \text{as } n \to \infty</script><p>因此，长期过程的链花费在状态$j$处转移次数比例预期为$\pi(j)$，其中$\pi$链的固定分布。</p>
+<h3 id="粘性反转漫步的稳态分布"><a href="#粘性反转漫步的稳态分布" class="headerlink" title="粘性反转漫步的稳态分布"></a>粘性反转漫步的稳态分布</h3><p>我们在前面的部分对此进行了研究。转移图是</p>
+<p><img src="/image/10-1-trans_refl.png" alt="image.png"></p>
+<p>这是转移矩阵$\mathbb{P}$。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reflecting_walk</span><br></pre></td></tr></table></figure>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.50</td>
+      <td>0.50</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.25</td>
+      <td>0.50</td>
+      <td>0.25</td>
+      <td>0.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.00</td>
+      <td>0.25</td>
+      <td>0.50</td>
+      <td>0.25</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.25</td>
+      <td>0.50</td>
+      <td>0.25</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.50</td>
+      <td>0.50</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p> <code>MarkovChain</code>的方法<code>steady_state</code>返回一个稳态分布$\pi$。 之前看到过这是$\mathbb{P}$行的极限。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reflecting_walk.steady_state()</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+    <thead>
+        <tr>
+            <th>Value</th> <th>Probability</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1    </td> <td>0.125      </td>
+        </tr>
+    </tbody>
+        <tr>
+            <td>2    </td> <td>0.25       </td>
+        </tr>
+    
+        <tr>
+            <td>3    </td> <td>0.25       </td>
+        </tr>
+    
+        <tr>
+            <td>4    </td> <td>0.25       </td>
+        </tr>
+    
+        <tr>
+            <td>5    </td> <td>0.125      </td>
+        </tr>
+    
+</table>
+
+
+
+<p>我们也可是使用平衡方程求解$\pi$。当然，这看起来有些多余，因为Python已经给出了$\pi$。当转移矩阵很大，且是分数的情况，使用Python是不错的操作。</p>
+<p>根据平衡方程：</p>
+<script type="math/tex; mode=display">
+\pi(1) = \sum_{k=1}^s \pi(k)P(k, 1)</script><p>也就是说，使用$\pi$乘以$\mathbb{P}$中的<code>1</code>列</p>
+<script type="math/tex; mode=display">
+\pi(1) = \pi(1)\cdot 0.5 ~ + ~ \pi(2) \cdot 0.25 = 0.5\pi(1) + 0.25\pi(2)</script><p>按照相同的过程获得所有五个平衡方程：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+\pi(1) &= 0.5\pi(1) + 0.25\pi(2) \\
+\pi(2) &= 0.5\pi(1) + 0.5\pi(2) + 0.25\pi(3) \\
+\pi(3) &= 0.25\pi(2) + 0.5\pi(3) + 0.25\pi(4) \\
+\pi(4) &= 0.25\pi(3) + 0.5\pi(4) + 0.5\pi(5) \\
+\pi(5) &= 0.25\pi(4) + 0.5\pi(5)
+\end{align*}</script><p>一些观察结果使系统易于解决。</p>
+<ul>
+<li>通过重新排列第一个等式，我们得到 $\pi(2) = 2\pi(1)$。</li>
+<li>通过对称性, $\pi(1) = \pi(5)$ 和 $\pi(2) = \pi (4)$。</li>
+<li>因为 $\pi(2) = \pi(4)$,  等式$\pi(3)$ 表明 $\pi(3) = \pi(2) = \pi(4)$。</li>
+</ul>
+<p>所以$\pi$的分布为</p>
+<script type="math/tex; mode=display">
+\big{(} \pi(1), 2\pi(1), 2\pi(1), 2\pi(1), \pi(1) \big{)}</script><p>因为$\pi$是一个条件分布概率，其和为1。即 $8\pi(1)$的值为1，可以得到</p>
+<script type="math/tex; mode=display">
+\pi = \big{(} \frac{1}{8}, \frac{2}{8}, \frac{2}{8}, \frac{2}{8}, \frac{1}{8} \big{)}</script><p>这和我们用<code>distribution</code>计算$n=100$的结果一致。事实上，我们可以使用该方法<code>steady_state</code>来获得$\pi$:</p>
+<p>这意味着从长远来看，这一部分的随机漫步预计将花费大约12.5％的时间在状态1，25％的时间用于状态2,3和4，其余12.5%的时间在状态5。</p>
+<h3 id="懒惰的随机循环漫步"><a href="#懒惰的随机循环漫步" class="headerlink" title="懒惰的随机循环漫步"></a>懒惰的随机循环漫步</h3><p>现在让状态空间在圆上排列五个点。假设该过程从点1开始，并且在每个步骤中保持在概率为0.5的位置（因此是粘性的），或者移动到两个相邻点中的一个，每个概率为0.25，而不管其他移动。</p>
+<p>换言之，除了$1 \rightarrow 5$ 和 $5 \rightarrow 1$这个漫步的转移和上面的随机漫步是相同的。 可以在转移图中总结此转移行为，请注意，所有状态的转移行为都是相同的。</p>
+<p><img src="/image/10-3-trans_circle.png" alt="Lazy Circle Walk"></p>
+<p>在每一步中，下一步的动作都是通过从三个选项中随机选择和链的当前位置来确定的，而不是从它到达该位置的方式。所以这个过程就是马尔可夫链。我们称之为 $X_0, X_1, X_2, \ldots $ 并定义其转移矩阵。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">s = np.arange(<span class="number">1</span>, <span class="number">6</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">circle_walk_probs</span><span class="params">(i, j)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> i-j == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0.5</span></span><br><span class="line">        <span class="keyword">elif</span> abs(i-j) == <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0.25</span></span><br><span class="line">        <span class="keyword">elif</span> abs(i-j) == <span class="number">4</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0.25</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>   </span><br><span class="line">        </span><br><span class="line">circle_walk = MarkovChain.from_transition_function(s, circle_walk_probs)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">circle_walk</span><br></pre></td></tr></table></figure>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.50</td>
+      <td>0.25</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.25</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.25</td>
+      <td>0.50</td>
+      <td>0.25</td>
+      <td>0.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.00</td>
+      <td>0.25</td>
+      <td>0.50</td>
+      <td>0.25</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.25</td>
+      <td>0.50</td>
+      <td>0.25</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.25</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.25</td>
+      <td>0.50</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p>由于转移行为的对称性，任何状态出现的概率，都不应该大于任何其他状态，因此$\pi(j)$的值是相同的。这可以用<code>steady_state</code>验证。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">circle_walk.steady_state()</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+    <thead>
+        <tr>
+            <th>Value</th> <th>Probability</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1    </td> <td>0.2        </td>
+        </tr>
+    </tbody>
+        <tr>
+            <td>2    </td> <td>0.2        </td>
+        </tr>
+    
+        <tr>
+            <td>3    </td> <td>0.2        </td>
+        </tr>
+    
+        <tr>
+            <td>4    </td> <td>0.2        </td>
+        </tr>
+    
+        <tr>
+            <td>5    </td> <td>0.2        </td>
+        </tr>
+    
+</table>
+
+
+
+<h2 id="样例"><a href="#样例" class="headerlink" title="样例"></a>样例</h2><p>这里有两个例子来说明如何找到稳态分布以及如何使用它。</p>
+<h3 id="Ehrenfest的扩散模型"><a href="#Ehrenfest的扩散模型" class="headerlink" title="Ehrenfest的扩散模型"></a>Ehrenfest的扩散模型</h3><p><a href="https://en.wikipedia.org/wiki/Paul_Ehrenfest" target="_blank" rel="external">Paul Ehrenfest</a> 提出了许多气体粒子扩散模型，其中一个我们将在这里研究。</p>
+<p>该模型说有两个容器总共含有$N$个粒子。在每个瞬间，随机选择容器，并且独立于容器随机选择颗粒。然后将所选粒子放入所选容器中; 如果它已经在那个容器中，那就留在那里。</p>
+<p>令$X_n$表示时刻$n$时容器1中的粒子数。那么$X_0, X_1, \ldots$是一个马尔科夫链，其转移概率描述如下：</p>
+<p>\begin{equation}<br>P(i, j) =<br> \begin{cases}<br>      \frac{N-i}{2N} &amp; \text{if } j = i+1 \\<br>      \frac{1}{2} &amp; \text{if } j = i \\<br>      \frac{i}{2N} &amp; \text{if } j = i-1 \\<br>      0 &amp; \text{otherwise}<br>   \end{cases}<br>\end{equation}</p>
+<p>这条链显然是不可约的。它是非周期性的，因为 $P(i, i) &gt; 0$.</p>
+<p><strong>问题.</strong> 链的稳态分布是什么？ </p>
+<p><strong>回答.</strong> 使用电脑， 所以，先找到$N=100$时的稳态分布，然后检查对于一般的$N$是否一致。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">N = <span class="number">100</span></span><br><span class="line"></span><br><span class="line">states = np.arange(N+<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">transition_probs</span><span class="params">(i, j)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> j == i:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>/<span class="number">2</span></span><br><span class="line">    <span class="keyword">elif</span> j == i+<span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> (N-i)/(<span class="number">2</span>*N)</span><br><span class="line">    <span class="keyword">elif</span> j == i<span class="number">-1</span>:</span><br><span class="line">        <span class="keyword">return</span> i/(<span class="number">2</span>*N)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">ehrenfest = MarkovChain.from_transition_function(states, transition_probs)</span><br><span class="line">Plot(ehrenfest.steady_state(), edges=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="/image/10-4-output.png" alt="png"></p>
+<p>这看起来很像二项式（100,1 / 2）分布。实际上它<em>就是</em>二项式（100,1 / 2）分布。既然你已经猜到了，你所要做的就是将它插入到平衡方程中并检查它们是否有效。</p>
+<p>平衡方程是：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+\pi(0) &= \frac{1}{2}\pi(0) + \frac{1}{2N}\pi(1) \\
+\pi(j) &= \frac{N-(j-1)}{2N}\pi(j-1) + \frac{1}{2}\pi(j) + \frac{j+1}{2N}\pi(j+1), ~~~ 1 \le j \le N-1 \\
+\pi(N) &= \frac{1}{2N}\pi(N-1) + \frac{1}{2}\pi(N)
+\end{align*}</script><p>您已经通过查看$N=100$的结果猜测了答案。但是如果你想从头开始，你必须简化平衡方程并尝试用$\pi(0)$表示$\pi$的所有元素。你会得到：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+\pi(1) &= N\pi(0) \\ \\
+\pi(2) &= \frac{N(N-1)}{2} \pi0 = \binom{N}{2} \pi(0)
+\end{align*}</script><p>可以归纳推导如下：</p>
+<script type="math/tex; mode=display">
+\pi(j) = \binom{N}{j} \pi(0)</script><p>换句话说，稳态分布分布与二项式系数成比例。所以当 $\pi(0) = 1/2^N$可以使所有元素的和为1,分布为二项分布 $(N, 1/2)$。</p>
+<h3 id="预期奖励"><a href="#预期奖励" class="headerlink" title="预期奖励"></a>预期奖励</h3><p>假设我长时间运行上一节中的懒惰反转随机漫步。如下，这是它的稳态分布。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">stationary = reflecting_walk.steady_state()</span><br><span class="line">stationary</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+    <thead>
+        <tr>
+            <th>Value</th> <th>Probability</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1    </td> <td>0.125      </td>
+        </tr>
+    </tbody>
+        <tr>
+            <td>2    </td> <td>0.25       </td>
+        </tr>
+    
+        <tr>
+            <td>3    </td> <td>0.25       </td>
+        </tr>
+    
+        <tr>
+            <td>4    </td> <td>0.25       </td>
+        </tr>
+    
+        <tr>
+            <td>5    </td> <td>0.125      </td>
+        </tr>
+    
+</table>
+
+
+
+<p><strong>问题 1.</strong> 假设每次链条处于状态4时, 我赢得$$4$; 每次进入状态5, 我赢得$$5$; 否则我赢不到钱. 我奖励的期望是多少？</p>
+<p><strong>回答 1.</strong> 从长远来看，链条处于稳定状态。所以，有62.5%的概率，我赢不到钱，有25%的概率我赢$$4$，12.5%的概率，我赢$$5$。综上，计算可得奖励的期望为$$1.625$。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>*<span class="number">0.625</span> + <span class="number">4</span>*<span class="number">0.25</span> + <span class="number">5</span>*<span class="number">.125</span></span><br></pre></td></tr></table></figure>
+<pre><code>1.625
+</code></pre><p><strong>问题 2.</strong> 假设每次链条处于状态$i$, 我抛$i$枚硬币，并记录正面次数。从长期来看，我每次得到正面个数的期望是多少？</p>
+<p><strong>回答 2.</strong> 每次链条处于状态$i$,期望得到$i/2$个正面。 当链处于稳态, 投掷硬币的期望数是3。所以，从长期来看，正面个数的期望是1.5。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stationary.ev()/<span class="number">2</span></span><br></pre></td></tr></table></figure>
+<pre><code>1.5
+</code></pre><p>这看上去是人为的，请考虑一下：假设我在上面玩游戏，并且在每一个动作中我告诉你我得到的头数，<em>但我不告诉你链在哪个状态</em>。我<em>隐藏</em>了潜在的马尔可夫链。如果您尝试重新创建马尔可夫链所采用的步骤序列，那么您正在使用隐马尔可夫模型。它们广泛用于模式识别，生物信息学和其他领域。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://upload-images.jianshu.io/upload_images/3698622-25f1d9a52c499f9a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喵十八 WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://upload-images.jianshu.io/upload_images/3698622-833f4ed0c41f117a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喵十八 Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+　　　　<div>
+  　　　
+    　　
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<span style="font-weight:blod">版权声明: </span>
+由<a href="http://yao544303.github.io" style="color:#258FC6">十八</a>创作并维护的<a href="http://yao544303.github.io" style="color:#258FC6">喵十八の小窝</a>采用<a href="https://creativecommons.org/licenses/by-nc/3.0/cn/legalcode" style="color:#258FC6">署名-非商业性使用 3.0中国大陆</a>进行许可<br/>
+欢迎转载!  请注明出处!<br/>
+本文首发于<a href="http://yao544303.github.io" style="color:#258FC6">喵十八の小窝</a></p>
+
+
+  　　　
+　　　　</div>
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/马尔科夫链/" rel="tag"># 马尔科夫链</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/11/sklearn-PMML/" rel="next" title="Python sklearn中训练的模型导出为PMML">
+                <i class="fa fa-chevron-left"></i> Python sklearn中训练的模型导出为PMML
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/07/29/ReMarkov/" rel="prev" title="【翻译活动】面向数据科学的概率论-11.反转马尔科夫链">
+                【翻译活动】面向数据科学的概率论-11.反转马尔科夫链 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+ 　　　　　<div id="gitalk-container"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/Ruby.png"
+               alt="喵十八" />
+          <p class="site-author-name" itemprop="name">喵十八</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">90</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="yao544303963@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Yao544303" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                    
+                      Twitter
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#术语说明"><span class="nav-number">1.</span> <span class="nav-text">术语说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#本章所需python包"><span class="nav-number">2.</span> <span class="nav-text">本章所需python包</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#马尔科夫链"><span class="nav-number">3.</span> <span class="nav-text">马尔科夫链</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#条件独立"><span class="nav-number">3.0.1.</span> <span class="nav-text">条件独立</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#转移"><span class="nav-number">3.1.</span> <span class="nav-text">转移</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#固定转移概率"><span class="nav-number">3.1.1.</span> <span class="nav-text">固定转移概率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一阶转移矩阵"><span class="nav-number">3.1.2.</span> <span class="nav-text">一阶转移矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#粘性反转随机漫步"><span class="nav-number">3.1.3.</span> <span class="nav-text">粘性反转随机漫步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#n-阶转移矩阵"><span class="nav-number">3.1.4.</span> <span class="nav-text">$n$-阶转移矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#长期运行"><span class="nav-number">3.1.5.</span> <span class="nav-text">长期运行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#析构链"><span class="nav-number">3.2.</span> <span class="nav-text">析构链</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#连通"><span class="nav-number">3.2.1.</span> <span class="nav-text">连通</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#周期"><span class="nav-number">3.2.2.</span> <span class="nav-text">周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#样例：析构链"><span class="nav-number">3.2.3.</span> <span class="nav-text">样例：析构链</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#长期运行行为"><span class="nav-number">3.3.</span> <span class="nav-text">长期运行行为</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#收敛性"><span class="nav-number">3.3.1.</span> <span class="nav-text">收敛性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#限制特性"><span class="nav-number">3.3.2.</span> <span class="nav-text">限制特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#平衡方程"><span class="nav-number">3.3.3.</span> <span class="nav-text">平衡方程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#平衡态和稳态"><span class="nav-number">3.3.4.</span> <span class="nav-text">平衡态和稳态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#唯一性"><span class="nav-number">3.3.5.</span> <span class="nav-text">唯一性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#长期运行时各个状态占比"><span class="nav-number">3.3.6.</span> <span class="nav-text">长期运行时各个状态占比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#粘性反转漫步的稳态分布"><span class="nav-number">3.3.7.</span> <span class="nav-text">粘性反转漫步的稳态分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#懒惰的随机循环漫步"><span class="nav-number">3.3.8.</span> <span class="nav-text">懒惰的随机循环漫步</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#样例"><span class="nav-number">3.4.</span> <span class="nav-text">样例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ehrenfest的扩散模型"><span class="nav-number">3.4.1.</span> <span class="nav-text">Ehrenfest的扩散模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预期奖励"><span class="nav-number">3.4.2.</span> <span class="nav-text">预期奖励</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: '2fbc96c0bbe149b498b5',
+          clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+          repo: 'Yao544303.github.io',
+          owner: 'Yao544303',
+          admin: ['Yao544303'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

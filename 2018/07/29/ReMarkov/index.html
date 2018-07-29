@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="反转马尔科夫链," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="原文：prob140/textbook/notebooks/ch_11
+译者：喵十八
+协议：CC BY-NC-SA 4.0
+自豪地采用谷歌翻译
+
+本章所需python包12345678910# HIDDENfrom datascience import *from prob140 import *import numpy as npimport matplotlib.pyplot as pltp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【翻译活动】面向数据科学的概率论-11.反转马尔科夫链">
+<meta property="og:url" content="http://yoursite.com/2018/07/29/ReMarkov/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="原文：prob140/textbook/notebooks/ch_11
+译者：喵十八
+协议：CC BY-NC-SA 4.0
+自豪地采用谷歌翻译
+
+本章所需python包12345678910# HIDDENfrom datascience import *from prob140 import *import numpy as npimport matplotlib.pyplot as pltp">
+<meta property="og:image" content="http://yoursite.com/image/11-1-output_8_0.png">
+<meta property="og:image" content="http://yoursite.com/image/11-2-output_11_0.png">
+<meta property="og:image" content="http://yoursite.com/image/11-3-trans_b_and_d.png">
+<meta property="og:image" content="http://yoursite.com/image/11-4-output_11_0.png">
+<meta property="og:updated_time" content="2018-07-29T11:27:24.476Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【翻译活动】面向数据科学的概率论-11.反转马尔科夫链">
+<meta name="twitter:description" content="原文：prob140/textbook/notebooks/ch_11
+译者：喵十八
+协议：CC BY-NC-SA 4.0
+自豪地采用谷歌翻译
+
+本章所需python包12345678910# HIDDENfrom datascience import *from prob140 import *import numpy as npimport matplotlib.pyplot as pltp">
+<meta name="twitter:image" content="http://yoursite.com/image/11-1-output_8_0.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/29/ReMarkov/"/>
+
+
+
+
+
+  <title>【翻译活动】面向数据科学的概率论-11.反转马尔科夫链 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">喵十八の小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/29/ReMarkov/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【翻译活动】面向数据科学的概率论-11.反转马尔科夫链</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-29T17:54:27+08:00">
+                2018-07-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">翻译</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>原文：<a href="https://nbviewer.jupyter.org/github/prob140/textbook/blob/gh-pages/notebooks/Chapter_11/" target="_blank" rel="external">prob140/textbook/notebooks/ch_11</a></p>
+<p>译者：<a href="https://github.com/Yao544303" target="_blank" rel="external">喵十八</a></p>
+<p>协议：<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external">CC BY-NC-SA 4.0</a></p>
+<p>自豪地采用<a href="https://translate.google.cn/" target="_blank" rel="external">谷歌翻译</a></p>
+</blockquote>
+<h1 id="本章所需python包"><a href="#本章所需python包" class="headerlink" title="本章所需python包"></a>本章所需python包</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line"><span class="keyword">from</span> datascience <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> prob140 <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">plt.style.use(<span class="string">'fivethirtyeight'</span>)</span><br><span class="line">%matplotlib inline</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">from</span> scipy <span class="keyword">import</span> stats</span><br><span class="line"><span class="keyword">from</span> scipy <span class="keyword">import</span> misc</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line"><span class="keyword">from</span> datascience <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> prob140 <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">plt.style.use(<span class="string">'fivethirtyeight'</span>)</span><br><span class="line">%matplotlib inline</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">from</span> scipy <span class="keyword">import</span> stats</span><br><span class="line"><span class="keyword">from</span> scipy <span class="keyword">import</span> misc</span><br><span class="line"><span class="keyword">from</span> itertools <span class="keyword">import</span> permutations</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line"><span class="comment"># The alphabet</span></span><br><span class="line">alph = make_array(<span class="string">'a'</span>, <span class="string">'d'</span>, <span class="string">'t'</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line"><span class="comment"># Decode atdt using all possible decoders</span></span><br><span class="line">x1 = [[<span class="string">'a'</span>, <span class="string">'t'</span>, <span class="string">'d'</span>, <span class="string">'t'</span>], [<span class="string">'a'</span>,<span class="string">'d'</span>,<span class="string">'t'</span>,<span class="string">'d'</span>], [<span class="string">'d'</span>,<span class="string">'t'</span>,<span class="string">'a'</span>,<span class="string">'t'</span>]]</span><br><span class="line">x2 = [[<span class="string">'d'</span>,<span class="string">'a'</span>,<span class="string">'t'</span>,<span class="string">'a'</span>], [<span class="string">'t'</span>,<span class="string">'d'</span>,<span class="string">'a'</span>,<span class="string">'d'</span>], [<span class="string">'t'</span>,<span class="string">'a'</span>,<span class="string">'d'</span>,<span class="string">'a'</span>]]</span><br><span class="line">decoded = x1+x2</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line">decoding = Table().with_columns(</span><br><span class="line">    <span class="string">'Decoder'</span>, list(permutations(alph)),</span><br><span class="line">    <span class="string">'atdt Decoded'</span>, decoded</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line"><span class="comment"># Make bigram transition matrix</span></span><br><span class="line"><span class="comment"># Data from Peter Norvig's bigram table</span></span><br><span class="line"></span><br><span class="line">aa = <span class="number">1913489177</span></span><br><span class="line">dd = <span class="number">6513992572</span></span><br><span class="line">tt = <span class="number">19222971337</span></span><br><span class="line">ad = <span class="number">23202347740</span></span><br><span class="line">da = <span class="number">23279747379</span></span><br><span class="line">at = <span class="number">80609883139</span></span><br><span class="line">ta = <span class="number">42344542093</span></span><br><span class="line">dt = <span class="number">10976756096</span></span><br><span class="line">td = <span class="number">3231292348</span></span><br><span class="line"></span><br><span class="line">row1 = make_array(aa, ad, at)/sum([aa, ad, at])</span><br><span class="line">row2 = make_array(da, dd, dt)/sum([da, dd, dt])</span><br><span class="line">row3 = make_array(ta, td, tt)/sum([ta, td, tt])</span><br><span class="line">rows = np.append(np.append(row1, row2), row3)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line">bigrams = MarkovChain.from_table(Table().states(alph).transition_probability(rows))</span><br></pre></td></tr></table></figure>
+<h1 id="反转马尔科夫链"><a href="#反转马尔科夫链" class="headerlink" title="反转马尔科夫链"></a>反转马尔科夫链</h1><p>股票市场，变异病毒和计算机搜索引擎有什么共同之处？他们都使用马尔可夫链模型进行了分析。了解马尔可夫链的长期行为有助于我们理解许多不同的随机现象。</p>
+<p>在数据科学中，马尔可夫链也用于完全不同的目的。马尔科夫链帮助数据科学家从对于标准采样方法来说太复杂的分布中抽取随机样本。马尔可夫链也可用于分布非常复杂或使用标准方法难以估计的未知量的近似值预估。这可以通过创建马尔可夫链来实现，该马尔可夫链具有作为其稳态分布的原型分布，然后长时间运行链直到它接近稳态。该方法称为马尔科夫链-蒙特卡洛法（Markov Chain Monte Carlo），缩写为MCMC。令人惊讶的是，它涉及了解马尔可夫链反向运行时会发生什么，也就是说当它们被<em>反转</em>时会发生什么。</p>
+<p>要理解和实现MCMC算法，您必须研究马尔可夫链的可逆性并进行计算。在本章和随附的实验中，我们将简要介绍这一领域。</p>
+<h2 id="详细的平衡"><a href="#详细的平衡" class="headerlink" title="详细的平衡"></a>详细的平衡</h2><p>我们一直在研究的马尔可夫链具有稳态分布，其中包含有关链的行为的大量信息。链的稳态分布是平衡方程的解。对于某些链，很容易得到平衡方程的解。但对于其他链条，求解过程可能很复杂或乏味。让我们看看我们是否能找到一种简单的方法来求解平衡方程。</p>
+<p>回想一下我们早先关于方程中平衡态的描述。想象一下链的大量独立复制。例如，假设根据链的转移概率，大量粒子在状态间转移，所有粒子在时刻1, 2, 3, $\ldots$的转移都是相对独立的。</p>
+<p>假设链处于稳态。正如我们之前所说，设$\pi(k)$为任意时刻离开状态$k$的粒子，那么平衡方程为</p>
+<script type="math/tex; mode=display">
+\pi(j) = \sum_{k \in S} \pi(k)P(k, j)</script><p>当离开状态$j$和进入它的粒子相同时，称链为平衡的。</p>
+<p>请注意，左侧只是离开$j$的粒子的比例; 没有关于粒子去向的信息。</p>
+<p>现在假设有<em>详细的平衡</em>，由下式给出</p>
+<script type="math/tex; mode=display">
+\pi(i)P(i, j) = \pi(j)P(j, i) ~~~ \text{for all states } i \ne j</script><p>这些被称为<em>详细平衡方程</em>。表示对于每一对状态$i$和$j$，离开状态 $i$进入状态$j$的粒子数量和离开状态$j$进入状态$i$的粒子数量一致。在状态$i = j$的情况下，方程无意义，因此被排除在外。</p>
+<p>结果证明这是一个比平衡方程更强的条件。</p>
+<h3 id="详细平衡意味着平衡"><a href="#详细平衡意味着平衡" class="headerlink" title="详细平衡意味着平衡"></a>详细平衡意味着平衡</h3><p>假设存在概率分布 $\pi$ 是详细平衡方程的解，那么$\pi$必然也是平衡方程的解。</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+\sum_{k \in S} \pi(k)P(k, j) &= \sum_{k \in S} \pi(j)P(j, k)  \text{(详细平衡方程)} \\
+&= \pi(j) \sum_{k \in S} P(j, k) \\
+&= \pi(j) \cdot 1  \text{(转移矩阵}j\text{th 行的和)} \\
+&= \pi(j)
+\end{align*}</script><p>我们从中学到的是，如果我们能够求解详细平衡方程，那么我们也能求解平衡方程。</p>
+<p>这有两个原因：</p>
+<ul>
+<li>详细的平衡方程很简单。</li>
+<li>详细平衡方程的数量很多，如果有$s$个状态，那么有$\binom{s}{2}$ 个详细平衡方程，包含$s$个未知变量。这为我们提供了许多尝试解决它们的方法。</li>
+</ul>
+<p>当然，所有这些$\binom{s}{2}$方程不是必须保持一致的，在这种情况下，这些平衡方程无解。在这种情况下，我们只能直接求解平衡方程。这里有一个例子表明，如果详细的平衡方程确实有解，我们就可以轻松地得到链的稳态分布。</p>
+<h3 id="爱伦菲斯特链"><a href="#爱伦菲斯特链" class="headerlink" title="爱伦菲斯特链"></a>爱伦菲斯特链</h3><p>我们需要回到这个例子，因为它可以通过一些操作来求解平衡方程。我们将展示对于这个链和其他类似的链中，如何简便的求解详细的平衡方程，这为我们提供了一个快速求的稳态分布的途径。</p>
+<p>状态空间是整数0到$N$。回想一下转移是如何进行的：在每一步，链条向前转移1个状态，保持不变，或者向后转移1个状态。这些链称为<em>生死</em>链，用于模拟许多随机模型，如赌徒的命运或人口规模。在我们的例子中，模拟了容器中气体粒子的数量。</p>
+<p>对于这样的链，1-阶转移矩阵中，大多数转移概率是0，因为在一个步骤中链只能移动到两个相邻状态。所以大多数详细的平衡方程都是正确的。对于那些1-阶转移概率为正的两个状态$i$和$j$，两者之间的间隔必为1。（注意，详细平衡方程指定$i \ne j$）。在那种情况下，由于链不可约，$P(i, j)$和$P(j, i)$都为正。</p>
+<p>这允许我们从最低状态开始向上移动来求解详细平衡方程。记住转移规则：</p>
+<ul>
+<li>在每个步骤中，从$N$中随机选取一个粒子，随意放入两个容器中的一个; 链计算容器1中的粒子数。</li>
+</ul>
+<p>详细的平衡方程式可以顺序求解：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+\pi(0)\frac{1}{2} &= \pi(1)\frac{1}{2N} ~~ \implies ~~ \pi(1) = N\pi(0)
+= \binom{N}{1}\pi(0) \\ \\
+\pi(1)\frac{N-1}{2N} &= \pi(2)\frac{2}{2N} ~~ \implies ~~ \pi(2) = \frac{N-1}{2}\pi(1) = \frac{N(N-1)}{2}\pi(0) = \binom{N}{2}\pi(0) \\ \\
+\pi(2)\frac{N-2}{2N} &= \pi(3)\frac{3}{2N} ~~ \implies ~~ \pi(3) = \frac{N-2}{3}\pi(2) = \frac{N(N-1)(N-2)}{3\cdot 2} \pi(0) = \binom{N}{3}\pi(0)
+\end{align*}</script><p>等，从而对于$1 \le k \le N$,有</p>
+<script type="math/tex; mode=display">
+\pi(k) = \binom{N}{k} \pi(0)</script><p>通过比，归纳比求解平衡方程更容易。各项总和为</p>
+<script type="math/tex; mode=display">
+\pi(0)\big{(} 1 + \sum_{k=1}^N \binom{N}{k} \big{)}
+= \pi(0)\sum_{k=0}^N \binom{N}{k}
+= \pi(0)2^N</script><p>由二项式定理。所以$\pi(0) = 2^{-N}$并且稳态分布为二项分布$(N, 1/2)$.</p>
+<p>在这一点上，值得记住的是对于数值 $N$，你可以使用<code>steady_state</code>来找到稳态分布。依靠Python来为你做所有的工作。这有一些明显的优点，但也有一些缺点：</p>
+<ul>
+<li>当$N$非常大时，Python无法处理计算。</li>
+<li>你会看到分布是二项分布，但不知道是怎么得来的。</li>
+</ul>
+<p>这就是为什么即使在强大的个人计算机时代，找到使用数学解决问题的好方法仍然很重要。</p>
+<h3 id="环形粘性随机漫步"><a href="#环形粘性随机漫步" class="headerlink" title="环形粘性随机漫步"></a>环形粘性随机漫步</h3><p>假设一个链在圆上顺时针顺序排列状态0,1,2,3,4。假设在每个步骤中保持在原位的概率为$s$，移动到逆时针邻居的概率为$p$，移动到顺时针邻居的概率为$r$。这里，$s$, $p$和 $r$都为正，且总和为1。</p>
+<p>很明显，链的行为在五个状态中是对称的，因此从长远来看，预计在每个状态中花费的时间占比相同。状态上的稳态分布是均匀的。您也可以通过求解平衡方程来校验这一点。</p>
+<p>让我们看看上述链是否满足详细的平衡方程。与上面的Ehrenfest链不同，这条链可以“环回”。所以不清楚是否满足详细的平衡方程。</p>
+<p>详细的平衡方程是：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+\pi(0)r = \pi(1)p ~~~~ \implies \pi(1) = \frac{r}{p}\pi(0) \\ 
+\pi(1)r = \pi(2)p ~~~~ \implies \pi(2) = \frac{r^2}{p^2}\pi(0) \\ 
+\pi(2)r = \pi(3)p ~~~~ \implies \pi(3) = \frac{r^3}{p^3}\pi(0) \\ 
+\pi(3)r = \pi(4)p ~~~~ \implies \pi(4) = \frac{r^4}{p^4}\pi(0) 
+\end{align*}</script><p>到目前为止一切都那么好，现在到了求解真相的关键：</p>
+<script type="math/tex; mode=display">
+\pi(4)r = \pi(0)p ~~~~ \implies \pi(4) = \frac{p}{r}\pi(0)</script><p>对于这个方程组，有解的前提是$\pi(4)$的两个表达式必须相等，也就是</p>
+<script type="math/tex; mode=display">
+\frac{r^4}{p^4} = \frac{p}{r}, ~~~ \text{that is, } ~r^5 = p^5</script><p>这只有在$r = p$时才会发生，在这种情况下，详细的平衡方程表示$\pi$ 的所有条目都是相等的，而这是已知的。</p>
+<p>总结一下：</p>
+<ul>
+<li>在所有状态下，链的稳态分布是均匀的。均匀分布满足平衡方程。</li>
+<li>当$r = p$, 详细的平衡方程有一个正解，即稳态分布。</li>
+<li>当$r \ne p$详细的平衡方程没有概率分布作为解。</li>
+</ul>
+<p>显然，$r = p$ 有特殊的地位。这究竟对这个链的行为意味着什么？这是下一节的主题。目前，这里用于模拟链路径的两组参数：</p>
+<ul>
+<li><code>circle_walk_1</code>: $s = 0.1$, $r = 0.6$, $p = 0.3$</li>
+<li><code>circle_walk_2</code>: $s = 0.1$, $r = 0.3$, $p = 0.6$</li>
+</ul>
+<p>保持原位的机会对于两者都是相同的，但顺时针和逆时针移动的机会已经切换。这是两条链的模拟路径。在图中，“顺时针”显示为向上移动，“逆时针”显示为向下移动。</p>
+<p>查看路径（如果您愿意，可以模拟更多路径）并回答以下问题：</p>
+<ul>
+<li>哪一个有“向上”转移而不是“向下”？</li>
+<li>如果有人向您展示了这两个流程之一的路径，但没有说明这两个流程中的哪一个，您能否确定是哪一个？</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">states = np.arange(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">s = <span class="number">0.1</span></span><br><span class="line">r = <span class="number">0.6</span></span><br><span class="line">p = <span class="number">0.3</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">transition_prob</span><span class="params">(i, j)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> i == j:</span><br><span class="line">        <span class="keyword">return</span> s</span><br><span class="line">    <span class="keyword">elif</span> j == (i+<span class="number">1</span>) % <span class="number">5</span>:</span><br><span class="line">        <span class="keyword">return</span> r</span><br><span class="line">    <span class="keyword">elif</span> j == (i<span class="number">-1</span>) % <span class="number">5</span>:</span><br><span class="line">        <span class="keyword">return</span> p</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">circle_walk_1 = MarkovChain.from_transition_function(states, transition_prob)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">circle_walk_1</span><br></pre></td></tr></table></figure>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.1</td>
+      <td>0.6</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.3</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.3</td>
+      <td>0.1</td>
+      <td>0.6</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.0</td>
+      <td>0.3</td>
+      <td>0.1</td>
+      <td>0.6</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.3</td>
+      <td>0.1</td>
+      <td>0.6</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.6</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.3</td>
+      <td>0.1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">circle_walk_1.simulate_path(<span class="number">0</span>, <span class="number">50</span>, plot_path=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="/image/11-1-output_8_0.png" alt="png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">s = <span class="number">0.1</span></span><br><span class="line">r = <span class="number">0.3</span></span><br><span class="line">p = <span class="number">0.6</span></span><br><span class="line"></span><br><span class="line">circle_walk_2 = MarkovChain.from_transition_function(states, transition_prob)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">circle_walk_2</span><br></pre></td></tr></table></figure>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.1</td>
+      <td>0.3</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.6</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.6</td>
+      <td>0.1</td>
+      <td>0.3</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.0</td>
+      <td>0.6</td>
+      <td>0.1</td>
+      <td>0.3</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.6</td>
+      <td>0.1</td>
+      <td>0.3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.3</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.6</td>
+      <td>0.1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">circle_walk_2.simulate_path(<span class="number">0</span>, <span class="number">50</span>, plot_path=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="/image/11-2-output_11_0.png" alt="png"></p>
+<h2 id="可逆性"><a href="#可逆性" class="headerlink" title="可逆性"></a>可逆性</h2><p>前一部分的随机漫步在环上顺时针顺序排列的状态0,1,2,3,4。在每个步骤中保持在原位的概率为$s$，移动到逆时针邻居的概率为$p$，移动到顺时针邻居的概率为$r$。链的稳态分布为每个状态的概率为0.2。</p>
+<p>若$r &gt; p$, 那么链更可能顺时针方向而不是逆时针方向移动。例如，在稳态下，路径$0, 1, 2, 3$的概率为：</p>
+<script type="math/tex; mode=display">
+P(X_0 = 0)P(0, 1)P(1, 2)P(2, 3) = 0.2r^3</script><p>所述路径的<em>反转路径</em> $3, 2, 1, 0$ 的概率为</p>
+<script type="math/tex; mode=display">
+P(X_0 = 3)P(3, 2)P(2, 1)P(1, 0) = 0.2p^3</script><p>若 $r &gt; p$，那么原始路径的概率更高。</p>
+<p>但如果$r = p$，那么原始路径与反向路径的概率相同; 在稳定状态下，链条可能朝任何一个方向上运行。如果某人在稳定状态下模拟链并向您显示原始路径以及反向路径，您将无法分辨哪个是哪个。</p>
+<p>在本节中，我们将定义马尔科夫链以这种方式<em>可逆</em>的意义。</p>
+<h3 id="反转过程"><a href="#反转过程" class="headerlink" title="反转过程"></a>反转过程</h3><p>设$X_0, X_1, \ldots $是一个定义在有限状态空间下，具有稳态分布$\pi$的不可约马尔可夫链。以这种稳态分布启动该链，也就是说，让$X_0$具有分布$\pi$。然后对于所有的$n \ge 1$，$X_n$的分布也是$\pi$。</p>
+<p>修正，令$n &gt; 0$，并考虑<em>反向</em>序列$Y_0, Y_1, \ldots, Y_n$，其中$Y_k = X_{n-k}$， $k = 0, 1, \ldots, n$。称$X_0, X_1, \ldots, X_n$为<em>正向</em>序列。</p>
+<p>反向序列是时间同质马尔可夫链的一个很好实例。为了了解原因，我们将检查马尔科夫性质是否成立。</p>
+<p>在我们证明一般事实之前，让我们进行一些探索性的计算。从$n = 1$开始，此时有$Y_0 = X_1$ 和$Y_1 = X_0$。对于状态$i$和$j$。</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+P(Y_1 = j \mid Y_0 = i) ~ &= ~ \frac{P(Y_1 = j, Y_0 = i)}{P(Y_0 = i)} \\
+&= ~ \frac{P(X_0 = j, X_1 = i)}{P(X_1 = i)} \\
+&= ~ \frac{\pi(j)P(j, i)}{\pi(i)}
+\end{align*}</script><p>因为正向序列处于稳定状态。我们已经使用转移矩阵和前向序列的稳态分布找到了反向序列的转移概率。</p>
+<p>对于$n = 2$，我们有$Y_0 = X_2$，$Y_1 = X_1$， 和 $Y_2 = X_0$。对于状态$k$，$i$，和$j$</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+P(Y_2 = j \mid Y_0 = k, Y_1 = i) ~ &= ~ \frac{P(Y_2 = j, Y_1 = i, Y_0 = k)}{P(Y_1 = i, Y_0 = k)} \\
+&= ~ \frac{P(X_0 = j, X_1 = i, X_2 = k)}{P(X_1 = i, X_2 = k)} \\
+&= ~ \frac{\pi(j)P(j, i)P(i, k)}{\pi(i)P(i, k)} \\
+&= ~ \frac{\pi(j)P(j, i)}{\pi(i)}
+\end{align*}</script><p>解不依赖于$k$。这与马尔科夫性质保持一致。另外结合我们刚刚证明的两个事实，可以发现，转移概率是时间同质的。</p>
+<p>对于更一般的$n$，修正状态$i$和$j$以及 0到$n-1$之间的整数$m$有</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+& P(Y_{m+1} = j \mid Y_0 = i_0, Y_1 = i_1, \ldots, Y_{m-1} = i_{m-1}, Y_m = i) \\ \\ 
+&=
+\frac{P(Y_0 = i_0, Y_1 = i_1 \ldots, Y_{m-1} = i_{m-1}, Y_m = i, Y_{m+1} = j)}
+{P(Y_0 = i_0, Y_1 = i_1 \ldots, Y_{m-1} = i_{m-1}, Y_m = i)} \\ \\
+&= \frac{P(X_n = i_0, X_{n-1} = i_1, \ldots, X_{n-m+1} = i_{m-1}, X_{n-m} = i, X_{n-m-1} = j)}
+{P(X_n = i_0, X_{n-1} = i_1, \ldots, X_{n-m+1)} = i_{m-1}, X_{n-m} = i)} \\ \\
+&= \frac{\pi(j)P(j, i)P(i, i_{m-1}) \cdots P(i_1, i_0)}
+{\pi(i)P(i, i_{m-1}) \cdots P(i_1, i_0)} \\ \\
+&= \frac{\pi(j)P(j, i)}{\pi(i)}
+\end{align*}</script><p>这只涉及状态$i$和$j$，而和$i_0, i_1, \ldots, i_{m-1}$以及$m$无关。因此满足马尔可夫性质，转移概率是时间同质的。反向序列”状态$i$到状态$j$”的1-阶转移概率为</p>
+<script type="math/tex; mode=display">
+P(Y_1 = j \mid Y_0 = i) = \frac{\pi(j)P(j, i)}{\pi(i)}</script><h3 id="可逆链"><a href="#可逆链" class="headerlink" title="可逆链"></a>可逆链</h3><p>当原来的<em>正向</em>马尔科夫链$X_0, X_1, \ldots $中，对于每个$n$，其反向序列$Y_0, Y_1, \ldots Y_n$<em>的1-阶转移概率和原始序列一样</em>的情况，被称作是<em>可逆的</em>。也就是说</p>
+<script type="math/tex; mode=display">
+\frac{\pi(j)P(j, i)}{\pi(i)} = P(i, j) ~~~ \text{for all } i, j</script><p>如果链可逆，则有</p>
+<script type="math/tex; mode=display">
+\pi(i)P(i, j) = \pi(j)P(j, i) ~~~ \text{for all } i, j</script><p>换言之：</p>
+<p><strong>如果详细的平衡方程具有正解，则链是可逆的。</strong> 这与我们在稳状下根据该链想象粒子的移动情况一致：在每个时刻，对于每一对状态$i$和$j$，粒子从$i$移动到$j$的比例与从$j$移动到$i$的比例完全相同。</p>
+<p>在本节开始时，我们查看了一个环上的随机漫步。让我们看看可逆性的定义对于这个链是什么意思。</p>
+<ul>
+<li><p>在上一节中，我们展示了当 $p \ne r$时，详细的平衡方程没有正解。因此，当 $p \ne r$时，链条是不可逆的。这与我们之前的分析一致。</p>
+</li>
+<li><p>当$p = r$时，我们找到了详细平衡方程的解，因此链是可逆的。这形式化了我们的猜想，即如果$p = r$，那么在稳态下，链条“正向或者反向运行是一样的”。</p>
+</li>
+</ul>
+<h3 id="生死链的可逆性"><a href="#生死链的可逆性" class="headerlink" title="生死链的可逆性"></a>生死链的可逆性</h3><p>回想一下，<em>生死链</em>是定义在整数上的马尔可夫链，其每一步的转移限制为增加1，减少1或者保持不变。不难校验具有有限状态空间的不可约的生死链是否可逆。您可以像我们在上一节中对Ehrenfest链所做的那样，通过求解详细的平衡方程来校验。</p>
+<p>返回并查看文本和练习中的示例。切换链，反射随机漫步（包括懒惰和非懒惰的），Ehrenfest链和伯努利 - 拉普拉斯链都是不可简约的生死链，因此都是可逆的。</p>
+<p>让我们在乍一看似乎不可逆转的生死链的情况下证实这一点。这是马尔可夫链 $X_0, X_1, \ldots $的转移图。</p>
+<p><img src="/image/11-3-trans_b_and_d.png" alt="B&amp;D"></p>
+<p>这条链以较高的概率向右移动（即生有孩子），所以看起来好像我们应该知道它是正向还是反向移动。但请记住，<em>时间逆转发生在稳态</em>。在稳态下，链条可能在状态3和4之间穿梭。您可以通过求解详细的平衡方程式来看到这一点。</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+\pi(1)\cdot 1 &= \pi(2) \cdot 0.1 ~~~~ \implies \pi(2) = 10\pi(1)  \\
+\pi(2) \cdot 0.9 &= \pi(3) \cdot 0.1 ~~~~ \implies \pi(3) = 90\pi(1) \\
+\pi(3) \cdot 0.9 &= \pi(4) \cdot 1 ~~~~~~~ \implies \pi(4) = 81\pi(1)
+\end{align*}</script><p>它也将访问状态2和1，但很少，状态1特别罕见。这些访问将散布3和4中，并且这些路径将无法区分正向和反向移动。</p>
+<p>让我们模拟这个过程的路径。首先，我们构造转移矩阵并确认我们$\pi$的计算。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">s = np.arange(<span class="number">1</span>, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">trans</span><span class="params">(i, j)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> i == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">if</span> j == <span class="number">2</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">elif</span> i == <span class="number">4</span>:</span><br><span class="line">        <span class="keyword">if</span> j == <span class="number">3</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">elif</span> j == i+<span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.9</span></span><br><span class="line">    <span class="keyword">elif</span> j == i<span class="number">-1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">bnd = MarkovChain.from_transition_function(s, trans)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pi = bnd.steady_state()</span><br><span class="line">pi</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+    <thead>
+        <tr>
+            <th>Value</th> <th>Probability</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1    </td> <td>0.00549451 </td>
+        </tr>
+    </tbody>
+        <tr>
+            <td>2    </td> <td>0.0549451  </td>
+        </tr>
+    
+        <tr>
+            <td>3    </td> <td>0.494505   </td>
+        </tr>
+    
+        <tr>
+            <td>4    </td> <td>0.445055   </td>
+        </tr>
+    
+</table>
+
+
+
+<p>我们可以使用<code>simulate_path</code>来绘制链的路径。请注意，与我们以前使用此方法不同，我们现在将初始分布作为第一个参数传递，而不是特定状态。第二个参数是步骤数，如前所述。</p>
+<p>下图显示了一条长度为200的路径。运行单元格几次，并向前和向后查看每条路径。你不会发现两者之间的系统差异。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">10</span>,<span class="number">5</span>))</span><br><span class="line">n = <span class="number">200</span>                          <span class="comment"># the number of steps</span></span><br><span class="line">x = np.arange(n+<span class="number">1</span>)               <span class="comment"># the steps</span></span><br><span class="line">y = bnd.simulate_path(pi, n, plot_path=<span class="keyword">True</span>)    <span class="comment"># the simulated state at each step</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Axis labels and title</span></span><br><span class="line">plt.xlabel(<span class="string">'$n$'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'$X_n$'</span>, rotation=<span class="number">0</span>)</span><br><span class="line">plt.title(<span class="string">'Reversibility: Path of Birth and Death Chain in Steady State'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="/image/11-4-output_11_0.png" alt="png"></p>
+<h2 id="密码破解"><a href="#密码破解" class="headerlink" title="密码破解"></a>密码破解</h2><p>有趣的是，虽然许多马尔可夫链是可逆的，但到目前为止我们看到的例子并没有解释我们通过反转链条得到的结果。毕竟，如果它看起来像正向一样向前运行，为什么不向前运行呢？为什么要担心可逆性呢？</p>
+<p>事实证明，逆转马尔可夫链可以帮助解决其他方法难以处理的一类问题。在本节中，我们将介绍如何出现此类问题的示例。在下一节中，我们将讨论一个解决方案。</p>
+<h3 id="假设"><a href="#假设" class="headerlink" title="假设"></a>假设</h3><p>在网络安全成为我们生活的一部分之前，人们就已经对加密和解密非常感兴趣了。解码加密信息可能是复杂且计算密集的。逆转马尔可夫链可以帮助我们完成这项任务。</p>
+<p>为了了解解决此类问题的方法以及问题的涉及范围，让我们尝试解码使用称为<em>替代代码</em>的简单代码加密的一小段文本。文本以字母表写，您可以将其视为一组字母和标点符号。在替换代码中，字母表中的每个字母简单地被另一个字母替换，使得代码只是字母表的排列。</p>
+<p>要解码由替换代码加密的消息，您必须<em>反转</em>使用的排列。换句话说，您必须对<em>编码</em>消息应用置换以恢复原始文本。我们将这个置换称为<em>解码器</em>。</p>
+<p>要解码文本消息，我们必须做出一些假设。例如，了解编写消息的语言，以及该语言中常见的字母组合。具体而言，就假设我们尝试解码用英语编写然后加密的消息。如果我们的解码过程以zzxtf和tbgdgaa之类的“单词”结束，我们可能想尝试不同的方式。</p>
+<p>所以我们需要关于哪些字母序列是常见的数据。这些数据现在越来越容易收集; 例如由 <a href="http://norvig.com" target="_blank" rel="external">Peter Norvig</a>, 一个谷歌的研究总监负责的<a href="http://norvig.com/ngrams/" target="_blank" rel="external">网页</a></p>
+<h3 id="解码信息"><a href="#解码信息" class="headerlink" title="解码信息"></a>解码信息</h3><p>让我们看看我们如何使用这种方法来解码消息。为简单起见，假设我们的字母表只包含三个字母a，d和t。现在假设我们得到编码消息atdt。我们相信这是一个英文单词。我们怎么能以一种可以被计算机重复的方式来解码呢？</p>
+<p>作为第一步，我们将记下所有3！= 6个字母表中字母的可能排列，并使用每个字母对消息进行解码。该表<code>decoding</code>包含所有结果。<code>Decoder</code>中的每个条目都是一个排列，我们将应用于我们的编码文本atdt。确定我们将在解码过程中对哪些字母置换。</p>
+<p>要了解如何执行此操作，请首先将字母“按字母顺序”的排序：’a’，’d’，’t’。现在看一下表格的行。</p>
+<ul>
+<li><p>第一行中的解码器是[‘a’，’d’，’t’]。这个解码器简单地保持字母不变; atdt被解码为atdt。 </p>
+<script type="math/tex; mode=display">
+\text{Decoder ['a', 'd', 't']: } ~~~ a \to a, ~~~ d \to d, ~~~ t \to t</script></li>
+<li><p>第二行中的解码器是[‘a’，’t’，’d’]。这使得字母’a’的第一个字母保持不变，但将第二个字母’d’替换为’t’，将第三个字母’t’替换为’d’。</p>
+<script type="math/tex; mode=display">
+\text{Decoder ['a', 't', 'd']: } ~~~ a \to a, ~~~ d \to t, ~~~ t \to d</script><p>所以atdt被解码为adtd。</p>
+</li>
+</ul>
+<p>您可以以相同的方式阅读表格的其余部分。. </p>
+<p>请注意，在每个已解码的消息中，在索引1和3处出现相同字母。这是用于解码atdt中的t的字母。替换代码的一个特征是每个<em>字母原件</em>都用相同的字母进行<em>置换</em>，因而<em>字母原件</em>出现在文本中的位置都会替换为相同的<em>替换字母</em>。解码器必须具有相同的功能。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">decoding</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+    <thead>
+        <tr>
+            <th>Decoder</th> <th>atdt Decoded</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>['a' 'd' 't']</td> <td>['a' 't' 'd' 't']</td>
+        </tr>
+    </tbody>
+        <tr>
+            <td>['a' 't' 'd']</td> <td>['a' 'd' 't' 'd']</td>
+        </tr>
+    
+        <tr>
+            <td>['d' 'a' 't']</td> <td>['d' 't' 'a' 't']</td>
+        </tr>
+    
+        <tr>
+            <td>['d' 't' 'a']</td> <td>['d' 'a' 't' 'a']</td>
+        </tr>
+    
+        <tr>
+            <td>['t' 'a' 'd']</td> <td>['t' 'd' 'a' 'd']</td>
+        </tr>
+    
+        <tr>
+            <td>['t' 'd' 'a']</td> <td>['t' 'a' 'd' 'a']</td>
+        </tr>
+    
+</table>
+
+
+
+<p>我们应该使用哪一个解码器？为了做出这个决定，我们必须了解英语中单词中，字母串转移的频率。我们的目标是根据解码结果中字母串的转移频率选择解码器。</p>
+<p>我们用汇总了英语中，一些<em>双字母</em>或两个字母组合频率的数据。这是一个被称为<code>bigrams</code>的转移矩阵，用于对英语中双字母的可用信息进行粗略简化; 我们使用了Peter Norvig的双字母表，并将其限制在我们的三个字母的字母表中。对应于字母’a’的行假定以’a’开头的大约2％的双字母是’aa’，大约22％是’ad’，剩下的76％是’at’。</p>
+<p>“aa”组合是罕见的，这是有道理的; 我们不经常使用像aardvark这样的词。甚至2％看起来很大，直到你记得它只是’aa’，’ad’和’at’中’aa’的比例，因为我们限制了字母表。如果你看它在所有 $26\times26$ 中的比例，会低得多。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bigrams</span><br></pre></td></tr></table></figure>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>d</th>
+      <th>t</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>a</th>
+      <td>0.018099</td>
+      <td>0.219458</td>
+      <td>0.762443</td>
+    </tr>
+    <tr>
+      <th>d</th>
+      <td>0.570995</td>
+      <td>0.159772</td>
+      <td>0.269233</td>
+    </tr>
+    <tr>
+      <th>t</th>
+      <td>0.653477</td>
+      <td>0.049867</td>
+      <td>0.296656</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p>现在将真实文本视为具有此转移矩阵的马尔可夫链的路径。一个有趣的历史是，这就是马尔科夫第一次提出马尔科夫过程时所做的事情 - 他分析了亚历山大普希金的韵文小说，<em><a href="https://zh.wikipedia.org/wiki/%E5%8F%B6%E7%94%AB%E7%9B%96%E5%B0%BC%C2%B7%E5%A5%A5%E6%B6%85%E9%87%91" target="_blank" rel="external">Eugene Onegin</a></em> 中元音和辅音之间的转移。</p>
+<p>如果真实的文本是tada，那么我们可以将序列tada视为马尔可夫链的路径。其概率可以由$P(t)P(t, a)P(a, d)P(d, a)$计算。我们将根据这个概率给每个解码器一个分数。较高的分数对应于更好的解码器。</p>
+<p>为了分配分数，我们假设所有三个字母都以相同的概率开始路径。对于字母表中的三个字母，这与事实并不相符（每个字母出现的概率并不相同，我们可以忽略这一因素）。这意味着每条路径的概率将以1/3的系数开始，我们所要做的就是对所有概率进行排名。我们将只计算$P(t, a)P(a, d)P(d, a)$，值约为 8%。</p>
+<p>根据我们上面<code>decoding</code>的表格，tada是我们通过将解码器[‘t’，’d’，’a’]应用到我们的数据atdt得到的结果。现在，我们可以说<em>这个解码器在给定数据上的得分</em>是8％。稍后我们将介绍更正式的计算和术语。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># score of decoder ['t', 'd', 'a']</span></span><br><span class="line"><span class="number">0.653477</span> * <span class="number">0.219458</span> * <span class="number">0.570995</span></span><br></pre></td></tr></table></figure>
+<pre><code>0.08188682431730866
+</code></pre><p>为了自动化这种计算，我们可以使用<code>prob_of_path</code>方法。请记住，它的第一个参数是初始状态，第二个参数是由序列中剩余状态组成的列表或数组。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bigrams.prob_of_path(<span class="string">'t'</span>, [<span class="string">'a'</span>, <span class="string">'d'</span>, <span class="string">'a'</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>0.081886816291942444
+</code></pre><p>我们是否应该决定将我们的消息atdt解码为tada？如果我们认为8％的可能性很高，那么答案为是。但，如果其他的解码器具有更高的可能性呢？在那种情况下，当然选择得分高的。</p>
+<p>因此，我们需要全部六个“解码器”路径中的概率。</p>
+<p>让我们定义一个函数<code>score</code>，它将获取一个列表或一组字符，并使用<code>bigrams</code>转移矩阵返回相应路径的概率。在我们的示例中，这与返回相应解码器的分数相同。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">score</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> bigrams.prob_of_path(x[<span class="number">0</span>], x[<span class="number">1</span>:])</span><br></pre></td></tr></table></figure>
+<p>以下是按分数降序排列的结果。有一个明显的赢家：对应于消息’data’的解码器[‘d’，’t’，’a’]的分数是任何其他解码器的两倍以上。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">decoding = decoding.with_column(<span class="string">'Score of Decoder'</span>, decoding.apply(score, <span class="number">1</span>))</span><br><span class="line">decoding.sort(<span class="string">'Score of Decoder'</span>, descending=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+    <thead>
+        <tr>
+            <th>Decoder</th> <th>atdt Decoded</th> <th>Score of Decoder</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>['d' 't' 'a']</td> <td>['d' 'a' 't' 'a']</td> <td>0.284492        </td>
+        </tr>
+    </tbody>
+        <tr>
+            <td>['d' 'a' 't']</td> <td>['d' 't' 'a' 't']</td> <td>0.134142        </td>
+        </tr>
+    
+        <tr>
+            <td>['t' 'd' 'a']</td> <td>['t' 'a' 'd' 'a']</td> <td>0.0818868       </td>
+        </tr>
+    
+        <tr>
+            <td>['a' 'd' 't']</td> <td>['a' 't' 'd' 't']</td> <td>0.0102363       </td>
+        </tr>
+    
+        <tr>
+            <td>['t' 'a' 'd']</td> <td>['t' 'd' 'a' 'd']</td> <td>0.00624874      </td>
+        </tr>
+    
+        <tr>
+            <td>['a' 't' 'd']</td> <td>['a' 'd' 't' 'd']</td> <td>0.00294638      </td>
+        </tr>
+    
+</table>
+
+
+
+<h3 id="问题的规模"><a href="#问题的规模" class="headerlink" title="问题的规模"></a>问题的规模</h3><p>当字母表较大时，我们在三个字符的字母表上做的工作，将会变得非常可怕。52个小写字母和大写字母，以及空格字符和所有标点，形成一个大约70个字符的字母表。这给了我们70！不同的解码器需要考虑。理论上，我们必须找到这70！个中每一个的可能性和并将他们排序。</p>
+<p>这是70！个解码器。我们的计算系统无法处理那么多，其他系统也会遇到同样的问题。</p>
+<p>下面计算了70！的值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">math.factorial(<span class="number">70</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>11978571669969891796072783721689098736458938142546425857555362864628009582789845319680000000000000000
+</code></pre><p>一个可能的解决方案是从这70！个可能的解码器中随机采样，然后只从采样的排序中进行挑选。但是我们如何从70！中进行采样？根据字母表，均匀随机采样并不是一个好主意，因为那不太可能让我们快速获得理想解决方案。</p>
+<p>我们希望的采样程序，能够选择具有高概率的良好解码器。好的解码器生成的文本几乎比所有其他解码器生成的文本具有更高概率。换句话说，给定数据，良好的解码器比其他解码器具有更高的可能性。</p>
+<p>您可以使用贝叶斯规则记下这种可能性。让 $S$代表所有可能排列的空间; 如果字母表有 $N$字符，然后$S$有$N!$个元素。对于任何随机挑选的排列$j$，给出数据的解码器的概率是：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+\text{Likelihood of } j \text{ given the encoded text}
+&= \frac{\frac{1}{N!} P(\text{encoded text} \mid \text{decoder = }j)}
+{ {\sum_{i \in S} } \frac{1}{N!} P(\text{encoded text} \mid \text{decoder = }i)} \\ \\
+&=\frac{P(\text{encoded text} \mid \text{decoder = }j)}
+{ {\sum_{i \in S} } P(\text{encoded text} \mid \text{decoder = }i)}
+\end{align*}</script><p>对于给定的编码文本，分母是使所有似然性总和为1的归一化常数项。它出现在每个解码器的可能性中。在我们使用三个字母字母表的示例中，我们忽略了它，因为我们可以找出所有六个解码器的分子并且只是比较它们。分子就是我们称之为解码器的<em>分数</em>。</p>
+<p>即使字母表很大，对于任何特定的解码器 $j$我们可以通过转移概率顺序相乘计算得到分子，就像我们在我们的例子中所做的那样。但是对于所有可能的解码器，我们无法对全量解码器执行此操作，因此我们无法列出所有可能的分数，我们无法对他们求和。因此，我们不知道可能性的分母，甚至找不到合适的近似值。</p>
+<p>我们现在需要的是一种方法，即使我们不知道归一化常数，也可以从概率分布中得出一个近似解。这就是Markov Chain Monte Carlo帮助我们做的事情。</p>
+<h2 id="马尔可夫链蒙特卡罗法"><a href="#马尔可夫链蒙特卡罗法" class="headerlink" title="马尔可夫链蒙特卡罗法"></a>马尔可夫链蒙特卡罗法</h2><p>马尔可夫链蒙特卡罗（MCMC）的目标是从复杂的高维分布中生成随机样本，这种情况下，我们的信息不完整。例如，我们可能不知道分布的归一化常量，正如我们在上一节的示例中看到的那样。</p>
+<p>比如我们想根据分布$\pi$生成样本。我们就假设$\pi$是一个非常巨大有限集上的概率分布。MCMC依赖于较少的采样值。</p>
+<ul>
+<li><p>设$X_0, X_1, \ldots $是一个定义在有限空间上的不可约非周期性马尔科夫链。那么，当$n$变大时，$X_n$的分布趋向于稳态。如果我们可以创建一个稳态分布为$\pi$ 的马尔科夫链$\{X_n\}$ ，那么我们使用对于一个较大值$n$的 $X_n$，来长期运行链条，从而模拟$\pi$（或其近似值）。</p>
+</li>
+<li><p>构建一个使得最终稳态分布为$\pi$的转移矩阵的最简单的方式是保证详细平衡方程有解。换言之，最简单的方法是尝试创建一个可逆链。</p>
+</li>
+<li><p>如果链是可逆的，那么详细平衡方程可以改写为：</p>
+</li>
+</ul>
+<script type="math/tex; mode=display">
+\frac{\pi(j)}{\pi(i)} = \frac{P(i, j)}{P(j, i)}</script><p>右侧只涉及我们想要创建的链的转移概率。左侧仅涉及$\pi$中的项的比率。因此，即使我们不知道使$\pi$归一化的常数，也可以得到校验。</p>
+<h3 id="Metropolis-算法"><a href="#Metropolis-算法" class="headerlink" title="Metropolis 算法"></a>Metropolis 算法</h3><p>究竟是谁第一个提出了相关算法来创建这样的马尔可夫链存在一定争议。黑斯廷斯提出了一般版本。在这里，我们将描述于1953年由Metropolis和共同作者提出的早期版本。</p>
+<p>目标是创建一个转移矩阵 $\mathbb{P}$，使得$\pi$和$\mathbb{P}$能一起求解详细平衡方程。</p>
+<p>该算法基于任意的对称转移矩阵$Q$，该矩阵会在状态空间上创建一个不可约的非周期性链。例如，如果状态空间是数值，你可以用“无论链条，它选择三个最接近的值（包括自身，每个的概率都是$1/3$）中的一个”开始链。对于一对状态$i$和$j$，转移概率$Q(i, j)$被称为<em>提议概率</em>。</p>
+<p>以下是确定新链转移的步骤。</p>
+<ul>
+<li><p>假设连载时刻$n$时为状态$i$，即$X_n = i$。根据提议概率$Q(i, j)$选择一个状态$j$。这个$j$是链可能的目的状态。</p>
+</li>
+<li><p>定义<em>接受概率</em>如下</p>
+<script type="math/tex; mode=display">
+r(i, j) = \frac{\pi(j)}{\pi(i)}</script></li>
+<li><p>如果 $r(i, j) \ge 1$, 则 $X_{n+1} = j$.</p>
+</li>
+<li><p>如果 $r(i, j) &lt; 1$, 通过抛硬币的方式，随机选择$r(i, j)$。 </p>
+<ul>
+<li>如果硬币正面向上，则 $X_{n+1} = j$. </li>
+<li>如果硬币反面向上，则 $X_{n+1} = i$.</li>
+</ul>
+</li>
+<li>以 $X_{n+1}$为起始值，重复所有步骤。</li>
+</ul>
+<p>因此，新链要么移动到$Q$，要么保持原样。我们说它基于$Q$和$r$<em>接受移动到新状态</em>，否则它不动。</p>
+<p>因为提案链是不可约的，新的链条也是不可约的。因为它可以保持原位，所以它是非周期性的。因此它具有稳态分布。算法表示这种稳态分布与$\pi$相同，即我们定义的$r(i, j)$。</p>
+<h3 id="算法的相关思考"><a href="#算法的相关思考" class="headerlink" title="算法的相关思考"></a>算法的相关思考</h3><p>在我们证明算法有效之前，让我们先来看看它在解码器环境中的作用。</p>
+<p>首先注意$Q$是对称的，也是不可约的。对称性要求是有意义的，因为每个详细的平衡方程涉及转移$i \to j$和$j \to i$。</p>
+<p>修正启动的解码器并将其命名为$i$。现在你必须决定链接下一步的位置，即下一个解码器是什么。由该程序启动的算法，在根据$Q$选择了一个$j$之后会关闭。我们称之为<em>$Q$ 建议移动到$j$</em>。</p>
+<p>分布$\pi$包含所有解码器的可能性，决定链是否应移至$j$的根本因素是希望最终得到具有高可能性的解码器，因此需要比较$\pi(i)$和$\pi(j)$。</p>
+<p>该算法通过比较<em>接受比率</em> $r(i, j) = \pi(j)/\pi(i)$ 和 1 之间的大小。</p>
+<ul>
+<li><p>如果$r(i, j) \ge 1$，那么$j$的概率至少和$i$一样大，所以你<em>接受提议</em>并且移动到$j$。 </p>
+</li>
+<li><p>如果$r(i, j) &lt; 1$,那么建议的解码器$j$的可能性比当前的$i$要<em>小</em>，所以暂时先保持在$i$。但这可能会使链条陷入局部最大值。该算法通过抛硬币（随机选择）提供了避免这种情况的机会。如果硬币为反面，即使$j$比当前具有<em>更低</em>的可能性，链条移动到$j$。我们的想法是，从这个新位置开始，可能存在解码器的路径，这些解码器具有最高的可能性。</p>
+</li>
+</ul>
+<h3 id="算法实践"><a href="#算法实践" class="headerlink" title="算法实践"></a>算法实践</h3><p>我们现在将表明由Metropolis算法创建的链的详细平衡方程，是如何通过期望$\pi$和转移矩阵$\mathbb{P}$求解的。</p>
+<p>选择任意两个状态$i$和$j$</p>
+<h4 id="案例-1-pi-i-pi-j"><a href="#案例-1-pi-i-pi-j" class="headerlink" title="案例 1: $\pi(i) = \pi(j)$"></a>案例 1: $\pi(i) = \pi(j)$</h4><p>当$r(i, j) = 1$。通过算法和$Q$的对称性，有$P(i, j) = Q(i, j)$和$P(j, i) = Q(j, i) = Q(i, j)$。</p>
+<p>因此，$P(i, j) = P(j, i)$，满足详细平衡方程$\pi(i)P(i, j) = \pi(j)P(j, i)$。</p>
+<h4 id="案例-2-pi-j-lt-pi-i"><a href="#案例-2-pi-j-lt-pi-i" class="headerlink" title="案例 2: $\pi(j) &lt; \pi(i)$"></a>案例 2: $\pi(j) &lt; \pi(i)$</h4><p>当 $r(i, j) &lt; 1$，有</p>
+<script type="math/tex; mode=display">
+P(i, j) ~=~ Q(i, j)r(i, j) 
+~=~ Q(j, i)\frac{\pi(j)}{\pi(i)} ~~~ \text{(symmetry of } Q \text{ and definition of }r)</script><p>此时 $r(j, i) &gt; 1$，则根据算法有 $P(j, i) = Q(j, i)$。</p>
+<p>因此</p>
+<script type="math/tex; mode=display">
+P(i, j) ~ = ~ P(j, i)\frac{\pi(j)}{\pi(i)}</script><p>这与下面是一样的</p>
+<script type="math/tex; mode=display">
+\pi(i)P(i, j) ~ = ~ \pi(j)P(j, i)</script><h4 id="案例-3-pi-j-gt-pi-i"><a href="#案例-3-pi-j-gt-pi-i" class="headerlink" title="案例 3: $\pi(j) &gt; \pi(i)$"></a>案例 3: $\pi(j) &gt; \pi(i)$</h4><p>交换案例 2 中$i$和$j$的角色。 </p>
+<p>以上就是！一个简单而出色的想法，为困难问题提供解决方案。在实验中，当您实现解码文本的算法时，您将看到它的实际效果。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://upload-images.jianshu.io/upload_images/3698622-25f1d9a52c499f9a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喵十八 WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://upload-images.jianshu.io/upload_images/3698622-833f4ed0c41f117a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喵十八 Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+　　　　<div>
+  　　　
+    　　
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<span style="font-weight:blod">版权声明: </span>
+由<a href="http://yao544303.github.io" style="color:#258FC6">十八</a>创作并维护的<a href="http://yao544303.github.io" style="color:#258FC6">喵十八の小窝</a>采用<a href="https://creativecommons.org/licenses/by-nc/3.0/cn/legalcode" style="color:#258FC6">署名-非商业性使用 3.0中国大陆</a>进行许可<br/>
+欢迎转载!  请注明出处!<br/>
+本文首发于<a href="http://yao544303.github.io" style="color:#258FC6">喵十八の小窝</a></p>
+
+
+  　　　
+　　　　</div>
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/反转马尔科夫链/" rel="tag"># 反转马尔科夫链</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/29/Markov/" rel="next" title="【翻译活动】面向数据科学的概率论-10.马尔科夫链">
+                <i class="fa fa-chevron-left"></i> 【翻译活动】面向数据科学的概率论-10.马尔科夫链
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+ 　　　　　<div id="gitalk-container"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/Ruby.png"
+               alt="喵十八" />
+          <p class="site-author-name" itemprop="name">喵十八</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">90</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="yao544303963@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Yao544303" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                    
+                      Twitter
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#本章所需python包"><span class="nav-number">1.</span> <span class="nav-text">本章所需python包</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#反转马尔科夫链"><span class="nav-number">2.</span> <span class="nav-text">反转马尔科夫链</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#详细的平衡"><span class="nav-number">2.1.</span> <span class="nav-text">详细的平衡</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#详细平衡意味着平衡"><span class="nav-number">2.1.1.</span> <span class="nav-text">详细平衡意味着平衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#爱伦菲斯特链"><span class="nav-number">2.1.2.</span> <span class="nav-text">爱伦菲斯特链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#环形粘性随机漫步"><span class="nav-number">2.1.3.</span> <span class="nav-text">环形粘性随机漫步</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可逆性"><span class="nav-number">2.2.</span> <span class="nav-text">可逆性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#反转过程"><span class="nav-number">2.2.1.</span> <span class="nav-text">反转过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可逆链"><span class="nav-number">2.2.2.</span> <span class="nav-text">可逆链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生死链的可逆性"><span class="nav-number">2.2.3.</span> <span class="nav-text">生死链的可逆性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#密码破解"><span class="nav-number">2.3.</span> <span class="nav-text">密码破解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#假设"><span class="nav-number">2.3.1.</span> <span class="nav-text">假设</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解码信息"><span class="nav-number">2.3.2.</span> <span class="nav-text">解码信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题的规模"><span class="nav-number">2.3.3.</span> <span class="nav-text">问题的规模</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#马尔可夫链蒙特卡罗法"><span class="nav-number">2.4.</span> <span class="nav-text">马尔可夫链蒙特卡罗法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Metropolis-算法"><span class="nav-number">2.4.1.</span> <span class="nav-text">Metropolis 算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法的相关思考"><span class="nav-number">2.4.2.</span> <span class="nav-text">算法的相关思考</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法实践"><span class="nav-number">2.4.3.</span> <span class="nav-text">算法实践</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#案例-1-pi-i-pi-j"><span class="nav-number">2.4.3.1.</span> <span class="nav-text">案例 1: $\pi(i) = \pi(j)$</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#案例-2-pi-j-lt-pi-i"><span class="nav-number">2.4.3.2.</span> <span class="nav-text">案例 2: $\pi(j) < \pi(i)$</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#案例-3-pi-j-gt-pi-i"><span class="nav-number">2.4.3.3.</span> <span class="nav-text">案例 3: $\pi(j) > \pi(i)$</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: '2fbc96c0bbe149b498b5',
+          clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+          repo: 'Yao544303.github.io',
+          owner: 'Yao544303',
+          admin: ['Yao544303'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
