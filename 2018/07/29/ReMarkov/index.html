@@ -110,11 +110,11 @@
 自豪地采用谷歌翻译
 
 本章所需python包12345678910# HIDDENfrom datascience import *from prob140 import *import numpy as npimport matplotlib.pyplot as pltp">
-<meta property="og:image" content="http://yoursite.com/image/11-1-output_8_0.png">
-<meta property="og:image" content="http://yoursite.com/image/11-2-output_11_0.png">
-<meta property="og:image" content="http://yoursite.com/image/11-3-trans_b_and_d.png">
-<meta property="og:image" content="http://yoursite.com/image/11-4-output_11_0.png">
-<meta property="og:updated_time" content="2018-07-29T11:27:24.476Z">
+<meta property="og:image" content="http://yoursite.com/image/prob140/11-1-output_8_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/11-2-output_11_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/11-3-trans_b_and_d.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/11-4-output_11_0.png">
+<meta property="og:updated_time" content="2018-08-05T11:32:23.727Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【翻译活动】面向数据科学的概率论-11.反转马尔科夫链">
 <meta name="twitter:description" content="原文：prob140/textbook/notebooks/ch_11
@@ -123,7 +123,7 @@
 自豪地采用谷歌翻译
 
 本章所需python包12345678910# HIDDENfrom datascience import *from prob140 import *import numpy as npimport matplotlib.pyplot as pltp">
-<meta name="twitter:image" content="http://yoursite.com/image/11-1-output_8_0.png">
+<meta name="twitter:image" content="http://yoursite.com/image/prob140/11-1-output_8_0.png">
 
 
 
@@ -562,7 +562,7 @@
 
 
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">circle_walk_1.simulate_path(<span class="number">0</span>, <span class="number">50</span>, plot_path=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
-<p><img src="/image/11-1-output_8_0.png" alt="png"></p>
+<p><img src="/image/prob140/11-1-output_8_0.png" alt="png"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">s = <span class="number">0.1</span></span><br><span class="line">r = <span class="number">0.3</span></span><br><span class="line">p = <span class="number">0.6</span></span><br><span class="line"></span><br><span class="line">circle_walk_2 = MarkovChain.from_transition_function(states, transition_prob)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">circle_walk_2</span><br></pre></td></tr></table></figure>
 <div>
@@ -626,7 +626,7 @@
 
 
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">circle_walk_2.simulate_path(<span class="number">0</span>, <span class="number">50</span>, plot_path=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
-<p><img src="/image/11-2-output_11_0.png" alt="png"></p>
+<p><img src="/image/prob140/11-2-output_11_0.png" alt="png"></p>
 <h2 id="可逆性"><a href="#可逆性" class="headerlink" title="可逆性"></a>可逆性</h2><p>前一部分的随机漫步在环上顺时针顺序排列的状态0,1,2,3,4。在每个步骤中保持在原位的概率为$s$，移动到逆时针邻居的概率为$p$，移动到顺时针邻居的概率为$r$。链的稳态分布为每个状态的概率为0.2。</p>
 <p>若$r &gt; p$, 那么链更可能顺时针方向而不是逆时针方向移动。例如，在稳态下，路径$0, 1, 2, 3$的概率为：</p>
 <script type="math/tex; mode=display">
@@ -683,7 +683,7 @@ P(Y_1 = j \mid Y_0 = i) = \frac{\pi(j)P(j, i)}{\pi(i)}</script><h3 id="可逆链
 <h3 id="生死链的可逆性"><a href="#生死链的可逆性" class="headerlink" title="生死链的可逆性"></a>生死链的可逆性</h3><p>回想一下，<em>生死链</em>是定义在整数上的马尔可夫链，其每一步的转移限制为增加1，减少1或者保持不变。不难校验具有有限状态空间的不可约的生死链是否可逆。您可以像我们在上一节中对Ehrenfest链所做的那样，通过求解详细的平衡方程来校验。</p>
 <p>返回并查看文本和练习中的示例。切换链，反射随机漫步（包括懒惰和非懒惰的），Ehrenfest链和伯努利 - 拉普拉斯链都是不可简约的生死链，因此都是可逆的。</p>
 <p>让我们在乍一看似乎不可逆转的生死链的情况下证实这一点。这是马尔可夫链 $X_0, X_1, \ldots $的转移图。</p>
-<p><img src="/image/11-3-trans_b_and_d.png" alt="B&amp;D"></p>
+<p><img src="/image/prob140/11-3-trans_b_and_d.png" alt="B&amp;D"></p>
 <p>这条链以较高的概率向右移动（即生有孩子），所以看起来好像我们应该知道它是正向还是反向移动。但请记住，<em>时间逆转发生在稳态</em>。在稳态下，链条可能在状态3和4之间穿梭。您可以通过求解详细的平衡方程式来看到这一点。</p>
 <script type="math/tex; mode=display">
 \begin{align*}
@@ -724,7 +724,7 @@ P(Y_1 = j \mid Y_0 = i) = \frac{\pi(j)P(j, i)}{\pi(i)}</script><h3 id="可逆链
 <p>我们可以使用<code>simulate_path</code>来绘制链的路径。请注意，与我们以前使用此方法不同，我们现在将初始分布作为第一个参数传递，而不是特定状态。第二个参数是步骤数，如前所述。</p>
 <p>下图显示了一条长度为200的路径。运行单元格几次，并向前和向后查看每条路径。你不会发现两者之间的系统差异。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">10</span>,<span class="number">5</span>))</span><br><span class="line">n = <span class="number">200</span>                          <span class="comment"># the number of steps</span></span><br><span class="line">x = np.arange(n+<span class="number">1</span>)               <span class="comment"># the steps</span></span><br><span class="line">y = bnd.simulate_path(pi, n, plot_path=<span class="keyword">True</span>)    <span class="comment"># the simulated state at each step</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Axis labels and title</span></span><br><span class="line">plt.xlabel(<span class="string">'$n$'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'$X_n$'</span>, rotation=<span class="number">0</span>)</span><br><span class="line">plt.title(<span class="string">'Reversibility: Path of Birth and Death Chain in Steady State'</span>);</span><br></pre></td></tr></table></figure>
-<p><img src="/image/11-4-output_11_0.png" alt="png"></p>
+<p><img src="/image/prob140/11-4-output_11_0.png" alt="png"></p>
 <h2 id="密码破解"><a href="#密码破解" class="headerlink" title="密码破解"></a>密码破解</h2><p>有趣的是，虽然许多马尔可夫链是可逆的，但到目前为止我们看到的例子并没有解释我们通过反转链条得到的结果。毕竟，如果它看起来像正向一样向前运行，为什么不向前运行呢？为什么要担心可逆性呢？</p>
 <p>事实证明，逆转马尔可夫链可以帮助解决其他方法难以处理的一类问题。在本节中，我们将介绍如何出现此类问题的示例。在下一节中，我们将讨论一个解决方案。</p>
 <h3 id="假设"><a href="#假设" class="headerlink" title="假设"></a>假设</h3><p>在网络安全成为我们生活的一部分之前，人们就已经对加密和解密非常感兴趣了。解码加密信息可能是复杂且计算密集的。逆转马尔可夫链可以帮助我们完成这项任务。</p>
@@ -1029,6 +1029,10 @@ P(i, j) ~ = ~ P(j, i)\frac{\pi(j)}{\pi(i)}</script><p>这与下面是一样的</
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2018/08/05/postCLT/" rel="prev" title="【翻译活动】面向数据科学的概率论-14.中心极限定律">
+                【翻译活动】面向数据科学的概率论-14.中心极限定律 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -1106,7 +1110,7 @@ P(i, j) ~ = ~ P(j, i)\frac{\pi(j)}{\pi(i)}</script><p>这与下面是一样的</
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-count">44</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1128,7 +1132,7 @@ P(i, j) ~ = ~ P(j, i)\frac{\pi(j)}{\pi(i)}</script><p>这与下面是一样的</
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">90</span>
+                <span class="site-state-item-count">91</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

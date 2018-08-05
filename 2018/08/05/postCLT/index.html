@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="中心极限定律," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="十四、 中心极限定律
+原文：prob140/textbook/notebooks/ch_14
+译者：喵十八
+协议：CC BY-NC-SA 4.0
+自豪地采用谷歌翻译
+
+本章依赖的python12345678# HIDDENfrom datascience import *from prob140 import *import numpy as npimport matplotlib.pyplot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【翻译活动】面向数据科学的概率论-14.中心极限定律">
+<meta property="og:url" content="http://yoursite.com/2018/08/05/postCLT/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="十四、 中心极限定律
+原文：prob140/textbook/notebooks/ch_14
+译者：喵十八
+协议：CC BY-NC-SA 4.0
+自豪地采用谷歌翻译
+
+本章依赖的python12345678# HIDDENfrom datascience import *from prob140 import *import numpy as npimport matplotlib.pyplot">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_02_output_5_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_02_output_17_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_02_output_22_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_02_output_23_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_02_output_27_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_02_output_29_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_02_output_31_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_02_output_33_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_03_output_5_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_03_output_8_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_03_output_12_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_03_output_14_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_03_output_18_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_03_output_27_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_03_output_28_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_03_output_31_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_04_output_4_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_04_output_7_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_04_output_12_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_05_output_3_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_05_output_6_0.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_05_output_25_1.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/14_05_output_28_0.png">
+<meta property="og:updated_time" content="2018-08-05T11:33:20.523Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【翻译活动】面向数据科学的概率论-14.中心极限定律">
+<meta name="twitter:description" content="十四、 中心极限定律
+原文：prob140/textbook/notebooks/ch_14
+译者：喵十八
+协议：CC BY-NC-SA 4.0
+自豪地采用谷歌翻译
+
+本章依赖的python12345678# HIDDENfrom datascience import *from prob140 import *import numpy as npimport matplotlib.pyplot">
+<meta name="twitter:image" content="http://yoursite.com/image/prob140/14_02_output_5_0.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/08/05/postCLT/"/>
+
+
+
+
+
+  <title>【翻译活动】面向数据科学的概率论-14.中心极限定律 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">喵十八の小窝</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/05/postCLT/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/Ruby.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【翻译活动】面向数据科学的概率论-14.中心极限定律</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-05T19:29:19+08:00">
+                2018-08-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">翻译</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="十四、-中心极限定律"><a href="#十四、-中心极限定律" class="headerlink" title="十四、 中心极限定律"></a>十四、 中心极限定律</h1><blockquote>
+<p>原文：<a href="https://nbviewer.jupyter.org/github/prob140/textbook/blob/gh-pages/notebooks/Chapter_14/" target="_blank" rel="external">prob140/textbook/notebooks/ch_14</a></p>
+<p>译者：<a href="https://github.com/Yao544303" target="_blank" rel="external">喵十八</a></p>
+<p>协议：<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external">CC BY-NC-SA 4.0</a></p>
+<p>自豪地采用<a href="https://translate.google.cn/" target="_blank" rel="external">谷歌翻译</a></p>
+</blockquote>
+<h1 id="本章依赖的python"><a href="#本章依赖的python" class="headerlink" title="本章依赖的python"></a>本章依赖的python</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line"><span class="keyword">from</span> datascience <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> prob140 <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">plt.style.use(<span class="string">'fivethirtyeight'</span>)</span><br><span class="line">%matplotlib inline</span><br><span class="line"><span class="keyword">from</span> scipy <span class="keyword">import</span> stats</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dist_sum</span><span class="params">(n, probs_0_through_N)</span>:</span></span><br><span class="line">    <span class="string">"""Return the distribution of S_n,</span><br><span class="line">    the sum of n i.i.d. copies</span><br><span class="line">    of a random variable with distribution probs_0_through_N</span><br><span class="line">    on the integers 0, 1, 2, ..., N"""</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Find the possible values of S_n</span></span><br><span class="line">    N = len(probs_0_through_N) - <span class="number">1</span>   </span><br><span class="line">    values_Sn = np.arange(n*N + <span class="number">1</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Find the probailities of those values</span></span><br><span class="line">    coeffs_X1 = np.flipud(probs_0_through_N)</span><br><span class="line">    pgf_X1 = np.poly1d(coeffs_X1)</span><br><span class="line">    pgf_Sn = pgf_X1**n</span><br><span class="line">    coeffs_Sn = pgf_Sn.c</span><br><span class="line">    probs_Sn = np.flipud(coeffs_Sn)</span><br><span class="line">    </span><br><span class="line">    t = Table().with_columns(</span><br><span class="line">        <span class="string">'Value'</span>, values_Sn,</span><br><span class="line">        <span class="string">'Probability'</span>, probs_Sn</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">return</span> t</span><br></pre></td></tr></table></figure>
+<h1 id="中心极限定理"><a href="#中心极限定理" class="headerlink" title="中心极限定理"></a>中心极限定理</h1><p>标准差是广为流传的衡量标准之一，此外，还有很多其他的衡量标准。为什么使用标准差？主要的原因是标准差和<a href="https://baike.baidu.com/item/%E6%AD%A3%E6%80%81%E6%A6%82%E7%8E%87%E5%88%86%E5%B8%83/7246669?fr=aladdin" target="_blank" rel="external">正态曲线</a>之间的联系。为何正态曲线如此重要？本章将回答该问题。</p>
+<p>我们将从分析一个独立同分布的概率和开始。并已知其均值和标准差。在本章中，我们将研究分布的形状：当我们可以计算它的精确形状时，我们计算它，当数据量过大时，我们计算一个其近似值。</p>
+<h2 id="精确分布"><a href="#精确分布" class="headerlink" title="精确分布"></a>精确分布</h2><p>我们已经知道如何找到任意两个离散随机变量之和的分布。</p>
+<script type="math/tex; mode=display">
+P(X+Y = k) = \sum_j P(X=j, Y=k-j)</script><p>如果$X$和$Y$是独立的，这简化为成为<em>离散卷积公式</em>：</p>
+<script type="math/tex; mode=display">
+P(X+Y = k) = \sum_j P(X=j)P(Y=k-j)</script><p>通过归纳，我们可以将其扩展到任何有限数量的自变量的和。</p>
+<p>所以原则上讲，我们知道如何找到$n$个（$n &gt; 1$）独立随机变量的概率分布之和。但是，对于很大的$n$，这种方式很难实现。</p>
+<p>在本节中，我们将研究另一种分布求和的方法。正如您将看到的，它更容易实现自动化，但最终也会遇到计算障碍。</p>
+<h3 id="概率生成函数"><a href="#概率生成函数" class="headerlink" title="概率生成函数"></a>概率生成函数</h3><p>设$X$是一个随机变量，对于给定的$N$，其可能取值为$0, 1, 2, \ldots, N$。<br>为简洁起见，令$p_k = P(X = k)$，其中$k$的取值范围为0到$N$。</p>
+<p>定义$X$的<em>概率生成函数</em>(pgf)为</p>
+<script type="math/tex; mode=display">
+G_X(s) ~  = ~ \sum_{k=0}^N p_ks^k, ~~~ -\infty < s < \infty</script><p>对于具有无限多个非负整数随机变量的扩展，请参阅本节末尾的技术说明。</p>
+<p>上面的定义表明对任何$s$，有</p>
+<script type="math/tex; mode=display">
+G_X(s) ~ = ~ p_0 + p_1s + p_2s^2 + p_3s^3 + \cdots + p_Ns^N</script><p>你可以看到$G_X$是一个$N$次多项式，并且$s^k$的系数是$p_k = P(X=k)$。</p>
+<p>因此，如果给你一个随机变量的pgf，你可以通过简单地列出所有的权重和相应的系数来计算出随机变量的分布。</p>
+<p>要了解这如何帮助我们找到总和的分布，请观察每一个$s$，$G_X(s)$的期望为</p>
+<script type="math/tex; mode=display">
+G_X(s) ~ = ~ \sum_{k=0}^N s^kP(X=k) ~ = ~ E(s^X)</script><p>因此，如果$X$和$Y$是独立的非负整数随机变量，那么对于每个$s$有</p>
+<script type="math/tex; mode=display">
+G_{X+Y}(s) ~ = ~ E(s^{X+Y}) ~ = ~ E(s^X s^Y) ~ = ~ E(s^X)E(s^Y)
+~ = ~ G_X(s)G_Y(s)</script><p>我们已经使用了这样的事实：对于独立的随机变量，其相乘的期望是期望的相乘。</p>
+<p>结果表明两个独立随机变量之和的pgf是两个pgf的乘积。这很容易扩展到两个以上的随机变量，并为独立同分布变量之和的pgf产生一个简单的公式。</p>
+<h3 id="一个独立同分布样本分布之和的PGF"><a href="#一个独立同分布样本分布之和的PGF" class="headerlink" title="一个独立同分布样本分布之和的PGF"></a>一个独立同分布样本分布之和的PGF</h3><p>设$X_1, X_2, \ldots, X_n$是分布在$0, 1, 2, \ldots, N$上的独立同分布事件。令$S_n = X_1 + X_2 + \cdots + X_n$，那么$S_n$的pgf为：</p>
+<script type="math/tex; mode=display">
+G_{S_n}(s) ~ = ~ \big{(}G_{X_1}(s)\big{)}^n, ~~~ -\infty < s < \infty</script><p>因为$G_{X_1}$是一个$N$次多项式，$G_{S_n}$也是一个$nN$次多项式。与任何pgf一样，$s^k$的系数是$k$的概率。也就是说，对于每一个在0到$nN$范围内的$k$有</p>
+<script type="math/tex; mode=display">
+P(S_n = k) = \text{coefficient of } s^k \text{ in } G_{S_n}(s)</script><p>我们现在有一个查找$S_n$分布的算法。</p>
+<ul>
+<li>从$X_1$的pgf开始。</li>
+<li>增加幂至$n$。也就是$S_n$的pgf。</li>
+<li>读取$S_n$的pgf.</li>
+</ul>
+<p>精彩！我们完成了！除了实际上这样做涉及将多项式升幂。当数很大时，这是一项艰巨的任务。</p>
+<p>幸运的是，正如您将在下一节中看到的那样，<code>NumPy</code>使用一组多项式方法来解决问题。</p>
+<p><em>技术说明。</em>我们已经为具有有限多个非负整数值的随机变量定义了概率生成函数。该定义可以扩展到具有无限多个非负整数值的随机变量。但在这种情况下，pgf是一个无限系列，我们必须小心收敛。通常，pdf是的值域 $|s| \le 1$，这样它就会收敛。 </p>
+<h2 id="NumPy中的PGF"><a href="#NumPy中的PGF" class="headerlink" title="NumPy中的PGF"></a>NumPy中的PGF</h2><p>回忆一下，我们找到$S_n$分布的算法。</p>
+<ul>
+<li>从$X_1$的pgf开始。</li>
+<li>增加幂至$n$。也就是$S_n$的pgf。</li>
+<li>读取$S_n$的pgf.</li>
+</ul>
+<p>在本节中，我们将使用<code>NumPy</code>实践此算法。</p>
+<p>假设$X_1$的分布为$p_0 = 0.1$，$p_1 = 0.5$，$p_2 = 0.4$。令数组<code>probs_X1</code>包含了0,1,2的概率。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">probs_X1 = make_array(<span class="number">0.1</span>, <span class="number">0.5</span>, <span class="number">0.4</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dist_X1 = Table().values(np.arange(<span class="number">3</span>)).probability(probs_X1)</span><br><span class="line">Plot(dist_X1)</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_02_output_5_0.png" alt="png"></p>
+<p>$X_1$的pgf是：</p>
+<script type="math/tex; mode=display">
+0.1 + 0.5s + 0.4s^2</script><p><code>NumPy</code> 以标准的数学方式表示这个多项式，以最高次项开始：</p>
+<script type="math/tex; mode=display">
+0.4s^2 + 0.5s + 0.1</script><p>方法<code>np.flipud</code>将概率数组反转为与该系数的顺序一致。<code>ud</code>代表“up down”。NumPy正在考虑将数组作为一个列。<code>NumPy</code>考虑将该数组转为一列。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">coeffs_X1 = np.flipud(probs_X1)</span><br><span class="line">coeffs_X1</span><br></pre></td></tr></table></figure>
+<pre><code>array([ 0.4,  0.5,  0.1])
+</code></pre><p>方法<code>np.poly1d</code>以系数数组为参数，构造多项式。方法名中的<code>1d</code>代表”一维”。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pgf_X1 = np.poly1d(coeffs_X1)</span><br><span class="line">print(pgf_X1)</span><br></pre></td></tr></table></figure>
+<pre><code>     2
+0.4 x + 0.5 x + 0.1
+</code></pre><p>调用<code>print</code>方法，打印出该多项式。在$s$的位置，用$x$代替表示。请记住，最后一项是$x^0$的系数。</p>
+<p>现在假设$S_3$是三个$X_1$副本的和。$S_3$的pgf是$X_1$pgf的三次方，并且可以按照您的希望计算。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pgf_S3 = pgf_X1**<span class="number">3</span></span><br><span class="line">print(pgf_S3)</span><br></pre></td></tr></table></figure>
+<pre><code>       6        5         4         3         2
+0.064 x + 0.24 x + 0.348 x + 0.245 x + 0.087 x + 0.015 x + 0.001
+</code></pre><p>$S_3$中多项式的幂为从0到6，因为$S_3$是三个幂从0到2的值的副本的和。系数是$S_3$分布的概率。</p>
+<p>你可以使用属性<code>c</code>输出其“系数”。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">coeffs_S3 = pgf_S3.c</span><br><span class="line">coeffs_S3</span><br></pre></td></tr></table></figure>
+<pre><code>array([ 0.064,  0.24 ,  0.348,  0.245,  0.087,  0.015,  0.001])
+</code></pre><p>这些是从6次到0次项的系数。在概率中，更习惯从低到高的顺序来看，所以再使用一次<code>np.flipud</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">probs_S3 = np.flipud(coeffs_S3)</span><br><span class="line">probs_S3</span><br></pre></td></tr></table></figure>
+<pre><code>array([ 0.001,  0.015,  0.087,  0.245,  0.348,  0.24 ,  0.064])
+</code></pre><p>您现在拥有绘制$S_3$的概率直方图所需的输入了</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dist_S3 = Table().values(np.arange(<span class="number">7</span>)).probability(probs_S3)</span><br><span class="line">Plot(dist_S3)</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_02_output_17_0.png" alt="png"></p>
+<h3 id="计算分布-S-n-的函数"><a href="#计算分布-S-n-的函数" class="headerlink" title="计算分布$S_n$的函数"></a>计算分布$S_n$的函数</h3><p>我们将结合上面的步骤来创建一个函数<code>dist_sum</code>，入参为副本个数$n$和$X_1$的分布，返回值为$n$个$X_1$的副本的和的分布。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dist_sum</span><span class="params">(n, probs_0_through_N)</span>:</span></span><br><span class="line">    <span class="string">"""Return the distribution of S_n,</span><br><span class="line">    the sum of n i.i.d. copies</span><br><span class="line">    of a random variable with distribution probs_0_through_N</span><br><span class="line">    on the integers 0, 1, 2, ..., N"""</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Find the possible values of S_n</span></span><br><span class="line">    N = len(probs_0_through_N) - <span class="number">1</span>   </span><br><span class="line">    values_Sn = np.arange(n*N + <span class="number">1</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Find the probailities of those values</span></span><br><span class="line">    coeffs_X1 = np.flipud(probs_0_through_N)</span><br><span class="line">    pgf_X1 = np.poly1d(coeffs_X1)</span><br><span class="line">    pgf_Sn = pgf_X1**n</span><br><span class="line">    coeffs_Sn = pgf_Sn.c</span><br><span class="line">    probs_Sn = np.flipud(coeffs_Sn)</span><br><span class="line">    </span><br><span class="line">    t = Table().with_columns(</span><br><span class="line">        <span class="string">'Value'</span>, values_Sn,</span><br><span class="line">        <span class="string">'Probability'</span>, probs_Sn</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">return</span> t</span><br></pre></td></tr></table></figure>
+<h3 id="n-次掷骰子游戏的和"><a href="#n-次掷骰子游戏的和" class="headerlink" title="$n$次掷骰子游戏的和"></a>$n$次掷骰子游戏的和</h3><p>在第3章中，我们通过列出所有的$6^5$种可能情况，并计算他们从而找到了5次掷骰子游戏的和的分布。这种方法难以处理大数据量的情况。让我们看看我们的新方法是否可以找到10个骰子总和的分布。</p>
+<p>我们必须从单个筛子的分布开始，为此重要的是要记住包含0作为0个点的概率。否则pgf将是错误的，因为<code>NumPy</code>不知道它不应该包括0次项。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">die = np.append(<span class="number">0</span>, (<span class="number">1</span>/<span class="number">6</span>)*np.ones(<span class="number">6</span>))</span><br><span class="line">die</span><br></pre></td></tr></table></figure>
+<pre><code>array([ 0.        ,  0.16666667,  0.16666667,  0.16666667,  0.16666667,
+        0.16666667,  0.16666667])
+</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Plot(dist_sum(<span class="number">1</span>, die))</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_02_output_22_0.png" alt="png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Plot(dist_sum(<span class="number">10</span>, die))</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_02_output_23_0.png" alt="png"></p>
+<h3 id="制作波"><a href="#制作波" class="headerlink" title="制作波"></a>制作波</h3><p>10个筛子和的分布，看上去很符合正态分布。是所有的和都这样么？</p>
+<p>要探索这个问题，让$X_1$的分布为$p_1 = p_2 = p_9 = 1/3$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">probs_X1 = make_array(<span class="number">0</span>, <span class="number">1</span>/<span class="number">3</span>, <span class="number">1</span>/<span class="number">3</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>/<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<p>这是$X_1$的分布。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Plot(dist_sum(<span class="number">1</span>, probs_X1))</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_02_output_27_0.png" alt="png"></p>
+<p>$S_{10}$的概率直方图表明“和”并不总是具有平滑的分布。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Plot(dist_sum(<span class="number">10</span>, probs_X1))</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_02_output_29_0.png" alt="png"></p>
+<p>$S_{30}$的分布看上去头发乱糟糟的剑龙。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Plot(dist_sum(<span class="number">30</span>, probs_X1))</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_02_output_31_0.png" alt="png"></p>
+<p>$S_{100}$的分布是：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Plot(dist_sum(<span class="number">100</span>, probs_X1))</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_02_output_33_0.png" alt="png"></p>
+<p>… 非常正态分布了. </p>
+<p>这看起来好像这里有什么定理。在本章的其余部分，我们将研究该定理，该定理是关于大量独立同分布样本之和的近似分布。</p>
+<p>请记住，只要<code>NumPy</code>能够处理计算,我们的pgf方法就能求出有限多个非负整数上的独立同分布样本分布总和的<em>精确分布</em>。在上面的例子中， $S_{100}$的pgf是一个最高次项为900的多项式。<code>NumPy</code>处理得很好。</p>
+<h2 id="中心极限定理-1"><a href="#中心极限定理-1" class="headerlink" title="中心极限定理"></a>中心极限定理</h2><p>顾名思义，这个定理是概率，统计和数据科学领域的核心。它解释了上一节中出现的正态曲线。</p>
+<p>在我们得到定理之前，让我们回顾一下数据8和本课程前面的一些事实。</p>
+<h3 id="标准单位"><a href="#标准单位" class="headerlink" title="标准单位"></a>标准单位</h3><p>正如我们之前看到的，随机变量 $X$转换为<em>标准单位</em>如下</p>
+<script type="math/tex; mode=display">
+Z = \frac{X - \mu_X}{\sigma_X}</script><p>$Z$以标准差为单位，衡量了$X$离开均值的距离（如，均值4，标准差1,5就离开均值1个标准差的距离）。换句话说$Z$表示了$X$高于均值的标准差的数。</p>
+<p>按线性函数规则，无论$X$的分布是什么，都有</p>
+<script type="math/tex; mode=display">
+E(Z) = 0 ~~~ \text{and} ~~~ SD(Z) = 1</script><h3 id="标准正态曲线"><a href="#标准正态曲线" class="headerlink" title="标准正态曲线"></a>标准正态曲线</h3><p>回顾数据8，标准正常曲线由通常用小写希腊字母phi，$\phi$表示的函数定义，。</p>
+<script type="math/tex; mode=display">
+\phi(z) = \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}z^2}, ~~~ -\infty < z < \infty</script><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line">Plot_norm(x_limits=(<span class="number">-4</span>, <span class="number">4</span>), mu=<span class="number">0</span>, sigma=<span class="number">1</span>)</span><br><span class="line">plt.xlabel(<span class="string">'$z$'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'$\phi(z)$'</span>, rotation=<span class="number">0</span>)</span><br><span class="line">plt.title(<span class="string">'Standard Normal Curve'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_03_output_5_0.png" alt="png"></p>
+<p>该曲线关于0对称。其拐点在$z=-1$和$z=1$。您在Data 8中观察到了这一点并且可以通过微积分证明它。</p>
+<p><strong>术语</strong> 我们将说曲线具有<em>位置参数</em> 0 和<em>比例</em> 参数 1。我们还将使用术语<em>平均值</em>来表示位置和<em>标准差</em>来表示比例，类似于标准单位中随机变量的均值和标准差。在本课程的后面，我们将证明这与具有连续值的随机变量的均值和标准差的定义一致。</p>
+<p>曲线下的总面积为1。这需要一些工作来证明。您可能已经在微积分课中看到过它。我们将在课程的后期使用概率方法证明它。</p>
+<p>如果是随机变量$X$的分布大致是钟形，那么标准化变量$Z$的分布大致遵循上面的标准正态曲线。</p>
+<p>请注意，几乎没有概率落在范围$(-3, 3)之外。回顾一下数据8中的一下数据：</p>
+<ul>
+<li>介于-1和1之间的面积：约68％</li>
+<li>介于-2和2之间的面积：约95％</li>
+<li>介于-3和3之间的面积：约99.73％</li>
+</ul>
+<h3 id="正态曲线"><a href="#正态曲线" class="headerlink" title="正态曲线"></a>正态曲线</h3><p>标准正态曲线是这样一<em>类</em>正态曲线，由其位置和比例参数参数，及均值和标准差确定。</p>
+<p>均值为$\mu$，方差为$\sigma$的正态曲线定义如下：</p>
+<script type="math/tex; mode=display">
+f(x) ~ = ~ \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}, ~~~ -\infty < x < \infty</script><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line">Plot_norm(x_limits=(<span class="number">-4</span>, <span class="number">4</span>), mu=<span class="number">0</span>, sigma=<span class="number">1</span>)</span><br><span class="line">plt.xlabel(<span class="string">'$x$'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'$f(x)$'</span>, rotation=<span class="number">0</span>)</span><br><span class="line">plt.yticks(np.arange(<span class="number">0</span>, <span class="number">0.401</span>, <span class="number">0.05</span>), np.array(<span class="number">7</span>*[<span class="string">''</span>]))</span><br><span class="line">plt.xticks(np.arange(<span class="number">-4</span>, <span class="number">4.1</span>), [<span class="string">''</span>,<span class="string">''</span>,<span class="string">'$\mu-2\sigma$'</span>, <span class="string">'$\mu - \sigma$'</span>, <span class="string">'$\mu$'</span>, <span class="string">'$\mu+\sigma$'</span>,<span class="string">'$\mu+2\sigma$'</span>,<span class="string">''</span>])</span><br><span class="line">plt.title(<span class="string">'Normal Curve, mean $\mu$, SD $\sigma$'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_03_output_8_0.png" alt="png"></p>
+<p>形状看起来与标准正常曲线完全相同。唯一的区别在于轴上的测量尺度。中心现在是$\mu$而不是0，并且拐点远离中心距离是以$\sigma$为单位而不是1。</p>
+<p>现在给出正态曲线的重要性：</p>
+<h3 id="中心极限定理-2"><a href="#中心极限定理-2" class="headerlink" title="中心极限定理"></a>中心极限定理</h3><p>设 $X_1, X_2, \ldots$ 是i.i.d., 每一个都有均值$\mu$和标准差$\sigma$。令$S_n = X_1 + X_2 + \cdots + X_n$，则有</p>
+<script type="math/tex; mode=display">
+E(S_n) = n\mu ~~~~~~~~~~ SD(S_n) = \sqrt{n}\sigma</script><p>我们还不知道$S_n$的分布的形状。<em>中心极限定理</em>（CLT）告诉我们，当$n$很大时，曲线会很平滑。</p>
+<h4 id="定理"><a href="#定理" class="headerlink" title="定理"></a>定理</h4><p>当$n$很大时，标准分布的和为</p>
+<script type="math/tex; mode=display">
+\frac{S_n - n\mu}{\sqrt{n}\sigma}</script><p>无论$X_i$的分布如何，最终将大致遵循标准正态分布。</p>
+<p>换言之，当$n$很大时，无论$X_i$的分布如何，$S_n$的分布与均值$n\mu$和标准差$\sqrt{n}\sigma$有关</p>
+<p>中心极限定理是使用标准差对分布进行衡量的主要原因。</p>
+<p>究竟当$n$多大时，估计值能够有一个较好的结果？这取决于$X_i$的分布。我们稍后会详细说明。现在，假设我们使用的样本大小足够大，以使正态估计合理。</p>
+<p>该定理的证明超出了本课程的范围。但是你已经在数据8中进行的模拟以及前一节中计算的总和的精确分布中看到了大量的证据。</p>
+<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><p>假设一个样本为100人的重量，是独立同分布的，其均值为150磅，标准差为15磅。然后所采样的人的总重量的均值为$100 \times 150 = 15,000$，标准差为$\sqrt{100} \times 15 = 150$。</p>
+<p>谁在乎一群随机人的总重量？询问那些建造体育馆，电梯和飞机的人。</p>
+<p>您可以使用<code>prob140</code>方法绘制此分布<code>Plot_norm</code>。参数是您希望绘制曲线的间隔，平均值和标准差。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">n = <span class="number">100</span></span><br><span class="line">mu = <span class="number">150</span></span><br><span class="line">sigma = <span class="number">15</span></span><br><span class="line"></span><br><span class="line">mean = n*mu</span><br><span class="line">sd = (n**<span class="number">0.5</span>)*sigma</span><br><span class="line"></span><br><span class="line">plot_interval = make_array(mean<span class="number">-4</span>*sd, mean+<span class="number">4</span>*sd)</span><br><span class="line"></span><br><span class="line">Plot_norm(plot_interval, mean, sd)</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_03_output_12_0.png" alt="png"></p>
+<h3 id="正态曲线下的概率"><a href="#正态曲线下的概率" class="headerlink" title="正态曲线下的概率"></a>正态曲线下的概率</h3><p>假设我们想要找到抽样人员的总重量小于15,100磅的概率。这大约是下面的黄金区域。这是使用正态曲线的一个估计。</p>
+<p>请注意参数<code>right_end=15100</code>。这告诉<code>Plot_norm</code>其右边界。如果没有指定左端，则最左端视为其左边界。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Plot_norm(plot_interval, mean, sd, right_end=<span class="number">15100</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_03_output_14_0.png" alt="png"></p>
+<p>和以前一样，返回点左边所有概率的函数称为分布的<em>累积分布函数</em>（cdf）。<code>stats.norm.cdf</code>使用适当的参数，概率不到75％。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stats.norm.cdf(<span class="number">15100</span>, mean, sd)</span><br></pre></td></tr></table></figure>
+<pre><code>0.74750746245307709
+</code></pre><p>为了估计总重量在14,800磅到15,100磅之间的概率率是多少？现在我们指定两个参数<code>left_end</code>和<code>right_end</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Plot_norm(plot_interval, mean, sd, left_end=<span class="number">14800</span>, right_end=<span class="number">15100</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_03_output_18_0.png" alt="png"></p>
+<p>阴影面积约为65.6％.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stats.norm.cdf(<span class="number">15100</span>, mean, sd) - stats.norm.cdf(<span class="number">14800</span>, mean, sd)</span><br></pre></td></tr></table></figure>
+<pre><code>0.65629624272720921
+</code></pre><h3 id="标准正态-CDF-Phi"><a href="#标准正态-CDF-Phi" class="headerlink" title="标准正态 CDF $\Phi$"></a>标准正态 CDF $\Phi$</h3><p>实际上只有一条正常曲线很重要 - 标准正态曲线。所有其他的都是标准正态曲线通过水平轴的线性变换获得的。因此，通过标准化，可以根据标准正态cdf完成上述所有计算，如下所述。</p>
+<p>要找到总重量小于15,100磅的大概几率，首先将重量标准化，然后使用标准正态cdf。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">z_right = (<span class="number">15100</span> - mean)/sd</span><br><span class="line"></span><br><span class="line">stats.norm.cdf(z_right)  <span class="comment"># The standard curve is the default</span></span><br></pre></td></tr></table></figure>
+<pre><code>0.74750746245307709
+</code></pre><p>要找到总重量在14,800磅到15,100磅之间的概率：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">z_left = (<span class="number">14800</span> - mean)/sd</span><br><span class="line"></span><br><span class="line">stats.norm.cdf(z_right) - stats.norm.cdf(z_left)</span><br></pre></td></tr></table></figure>
+<pre><code>0.65629624272720921
+</code></pre><p>标准正态cdf的常用符号是大写字母$\Phi$，因为它是$\phi$的积分：</p>
+<script type="math/tex; mode=display">
+\Phi(x) = \int_{-\infty}^x \phi(z)dz, ~~~~ -\infty < x < \infty</script><p>这个积分虽然是有限的，但没有封闭形式的公式，可以用算术运算，幂，三角函数，指数和对数函数以及组合来改写。它必须通过数值积分来求近似值。这就是为什么每个统计系统都有内置功能，例如<code>stats.norm.cdf</code>提供出色的近似值功能。</p>
+<p>标准化标准正态累积分布函数$\Phi$为所有正态曲线下的面积值提供了紧凑的表示法。我们不必对不同的参数使用不同的函数。</p>
+<p>在CLT的假设下，对于大的值$n$我们有近似值</p>
+<script type="math/tex; mode=display">
+P(S_n \le x) ~ \approx ~ \Phi \big{(} \frac{x - n\mu}{\sqrt{n}\sigma} \big{)} ~~~ \text{for all } x</script><p>正如您在数据8中看到的那样，近似值通常在分布的尾部中表现不佳。如果使用CLT来逼近尾部区域的概率，请注意近似值可能非常粗糙。</p>
+<h3 id="二项分布-n-p-的估计"><a href="#二项分布-n-p-的估计" class="headerlink" title="二项分布 $(n, p)$ 的估计"></a>二项分布 $(n, p)$ 的估计</h3><p>一个二项随机分布$(n, p)$ 是$n$个i.i.d.分布的和。CLT表明，如果$n$足够大，无论$p$是什么，分布是大致成正态分布的。但我们在第6章中说过，如果$n$很大，$p$很小，那么二项分布大致是泊松分布。</p>
+<p>那么它到底是正态分布还是泊松分布？这是两个二项式直方图，两者都有大的$n$但有不同的形状。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">k1 = np.arange(<span class="number">25</span>, <span class="number">76</span>)</span><br><span class="line">probs1 = stats.binom.pmf(k1, <span class="number">100</span>, <span class="number">0.5</span>)</span><br><span class="line">binom_fair = Table().values(k1).probability(probs1)</span><br><span class="line">Plot(binom_fair)</span><br><span class="line">plt.title(<span class="string">'Binomial (100, 0.5)'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_03_output_27_0.png" alt="png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">k2 = np.arange(<span class="number">0</span>, <span class="number">11</span>)</span><br><span class="line">probs2 = stats.binom.pmf(k2, <span class="number">100</span>, <span class="number">0.01</span>)</span><br><span class="line">binom_biased = Table().values(k2).probability(probs2)</span><br><span class="line">Plot(binom_biased)</span><br><span class="line">plt.title(<span class="string">'Binomial (100, 0.1)'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_03_output_28_0.png" alt="png"></p>
+<p>差异是由于分布的扩散。当分布在0附近时，泊松近似适用。当扩展较大时，在均值的任一侧存在大量可能值，则可以尝试正态分布。</p>
+<p>为了量化这一点，许多文本根据给出了粗略的阈值$n$和$p$，使得，如果$n$大于阈值，那么二项式$(n, p)$大致是正态分布。如果$n$很大，二项分布类似于泊松，意味着$n$没有超过正态分布的阈值。</p>
+<p>阈值通常以“标准差$\sqrt{npq}$大于3” 或“$np$和$nq$都大于10”来表示，这些不完全一致，但非常相近。</p>
+<p>您可以通过比较二项式与相应泊松之间的总变化距离以及二项式与相应法线之间的总变化距离来了解您对这些阈值的看法。然而，在这个过程中，对二项式的法线与泊松近似的选择很少会成为一个问题，因为当$n$和$p$的值都给出时， 如果您对使用哪个有疑问，那么您可以使用确切的二项式概率。</p>
+<p>这是二项式（100,0.5）分布和近似正态曲线。曲线的参数是$np = 50$和$\sqrt{npq} = 5$。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Plot(binom_fair)</span><br><span class="line">Plot_norm((<span class="number">25</span>, <span class="number">75</span>), <span class="number">50</span>, <span class="number">5</span>, color=<span class="string">'red'</span>)</span><br><span class="line">plt.xticks(np.arange(<span class="number">25</span>, <span class="number">76</span>, <span class="number">5</span>))</span><br><span class="line">plt.title(<span class="string">'Binomial (100, 0.5) and its Normal Approximation'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_03_output_31_0.png" alt="png"></p>
+<p>注意点“$\mbox{mean } \pm \mbox{ SD}$“$= 50 \pm 5$是曲线的拐点。</p>
+<h2 id="样本均值"><a href="#样本均值" class="headerlink" title="样本均值"></a>样本均值</h2><p>中心极限定理的核心是什么？一个答案是它允许我们基于随机样本做出推论，即使我们对总体的分布知之甚少。</p>
+<p>在数据8中，您看到如果我们想要估计总体的平均值，我们可以基于大随机样本的平均值来构建参数的置信区间。在该过程中，您使用引导程序生成样本均值的经验分布，然后使用经验分布来创建置信区间。你会记得那些经验分布总是钟形的。</p>
+<p>在本节中，我们将研究样本均值的概率分布，并表明您可以使用它来构建总体均值的置信区间，而无需进行任何重新采样。</p>
+<p>让我们从样本总和开始，我们现在很清楚。回想一下我们的假设和符号：</p>
+<p>设$X_1, X_2, \ldots, X_n$ 是一个i.i.d采样, 设每一个$X_i$的均值为$\mu$标准差为$\sigma$。设$S_n$是样本总和，即$S_n = \sum_{i=1}^n X_i$。可以得到</p>
+<script type="math/tex; mode=display">
+E(S_n) = n\mu ~~~~~~~~~~  SD(S_n) = \sqrt{n}\sigma</script><p>这些结果意味着随着样本量的增加，样本总和的分布向右移动并变得更加分散。</p>
+<p>您可以在下图中看到这一点。该图显示了5个筛子的总和和20个筛子的总和的分布。分布是精确的，使用本章前面定义的<code>dist_sum</code>方法计算。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">die = np.append(<span class="number">0</span>, (<span class="number">1</span>/<span class="number">6</span>)*np.ones(<span class="number">6</span>))</span><br><span class="line">dist_sum_5 = dist_sum(<span class="number">5</span>, die)</span><br><span class="line">dist_sum_20 = dist_sum(<span class="number">20</span>, die)</span><br><span class="line">Plots(<span class="string">'Sum of 5 dice'</span>, dist_sum_5, <span class="string">'Sum of 20 dice'</span>, dist_sum_20)</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_04_output_4_0.png" alt="png"></p>
+<p>您可以看到正态分布已经显示为5和20个样本的总和。</p>
+<p>您还可以看到黄金区域不是蓝色区域的四倍，尽管黄金区域中的样本大小是蓝色的四倍。黄金区域高只有蓝色一半，分布是蓝色的两倍。那是因为总和的标准与$\sqrt{n}$成正比。它增长比$n$慢。由于样本量大4倍，因此黄金分布的标准差为蓝色的 $\sqrt{4} = 2$倍。</p>
+<p>样本的<em>平均值</em>表现不同</p>
+<h3 id="IID-样本的均值"><a href="#IID-样本的均值" class="headerlink" title="IID 样本的均值"></a>IID 样本的均值</h3><p>设$\bar{X}_n$是样本年均值，即</p>
+<script type="math/tex; mode=display">
+\bar{X}_n = \frac{S_n}{n}</script><p>然后$\bar{X}_n$只是$S_n$的线性变换，所以</p>
+<script type="math/tex; mode=display">
+E(\bar{X}_n) = \frac{E(S_n)}{n} = \frac{n\mu}{n} = \mu ~~~~ \text{for all }n</script><p>样本均值的期望总是总体的均值$\mu$，无论样本大小。因此，无论样本大小如何，样本均值都是总体均值的无偏估计。</p>
+<p>样本均值标准差是</p>
+<script type="math/tex; mode=display">
+SD(\bar{X}_n) = \frac{SD(S_n)}{n} = \frac{\sqrt{n}\sigma}{n} = \frac{\sigma}{\sqrt{n}}</script><p>随着样本量的增加，样本均值的变化性降低。因此，随着样本量的增加，样本均值对总体均值的估计更准确。</p>
+<p>下图显示了5个筛子和20个筛子的平均值的分布。两者都以3.5为中心，但较大样本的均值分布较窄。您在数据8中经常看到这一点：随着样本量的增加，样本均值的分布更集中在总体均值周围。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line">dist_mean_5 = Table().with_columns(</span><br><span class="line">    <span class="string">'Value'</span>, dist_sum_5.column(<span class="number">0</span>)/<span class="number">5</span>,</span><br><span class="line">    <span class="string">'Probability'</span>, <span class="number">5</span>*dist_sum_5.column(<span class="number">1</span>)</span><br><span class="line">    )</span><br><span class="line">dist_mean_20 = Table().with_columns(</span><br><span class="line">    <span class="string">'Value'</span>, dist_sum_20.column(<span class="number">0</span>)/<span class="number">20</span>,</span><br><span class="line">    <span class="string">'Probability'</span>, <span class="number">20</span>*dist_sum_20.column(<span class="number">1</span>)</span><br><span class="line">    )</span><br><span class="line">Plots(<span class="string">'Mean of 5 dice'</span>, dist_mean_5, <span class="string">'Mean of 20 dice'</span>, dist_mean_20, width=<span class="number">0.2</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_04_output_7_0.png" alt="png"></p>
+<p>精确是有代价的。样本平均值的标准差随着样本大小的平方根减小。因此，如果要将样本均值的标准差降低3倍，则必须将样本量增加$3^2 = 9$倍。</p>
+<p>一般结果通常可作为反例进行证明。</p>
+<h4 id="平方根法则"><a href="#平方根法则" class="headerlink" title="平方根法则"></a>平方根法则</h4><p>如果将样本扩大n倍，则样本均值的均值会减少$\sqrt{n}$倍。</p>
+<h3 id="弱大数定律"><a href="#弱大数定律" class="headerlink" title="弱大数定律"></a>弱大数定律</h3><p>样本均值是总体均值的无偏估计，并且当样本较大时，其标准差比较小。因此，大样本的平均值接近总体平均值的概率很高。</p>
+<p>这一结论称为<em>弱大数定律</em>。</p>
+<p>令$X_1, X_2, \ldots, X_n$是i.i.d.，每一个有均值$\mu$和标准差$\sigma$，令$\bar{X}_n$是样本均值。取一个极小数$\epsilon &gt; 0$，有</p>
+<script type="math/tex; mode=display">
+P(|\bar{X}_n - \mu| < \epsilon) \to 1 ~~~ \text{as } n \to \infty</script><p>也就是说，对于$n$取值很大时，几乎可以确定均值在$\mu \pm \epsilon$的范围内，</p>
+<p>为了证明该定律，我命将证明$P(|\bar{X}_n - \mu| \ge \epsilon) \to 0$，这是用切比雪夫不等式很容易求解。</p>
+<script type="math/tex; mode=display">
+P(|\bar{X}_n - \mu| \ge \epsilon)~ \le ~ \frac{\sigma_{\bar{X}_n}^2}{\epsilon^2} 
+~ = ~ \frac{\sigma^2}{n\epsilon^2} ~ \to ~ 0 ~~~ \text{as } n \to \infty</script><h3 id="相关定律"><a href="#相关定律" class="headerlink" title="相关定律"></a>相关定律</h3><ul>
+<li><strong>强大数定律。</strong> 这表示在概率为1时，样本平均值收敛到极限，并且该极限是常数$\mu$。请参阅<a href="https://terrytao.wordpress.com/2008/06/18/the-strong-law-of-large-numbers/" target="_blank" rel="external">Fields Medalist Terence Tao撰写的这篇博客文章</a>。他陈述了基础标准差可能不存在的情况下的定律情况。请注意，我们的弱大数定律证明方法在这种情况下无效; 结果仍然是正确的，但证据需要更多的探索。</li>
+<li><strong>小数定律。</strong> 这是<a href="https://en.wikipedia.org/wiki/Ladislaus_Bortkiewicz" target="_blank" rel="external">Ladislaus Bortkiewicz</a> (1868-1931)一本书的标题。其中他描述了低概率事件分布的泊松近似。这就是为什么这些注释的第6.4节被称为小数定律。</li>
+<li><strong>平均定律。</strong> 在总体是二元的情况下，这是弱法则的通用名称，样本均值只是样本中成功的比例。在通常的使用中，人们有时会忘记定律是一种限制性陈述。如果你正在抛硬币并连续看到10个正面，那么下一个抛正面的机会仍然是1/2。平均律并没有说你“应该是反面”。它不适用于有限的投掷集。</li>
+</ul>
+<h3 id="分布的形状"><a href="#分布的形状" class="headerlink" title="分布的形状"></a>分布的形状</h3><p>中心极限定理告诉我们，对于大样本，样本均值的分布大致是正态的。样本均值是样本和的线性变换。因此，如果样本总和的分布大致是正态的，则样本均值的分布也大致是正态的，但具有不同的参数。具体来说，对于$n$很大的情况下</p>
+<script type="math/tex; mode=display">
+P(\bar{X}_n \le x) ~ \approx ~ \Phi \big{(} \frac{x - \mu}{\sigma/\sqrt{n}} \big{)} ~~~~ \text{for all } x</script><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line">Plot_norm(x_limits=(<span class="number">-4</span>, <span class="number">4</span>), mu=<span class="number">0</span>, sigma=<span class="number">1</span>)</span><br><span class="line">plt.yticks(np.arange(<span class="number">0</span>, <span class="number">0.401</span>, <span class="number">0.05</span>), np.array(<span class="number">7</span>*[<span class="string">''</span>]))</span><br><span class="line">plt.xticks(np.arange(<span class="number">-4</span>, <span class="number">4.1</span>),[<span class="string">''</span>,<span class="string">''</span>,<span class="string">''</span>,<span class="string">'$\mu - \sigma/\sqrt&#123;n&#125;$'</span>, <span class="string">'$\mu$'</span>, <span class="string">'$\mu+\sigma/\sqrt&#123;n&#125;$'</span>,<span class="string">''</span>,<span class="string">''</span>])</span><br><span class="line">plt.title(<span class="string">'Approximate Distribution of Sample Mean'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_04_output_12_0.png" alt="png"></p>
+<h2 id="置信区间"><a href="#置信区间" class="headerlink" title="置信区间"></a>置信区间</h2><p>假设你有一个大的iid样本。CLT意味着有约95％的概率，样本均值在总体平均值的2个标准差距离内。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line">Plot_norm(x_limits=(<span class="number">-4</span>, <span class="number">4</span>), mu=<span class="number">0</span>, sigma=<span class="number">1</span>, left_end=<span class="number">-2</span>, right_end=<span class="number">2</span>)</span><br><span class="line">plt.yticks(np.arange(<span class="number">0</span>, <span class="number">0.401</span>, <span class="number">0.05</span>), np.array(<span class="number">7</span>*[<span class="string">''</span>]))</span><br><span class="line">plt.xticks(np.arange(<span class="number">-4</span>, <span class="number">4.1</span>),[<span class="string">''</span>,<span class="string">''</span>,<span class="string">'$\mu - 2\sigma/\sqrt&#123;n&#125;$'</span>, <span class="string">''</span>, <span class="string">'$\mu$'</span>, <span class="string">''</span>, <span class="string">'$\mu+2\sigma/\sqrt&#123;n&#125;$'</span>,<span class="string">''</span>])</span><br><span class="line">plt.xlabel(<span class="string">'Sample Mean'</span>)</span><br><span class="line">plt.title(<span class="string">'Gold Area: Approximately 95%'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_05_output_3_0.png" alt="png"></p>
+<p>这可以用不同的方式表达：</p>
+<ul>
+<li>在所有样本集合的约95％的样本中，样本平均值在<em>总体平均值$\pm ~ 2 \sigma/\sqrt{n}$</em>的范围内。</li>
+</ul>
+<p>换言之：</p>
+<ul>
+<li>在所有样本集合的约95％的样本中， 总体的平均值在<em>样本均值 $\pm ~ 2 \sigma/\sqrt{n}$</em>的范围内。</li>
+</ul>
+<p>这就是为什么用<em>样本均值$\pm ~ 2 \sigma/\sqrt{n}$</em>作为$\mu$的估计间隔。</p>
+<h3 id="mu-的置信区间"><a href="#mu-的置信区间" class="headerlink" title="$\mu$的置信区间"></a>$\mu$的置信区间</h3><p><em>样本均值$\pm ~ 2 \sigma/\sqrt{n}$</em>的区间称之为<em>参数$\mu$的95％置信区间</em>这个区间，拥有一个95%的<em>置信水平</em>。</p>
+<p>你可以选择不同的置信水平，比如说80％。在这个选择下，你的期望区间会更窄。要确切了解中心两侧需要多少标准差的距离，来获得大约80％的中心区域，您必须找到在标准正态曲线上相应的$z$，如下图所示。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HIDDEN</span></span><br><span class="line">Plot_norm(x_limits=(<span class="number">-4</span>, <span class="number">4</span>), mu=<span class="number">0</span>, sigma=<span class="number">1</span>, left_end=<span class="number">-1.28</span>, right_end=<span class="number">1.28</span>)</span><br><span class="line">plt.yticks(np.arange(<span class="number">0</span>, <span class="number">0.401</span>, <span class="number">0.05</span>), np.array(<span class="number">7</span>*[<span class="string">''</span>]))</span><br><span class="line">plt.xticks(make_array(<span class="number">-1.28</span>, <span class="number">0</span>, <span class="number">1.28</span>),[<span class="string">'$-z$'</span>, <span class="string">'0'</span>, <span class="string">'$z$'</span>])</span><br><span class="line">plt.title(<span class="string">'Gold Area: Approximately 80%'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_05_output_6_0.png" alt="png"></p>
+<p>正如您从数据8中所知，并且可以在图中看到，间隔从分布的第10百分位到第90百分位。所以$z$是标准正态曲线的第90个百分点，也称为曲线的“90％点”。<code>scipy</code>方法会调用<code>ppf</code>并将f分位数的十进制值作为其参数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stats.norm.ppf(<span class="number">.9</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>1.2815515655446004
+</code></pre><p>因此，总体的大约80％置信区间意味着总体均值$\mu$在”样本均值 $\pm ~ 1.28\sigma/\sqrt{n}$”范围内。</p>
+<p>让我们仔细校验，2是$z$的一个很好的取值，这意味着95％的置信区间。该$z$我们需要的是97.5％的点数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stats.norm.ppf(<span class="number">.975</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>1.959963984540054
+</code></pre><p>那是$z = 1.96$，这就是我们一直使用的2。这个值已经足够了，但是$z = 1.96$也常用于构建95％置信区间。</p>
+<h3 id="一般定义"><a href="#一般定义" class="headerlink" title="一般定义"></a>一般定义</h3><p>设$\lambda$是一个置信水平，令$z_\lambda$代表了这样一个分位数，使得正态曲线中，$(-z_\lambda, ~ z_\lambda)$包含了$\lambda$%区域。在上面的例子中，$\lambda$的值是80， $z_\lambda$的值是1.28。</p>
+<p>当$n$足够大时，有</p>
+<script type="math/tex; mode=display">
+\frac{\lambda}{100} ~ \approx ~ 
+P(\bar{X}_n \in \mu ~ \pm ~ z_\lambda \sigma/\sqrt{n}) ~ = ~
+P(\mu \in \bar{X}_n ~ \pm ~ z_\lambda \sigma/\sqrt{n})</script><p>随机区间$\bar{X}_n ~ \pm ~ z_\lambda \sigma/\sqrt{n}$被称为<em>总体均值$\mu$的$\lambda$%置信区间</em>。这意味着，大约有$\lambda$%的概率，该随机区间包含$\mu$。</p>
+<p>不同级别的置信区间之间的唯一区别是$z$的选择，这取决于置信水平。另外两个组成是样本均值和标准差。</p>
+<h3 id="复习数据8中的示例"><a href="#复习数据8中的示例" class="headerlink" title="复习数据8中的示例"></a>复习数据8中的示例</h3><p>让我们回到数据8中非常熟悉的一个例子：1,174对母亲及其新生儿的随机样本。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">baby = Table.read_table(<span class="string">'baby.csv'</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">baby</span><br></pre></td></tr></table></figure>
+<p><table border="1" class="dataframe">
+    <thead>
+        <tr>
+            <th>Birth Weight</th> <th>Gestational Days</th> <th>Maternal Age</th> <th>Maternal Height</th> <th>Maternal Pregnancy Weight</th> <th>Maternal Smoker</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>120         </td> <td>284             </td> <td>27          </td> <td>62             </td> <td>100                      </td> <td>False          </td>
+        </tr>
+    </tbody>
+        <tr>
+            <td>113         </td> <td>282             </td> <td>33          </td> <td>64             </td> <td>135                      </td> <td>False          </td>
+        </tr>
+    
+        <tr>
+            <td>128         </td> <td>279             </td> <td>28          </td> <td>64             </td> <td>115                      </td> <td>True           </td>
+        </tr>
+    
+        <tr>
+            <td>108         </td> <td>282             </td> <td>23          </td> <td>67             </td> <td>125                      </td> <td>True           </td>
+        </tr>
+    
+        <tr>
+            <td>136         </td> <td>286             </td> <td>25          </td> <td>62             </td> <td>93                       </td> <td>False          </td>
+        </tr>
+    
+        <tr>
+            <td>138         </td> <td>244             </td> <td>33          </td> <td>62             </td> <td>178                      </td> <td>False          </td>
+        </tr>
+    
+        <tr>
+            <td>132         </td> <td>245             </td> <td>23          </td> <td>65             </td> <td>140                      </td> <td>False          </td>
+        </tr>
+    
+        <tr>
+            <td>120         </td> <td>289             </td> <td>25          </td> <td>62             </td> <td>125                      </td> <td>False          </td>
+        </tr>
+    
+        <tr>
+            <td>143         </td> <td>299             </td> <td>30          </td> <td>66             </td> <td>136                      </td> <td>True           </td>
+        </tr>
+    
+        <tr>
+            <td>140         </td> <td>351             </td> <td>27          </td> <td>68             </td> <td>120                      </td> <td>False          </td>
+        </tr>
+    
+</table></p>
+<p>... (1164 rows omitted)</p>
+
+
+
+<p>第三栏包括母亲的年龄。让我们为总体中母亲的平均年龄构建大约95％的置信区间。我们在Data 8中使用bootstrap完成了这项工作，因此我们有了能够进行比较的结果。</p>
+<p>因为我们的数据来自大型随机样本，我们可以应用本节的方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">n = <span class="number">1174</span></span><br><span class="line">ages = baby.column(<span class="string">'Maternal Age'</span>)</span><br><span class="line"></span><br><span class="line">samp_mean = np.mean(ages)</span><br><span class="line">samp_mean</span><br></pre></td></tr></table></figure>
+<pre><code>27.228279386712096
+</code></pre><p>可以发现样本的$\bar{X}_n$值是27.23。我们知道$n = 1174$，所以，我们需要总体的标准差$\sigma$然后就可以完成我们的计算。</p>
+<p>但是，我们当然不知道总体的标准差$\sigma$。</p>
+<p>所以，我们使用数据来估计$\sigma$，当然，这个估计存在一些误差，但它除以 $\sqrt{n}$后，误差会被缩小。请记住，我们的方法依赖于CLT，仅在$n$很大时有效。</p>
+<p>$\sigma$的估计大约是5。82年。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sigma_estimate = np.std(ages)</span><br><span class="line">sigma_estimate</span><br></pre></td></tr></table></figure>
+<pre><code>5.8153604041908968
+</code></pre><p>一个总体的95%置信区间是$(26.89, 27.57)$。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">samp_mean - <span class="number">2</span>*sigma_estimate/(n**<span class="number">0.5</span>), samp_mean + <span class="number">2</span>*sigma_estimate/(n**<span class="number">0.5</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>(26.888831911866099, 27.567726861558093)
+</code></pre><p>不需要bootstrapping了! </p>
+<p>现在让我们比较两种方法的结果。调用Data 8的<code>bootstrap_mean</code>方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bootstrap_mean</span><span class="params">(original_sample, label, replications)</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="string">"""Displays approximate 95% confidence interval for population mean.</span><br><span class="line">    original_sample: table containing the original sample</span><br><span class="line">    label: label of column containing the variable</span><br><span class="line">    replications: number of bootstrap samples</span><br><span class="line">    """</span></span><br><span class="line">    just_one_column = original_sample.column(label)</span><br><span class="line">    n = len(just_one_column)</span><br><span class="line">    means = make_array()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> np.arange(replications):</span><br><span class="line">        bootstrap_sample = np.random.choice(just_one_column, size=n)</span><br><span class="line">        resampled_mean = np.mean(bootstrap_sample)</span><br><span class="line">        means = np.append(means, resampled_mean)</span><br><span class="line">        </span><br><span class="line">    left = percentile(<span class="number">2.5</span>, means)</span><br><span class="line">    right = percentile(<span class="number">97.5</span>, means)</span><br><span class="line">    </span><br><span class="line">    resampled_means = Table().with_column(</span><br><span class="line">    <span class="string">'Bootstrap Sample Mean'</span>, means</span><br><span class="line">    )</span><br><span class="line">    resampled_means.hist(bins=<span class="number">15</span>)</span><br><span class="line">    print(<span class="string">'Approximate 95% confidence interval for population mean:'</span>)</span><br><span class="line">    print(np.round(left, <span class="number">2</span>), <span class="string">'to'</span>, np.round(right, <span class="number">2</span>))</span><br><span class="line">    plt.plot(make_array(left, right), make_array(<span class="number">0</span>, <span class="number">0</span>), color=<span class="string">'yellow'</span>, lw=<span class="number">8</span>);</span><br></pre></td></tr></table></figure>
+<p>让我们为总体平均值构建95％置信区间的bootstrap。我们将使用5000引导样本，就像我们在Data 8中所做的那样。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bootstrap_mean(baby, <span class="string">'Maternal Age'</span>, <span class="number">5000</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>Approximate 95% confidence interval for population mean:
+26.9 to 27.57
+</code></pre><p><img src="/image/prob140/14_05_output_25_1.png" alt="png"></p>
+<p>bootstrap置信区间与我们使用正态近似得到的区间（26.89,27.57）基本相同。</p>
+<p>正如我们在数据8中所做的那样，我们观察到样本中母亲年龄的分布远非正态分布：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">baby.select(<span class="string">'Maternal Age'</span>).hist()</span><br></pre></td></tr></table></figure>
+<p><img src="/image/prob140/14_05_output_28_0.png" alt="png"></p>
+<p>但是，样本均值的经验分布，显示为前一个单元格的输出，大致为钟形。这是因为由中心极限定理可得，大样本的平均值的概率分布是近似正态的。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://upload-images.jianshu.io/upload_images/3698622-25f1d9a52c499f9a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喵十八 WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://upload-images.jianshu.io/upload_images/3698622-833f4ed0c41f117a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喵十八 Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+　　　　<div>
+  　　　
+    　　
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<span style="font-weight:blod">版权声明: </span>
+由<a href="http://yao544303.github.io" style="color:#258FC6">十八</a>创作并维护的<a href="http://yao544303.github.io" style="color:#258FC6">喵十八の小窝</a>采用<a href="https://creativecommons.org/licenses/by-nc/3.0/cn/legalcode" style="color:#258FC6">署名-非商业性使用 3.0中国大陆</a>进行许可<br/>
+欢迎转载!  请注明出处!<br/>
+本文首发于<a href="http://yao544303.github.io" style="color:#258FC6">喵十八の小窝</a></p>
+
+
+  　　　
+　　　　</div>
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/中心极限定律/" rel="tag"># 中心极限定律</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/29/ReMarkov/" rel="next" title="【翻译活动】面向数据科学的概率论-11.反转马尔科夫链">
+                <i class="fa fa-chevron-left"></i> 【翻译活动】面向数据科学的概率论-11.反转马尔科夫链
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+ 　　　　　<div id="gitalk-container"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/Ruby.png"
+               alt="喵十八" />
+          <p class="site-author-name" itemprop="name">喵十八</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">91</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="yao544303963@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Yao544303" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                    
+                      Twitter
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#十四、-中心极限定律"><span class="nav-number">1.</span> <span class="nav-text">十四、 中心极限定律</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#本章依赖的python"><span class="nav-number">2.</span> <span class="nav-text">本章依赖的python</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#中心极限定理"><span class="nav-number">3.</span> <span class="nav-text">中心极限定理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#精确分布"><span class="nav-number">3.1.</span> <span class="nav-text">精确分布</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概率生成函数"><span class="nav-number">3.1.1.</span> <span class="nav-text">概率生成函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一个独立同分布样本分布之和的PGF"><span class="nav-number">3.1.2.</span> <span class="nav-text">一个独立同分布样本分布之和的PGF</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NumPy中的PGF"><span class="nav-number">3.2.</span> <span class="nav-text">NumPy中的PGF</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#计算分布-S-n-的函数"><span class="nav-number">3.2.1.</span> <span class="nav-text">计算分布$S_n$的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#n-次掷骰子游戏的和"><span class="nav-number">3.2.2.</span> <span class="nav-text">$n$次掷骰子游戏的和</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#制作波"><span class="nav-number">3.2.3.</span> <span class="nav-text">制作波</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中心极限定理-1"><span class="nav-number">3.3.</span> <span class="nav-text">中心极限定理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#标准单位"><span class="nav-number">3.3.1.</span> <span class="nav-text">标准单位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标准正态曲线"><span class="nav-number">3.3.2.</span> <span class="nav-text">标准正态曲线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正态曲线"><span class="nav-number">3.3.3.</span> <span class="nav-text">正态曲线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中心极限定理-2"><span class="nav-number">3.3.4.</span> <span class="nav-text">中心极限定理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定理"><span class="nav-number">3.3.4.1.</span> <span class="nav-text">定理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#示例"><span class="nav-number">3.3.4.2.</span> <span class="nav-text">示例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正态曲线下的概率"><span class="nav-number">3.3.5.</span> <span class="nav-text">正态曲线下的概率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标准正态-CDF-Phi"><span class="nav-number">3.3.6.</span> <span class="nav-text">标准正态 CDF $\Phi$</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二项分布-n-p-的估计"><span class="nav-number">3.3.7.</span> <span class="nav-text">二项分布 $(n, p)$ 的估计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#样本均值"><span class="nav-number">3.4.</span> <span class="nav-text">样本均值</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IID-样本的均值"><span class="nav-number">3.4.1.</span> <span class="nav-text">IID 样本的均值</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#平方根法则"><span class="nav-number">3.4.1.1.</span> <span class="nav-text">平方根法则</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#弱大数定律"><span class="nav-number">3.4.2.</span> <span class="nav-text">弱大数定律</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关定律"><span class="nav-number">3.4.3.</span> <span class="nav-text">相关定律</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分布的形状"><span class="nav-number">3.4.4.</span> <span class="nav-text">分布的形状</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#置信区间"><span class="nav-number">3.5.</span> <span class="nav-text">置信区间</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mu-的置信区间"><span class="nav-number">3.5.1.</span> <span class="nav-text">$\mu$的置信区间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一般定义"><span class="nav-number">3.5.2.</span> <span class="nav-text">一般定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复习数据8中的示例"><span class="nav-number">3.5.3.</span> <span class="nav-text">复习数据8中的示例</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: '2fbc96c0bbe149b498b5',
+          clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+          repo: 'Yao544303.github.io',
+          owner: 'Yao544303',
+          admin: ['Yao544303'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

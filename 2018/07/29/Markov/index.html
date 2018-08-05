@@ -110,12 +110,12 @@
 自豪地采用谷歌翻译
 
 术语说明条件概率分布（Conditional Probability Distribution，或者条件分布，Conditional Distribution）是现代概率论中的概念：已知两个相关的随机变量X和Y，随机变量Y在条件{X=x}下的条件概率分">
-<meta property="og:image" content="http://yoursite.com/image/10-1-trans_refl.png">
-<meta property="og:image" content="http://yoursite.com/image/10-2-output.png">
-<meta property="og:image" content="http://yoursite.com/image/10-1-trans_refl.png">
-<meta property="og:image" content="http://yoursite.com/image/10-3-trans_circle.png">
-<meta property="og:image" content="http://yoursite.com/image/10-4-output.png">
-<meta property="og:updated_time" content="2018-07-29T11:27:21.752Z">
+<meta property="og:image" content="http://yoursite.com/image/prob140/10-1-trans_refl.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/10-2-output.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/10-1-trans_refl.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/10-3-trans_circle.png">
+<meta property="og:image" content="http://yoursite.com/image/prob140/10-4-output.png">
+<meta property="og:updated_time" content="2018-08-05T11:32:39.439Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【翻译活动】面向数据科学的概率论-10.马尔科夫链">
 <meta name="twitter:description" content="原文：prob140/textbook/notebooks/ch_10
@@ -124,7 +124,7 @@
 自豪地采用谷歌翻译
 
 术语说明条件概率分布（Conditional Probability Distribution，或者条件分布，Conditional Distribution）是现代概率论中的概念：已知两个相关的随机变量X和Y，随机变量Y在条件{X=x}下的条件概率分">
-<meta name="twitter:image" content="http://yoursite.com/image/10-1-trans_refl.png">
+<meta name="twitter:image" content="http://yoursite.com/image/prob140/10-1-trans_refl.png">
 
 
 
@@ -459,7 +459,7 @@ P(X_0 = i_0, X_1 = i_1, X_2 = i_2, \ldots, X_n = i_n)
 <li>如果链处于状态2到4，则它移动到其两个相邻状态中的一个的概率为0.25。</li>
 <li>如果链处于状态1或5，则它移动到其相邻状态的概率为0.5。</li>
 </ul>
-<p><img src="/image/10-1-trans_refl.png" alt="Reflecting Lazy Walk"></p>
+<p><img src="/image/prob140/10-1-trans_refl.png" alt="Reflecting Lazy Walk"></p>
 <p>我们称其为<em>反转</em>是在状态1和5可以反转掉头进行转移。整个漫步过程有<em>粘性</em>是指其可能移动到原有状态。</p>
 <p>转移图非常适合理解链移动的规则。但是，对于计算，转移矩阵更有帮助。</p>
 <p>要开始构造矩阵，我们将数组<code>s</code>设置为状态集，并为转移函数<code>refl_walk_probs</code> 设置成入参为$i$和$j$，返回值为$P(i, j)$的形式。</p>
@@ -545,7 +545,7 @@ P(1, 2)P(2, 2)P(2, 3)P(3, 4)P(4, 3) \approx 0.4\%</script><figure class="highlig
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reflecting_walk.simulate_path(<span class="number">1</span>, <span class="number">7</span>)</span><br></pre></td></tr></table></figure>
 <pre><code>array([1, 2, 1, 2, 2, 2, 3, 2])
 </code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reflecting_walk.simulate_path(<span class="number">1</span>, <span class="number">10</span>, plot_path=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
-<p><img src="/image/10-2-output.png" alt="png"></p>
+<p><img src="/image/prob140/10-2-output.png" alt="png"></p>
 <h3 id="n-阶转移矩阵"><a href="#n-阶转移矩阵" class="headerlink" title="$n$-阶转移矩阵"></a>$n$-阶转移矩阵</h3><p>对于状态$i$和$j$, 耗费$n$步，从状态$i$转移为状态$j$的可能性，称为从$i$到$j$的$n$-阶转移概率。 形式上定义为：</p>
 <script type="math/tex; mode=display">
 P_n(i, j) ~ = ~ P(X_n = j \mid X_0 = i)</script><p>在这种表示方法中，一阶转移概率$P(i, j)$也可以写作$P_1(i, j)$。</p>
@@ -1076,7 +1076,7 @@ P_n(i, j) \to \pi(j) ~~~ \text{as } n \to \infty</script><p>因此平均值也�
 <script type="math/tex; mode=display">
 \frac{1}{n} \sum_{m=1}^n P_m(i, j) \to \pi(j) ~~~ \text{as } n \to \infty</script><p>因此，长期过程的链花费在状态$j$处转移次数比例预期为$\pi(j)$，其中$\pi$链的固定分布。</p>
 <h3 id="粘性反转漫步的稳态分布"><a href="#粘性反转漫步的稳态分布" class="headerlink" title="粘性反转漫步的稳态分布"></a>粘性反转漫步的稳态分布</h3><p>我们在前面的部分对此进行了研究。转移图是</p>
-<p><img src="/image/10-1-trans_refl.png" alt="image.png"></p>
+<p><img src="/image/prob140/10-1-trans_refl.png" alt="image.png"></p>
 <p>这是转移矩阵$\mathbb{P}$。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reflecting_walk</span><br></pre></td></tr></table></figure>
 <div>
@@ -1198,7 +1198,7 @@ P_n(i, j) \to \pi(j) ~~~ \text{as } n \to \infty</script><p>因此平均值也�
 <p>这意味着从长远来看，这一部分的随机漫步预计将花费大约12.5％的时间在状态1，25％的时间用于状态2,3和4，其余12.5%的时间在状态5。</p>
 <h3 id="懒惰的随机循环漫步"><a href="#懒惰的随机循环漫步" class="headerlink" title="懒惰的随机循环漫步"></a>懒惰的随机循环漫步</h3><p>现在让状态空间在圆上排列五个点。假设该过程从点1开始，并且在每个步骤中保持在概率为0.5的位置（因此是粘性的），或者移动到两个相邻点中的一个，每个概率为0.25，而不管其他移动。</p>
 <p>换言之，除了$1 \rightarrow 5$ 和 $5 \rightarrow 1$这个漫步的转移和上面的随机漫步是相同的。 可以在转移图中总结此转移行为，请注意，所有状态的转移行为都是相同的。</p>
-<p><img src="/image/10-3-trans_circle.png" alt="Lazy Circle Walk"></p>
+<p><img src="/image/prob140/10-3-trans_circle.png" alt="Lazy Circle Walk"></p>
 <p>在每一步中，下一步的动作都是通过从三个选项中随机选择和链的当前位置来确定的，而不是从它到达该位置的方式。所以这个过程就是马尔可夫链。我们称之为 $X_0, X_1, X_2, \ldots $ 并定义其转移矩阵。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">s = np.arange(<span class="number">1</span>, <span class="number">6</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">circle_walk_probs</span><span class="params">(i, j)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> i-j == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0.5</span></span><br><span class="line">        <span class="keyword">elif</span> abs(i-j) == <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0.25</span></span><br><span class="line">        <span class="keyword">elif</span> abs(i-j) == <span class="number">4</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0.25</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>   </span><br><span class="line">        </span><br><span class="line">circle_walk = MarkovChain.from_transition_function(s, circle_walk_probs)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">circle_walk</span><br></pre></td></tr></table></figure>
@@ -1303,7 +1303,7 @@ P_n(i, j) \to \pi(j) ~~~ \text{as } n \to \infty</script><p>因此平均值也�
 <p><strong>问题.</strong> 链的稳态分布是什么？ </p>
 <p><strong>回答.</strong> 使用电脑， 所以，先找到$N=100$时的稳态分布，然后检查对于一般的$N$是否一致。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">N = <span class="number">100</span></span><br><span class="line"></span><br><span class="line">states = np.arange(N+<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">transition_probs</span><span class="params">(i, j)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> j == i:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>/<span class="number">2</span></span><br><span class="line">    <span class="keyword">elif</span> j == i+<span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> (N-i)/(<span class="number">2</span>*N)</span><br><span class="line">    <span class="keyword">elif</span> j == i<span class="number">-1</span>:</span><br><span class="line">        <span class="keyword">return</span> i/(<span class="number">2</span>*N)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">ehrenfest = MarkovChain.from_transition_function(states, transition_probs)</span><br><span class="line">Plot(ehrenfest.steady_state(), edges=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
-<p><img src="/image/10-4-output.png" alt="png"></p>
+<p><img src="/image/prob140/10-4-output.png" alt="png"></p>
 <p>这看起来很像二项式（100,1 / 2）分布。实际上它<em>就是</em>二项式（100,1 / 2）分布。既然你已经猜到了，你所要做的就是将它插入到平衡方程中并检查它们是否有效。</p>
 <p>平衡方程是：</p>
 <script type="math/tex; mode=display">
@@ -1523,7 +1523,7 @@ P_n(i, j) \to \pi(j) ~~~ \text{as } n \to \infty</script><p>因此平均值也�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-count">44</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1545,7 +1545,7 @@ P_n(i, j) \to \pi(j) ~~~ \text{as } n \to \infty</script><p>因此平均值也�
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">90</span>
+                <span class="site-state-item-count">91</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
