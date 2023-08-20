@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0-rc2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="综述同task，job结束时，并不会返回job finish 的信息，也是在DagScheduler.schedule_running_job() 轮询时，通过calculate_job_status() 方法获取job的状态。获取job已经finish的信息后，会返还资源和进行相关环境清理。 执行步骤  dag_scheduler.py：当调度完task后，执行calculate_job_sta">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FATE学习：跟着日志读源码（九）upload任务job finsih阶段">
+<meta property="og:url" content="http://yoursite.com/2023/08/20/fate-log-9-upload-job-finish/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="综述同task，job结束时，并不会返回job finish 的信息，也是在DagScheduler.schedule_running_job() 轮询时，通过calculate_job_status() 方法获取job的状态。获取job已经finish的信息后，会返还资源和进行相关环境清理。 执行步骤  dag_scheduler.py：当调度完task后，执行calculate_job_sta">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/image/fate/d55725da18b1408aac6c7ffccbaf1855.png">
+<meta property="article:published_time" content="2023-08-20T04:12:58.000Z">
+<meta property="article:modified_time" content="2023-08-20T05:35:48.494Z">
+<meta property="article:author" content="喵十八">
+<meta property="article:tag" content="FATE">
+<meta property="article:tag" content="FedAI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/image/fate/d55725da18b1408aac6c7ffccbaf1855.png">
+
+<link rel="canonical" href="http://yoursite.com/2023/08/20/fate-log-9-upload-job-finish/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>FATE学习：跟着日志读源码（九）upload任务job finsih阶段 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">喵十八の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fate-log-9-upload-job-finish/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FATE学习：跟着日志读源码（九）upload任务job finsih阶段
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-08-20 12:12:58 / Modified: 13:35:48" itemprop="dateCreated datePublished" datetime="2023-08-20T12:12:58+08:00">2023-08-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FATE/" itemprop="url" rel="index"><span itemprop="name">FATE</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>同task，job结束时，并不会返回job finish 的信息，也是在DagScheduler.schedule_running_job() 轮询时，通过calculate_job_status() 方法获取job的状态。<br>获取job已经finish的信息后，会返还资源和进行相关环境清理。</p>
+<h1 id="执行步骤"><a href="#执行步骤" class="headerlink" title="执行步骤"></a>执行步骤</h1><p><img src="/image/fate/d55725da18b1408aac6c7ffccbaf1855.png" alt="在这里插入图片描述"></p>
+<ol>
+<li><p>dag_scheduler.py：当调度完task后，执行calculate_job_status，计算job当前的状态。执行calculate_job_progress，计算job当前的完成进度。<br>在${job_log_dir}/fate_flow_schedule.log 输出日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:47,782] [1:140259369826048] - dag_scheduler.py[line:310]: Job 202107260820309976351 status is success, calculate by task status list: [&#x27;success&#x27;]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>dag_scheduler.py：根据job 状态和进度变化，同步信息，save model等<br>下面这段代码没执行，逻辑上有点问题</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if int(new_progress) - job.f_progress &gt; 0:</span><br><span class="line">    job.f_progress = new_progress</span><br><span class="line">    FederatedScheduler.sync_job(job=job, update_fields=[&quot;progress&quot;])</span><br><span class="line">    cls.update_job_on_initiator(initiator_job=job, update_fields=[&quot;progress&quot;])</span><br></pre></td></tr></table></figure>
+<p><strong>存疑</strong><br>当task状态改变时TaskScheduler.schedule  返回的initiator_tasks_group 中的task状态未改变<br>结果导致 DAGScheduler.schedule_running_job 中    total, finished_count = cls.calculate_job_progress(tasks_status=tasks_status)<br>无改变，不会触发 后续流程，会多跑一遍。<br>建议在task schedule结束之后，再query一遍task的信息，更新状态。</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">if new_job_status != job.f_status:</span><br><span class="line">    job.f_status = new_job_status</span><br><span class="line">    if EndStatus.contains(job.f_status):</span><br><span class="line">        FederatedScheduler.save_pipelined_model(job=job)</span><br><span class="line">    FederatedScheduler.sync_job_status(job=job)</span><br><span class="line">    cls.update_job_on_initiator(initiator_job=job, update_fields=[&quot;status&quot;])</span><br></pre></td></tr></table></figure>
+<p>job 状态变换，且job 已经finish，调用FederatedScheduler.save_pipelined_model<br>调用链 FederatedScheduler.save_pipelined_model() -&gt; api_utils.federated_coordination_on_http() 这里endpoint 是model-&gt; fate_flow_server通过flask -&gt; party_app.save_pipelined_model() -&gt;   JobController.save_pipelined_model<br>在${job_log_dir}/fate_flow_schedule.log 输出日志<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:47,783] [1:140259369826048] - federated_scheduler.py[line:78]: try to save job 202107260820309976351 pipelined model</span><br><span class="line">[INFO] [2021-07-26 08:20:47,791] [1:140259119585024] - job_controller.py[line:300]: job 202107260820309976351 on local 0 start to save pipeline</span><br><span class="line">[INFO] [2021-07-26 08:20:47,800] [1:140259119585024] - job_controller.py[line:340]: job 202107260820309976351 on local 0 save pipeline successfully</span><br><span class="line">[INFO] [2021-07-26 08:20:47,804] [1:140259369826048] - federated_scheduler.py[line:81]: save job 202107260820309976351 pipelined model success</span><br></pre></td></tr></table></figure><br>注意：如果是predict，因为使用的是已经存在的model，这里不会再存储<br>模型存储的路径在<br>/data/projects/fate/model_local_cache/${role}#${party}#${component_name}#model/${jobid}<br>/data/projects/fate/model_local_cache/local#0#local-0#model/202107260820309976351</p>
+<ol>
+<li><p>dag_scheduler.py：save完成，同步信息执行FederatedScheduler.sync_job_status(job=job) 调用链FederatedScheduler.sync_job_status() -&gt;-api_utils.federated_coordination_on_http() 这里endpoint 是status -&gt; fate_flow_server通过flask -&gt; party_app.job_status -&gt;   JobController.update_job_status -&gt;  ResourceManager.return_job_resource<br>在update_job_status中，判断job处于finish 状态，回收资源。<br>对应在${job_log_dir}/fate_flow_schedule.log 输出日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:47,804] [1:140259369826048] - federated_scheduler.py[line:68]: job 202107260820309976351 is success, sync to all party</span><br><span class="line">[INFO] [2021-07-26 08:20:47,810] [1:140259119585024] - job_saver.py[line:45]: try to update job 202107260820309976351 status to success</span><br><span class="line">[INFO] [2021-07-26 08:20:47,830] [1:140259119585024] - job_saver.py[line:48]: update job 202107260820309976351 status successfully</span><br><span class="line">[INFO] [2021-07-26 08:20:47,869] [1:140259119585024] - resource_manager.py[line:175]: return job 202107260820309976351 resource(cores 4 memory 0) on local 0 successfully, remaining cores: 20 remaining memory: 0</span><br><span class="line">[INFO] [2021-07-26 08:20:47,874] [1:140259369826048] - federated_scheduler.py[line:71]: sync job 202107260820309976351 status success to all party success</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>dag_scheduler.py：update_job_on_initiator() ，<br>调用链 update_job_on_initiator -&gt; JobSaver.update_job_status() -&gt; JobSaver.update_status -&gt; JobSaver.update_entity_table （由于是local，jobstatus 已经更新，前一步失败，这里不会执行）-&gt; JobSaver.update_job() -&gt; JobSaver.update_entity_table<br>对应在${job_log_dir}/fate_flow_schedule.log 输出日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:47,884] [1:140259369826048] - job_saver.py[line:45]: try to update job 202107260820309976351 status to success</span><br><span class="line">[INFO] [2021-07-26 08:20:47,894] [1:140259369826048] - job_saver.py[line:56]: update job 202107260820309976351 status does not take effect</span><br><span class="line">[INFO] [2021-07-26 08:20:47,894] [1:140259369826048] - job_saver.py[line:61]: try to update job 202107260820309976351</span><br><span class="line">[WARNING] [2021-07-26 08:20:47,904] [1:140259369826048] - job_saver.py[line:66]: job 202107260820309976351 update does not take effect: &#123;&#x27;job_id&#x27;: &#x27;202107260820309976351&#x27;, &#x27;role&#x27;: &#x27;local&#x27;, &#x27;party_id&#x27;: &#x27;0&#x27;, &#x27;status&#x27;: &#x27;success&#x27;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>dag_scheduler.py：执行finish 执行stop_job<br>DagScheduler.stop_job() -&gt;   FederatedScheduler.stop_job -&gt; api_utils.federated_coordination_on_http() 这里endpoint 是stop -&gt; fate_flow_server通过flask -&gt; party_app.stop_job -&gt;    JobController.stop_jobs -&gt;  JobController.stop_job -&gt;TaskController.stop_task -&gt; JobController.update_job_status<br>注意，因为job是拆解成一个个task执行，故执行进程只有task的，没有job的进程。stop的job的操作是依次遍历job下的task，进行stop_task。在正常流程下，由于所有task都stop之后，才会触发stop_job。故而这里stop_task 都是can not found。<br>对应在${job_log_dir}/fate_flow_schedule.log 输出日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:47,904] [1:140259369826048] - dag_scheduler.py[line:502]: Job 202107260820309976351 finished with success, do something...</span><br><span class="line">[INFO] [2021-07-26 08:20:47,905] [1:140259369826048] - dag_scheduler.py[line:436]: request stop job 202107260820309976351 with success</span><br><span class="line">[INFO] [2021-07-26 08:20:47,913] [1:140259369826048] - dag_scheduler.py[line:445]: request stop job 202107260820309976351 with success to all party</span><br><span class="line">[INFO] [2021-07-26 08:20:47,913] [1:140259369826048] - federated_scheduler.py[line:88]: try to stop job 202107260820309976351</span><br><span class="line">[INFO] [2021-07-26 08:20:47,937] [1:140259119585024] - job_utils.py[line:396]: try to stop job 202107260820309976351 task 202107260820309976351_upload_0 local 0 with success party status process pid:90</span><br><span class="line">[INFO] [2021-07-26 08:20:47,937] [1:140259119585024] - job_utils.py[line:399]: can not found job 202107260820309976351 task 202107260820309976351_upload_0 local 0 with success party status process pid:90</span><br><span class="line">[INFO] [2021-07-26 08:20:47,939] [1:140259119585024] - job_utils.py[line:423]: start run subprocess to stop task session 202107260820309976351_upload_0_0_local_0</span><br><span class="line">[INFO] [2021-07-26 08:20:47,939] [1:140259119585024] - job_utils.py[line:310]: start process command: python3 /data/projects/fate/python/fate_flow/utils/session_utils.py -j 202107260820309976351_upload_0_0_local_0 --computing EGGROLL --federation EGGROLL --storage EGGROLL -c stop</span><br><span class="line">[INFO] [2021-07-26 08:20:47,953] [1:140259119585024] - job_utils.py[line:333]: start process command: python3 /data/projects/fate/python/fate_flow/utils/session_utils.py -j 202107260820309976351_upload_0_0_local_0 --computing EGGROLL --federation EGGROLL --storage EGGROLL -c stop successfully, pid is 153</span><br><span class="line">[INFO] [2021-07-26 08:20:47,954] [1:140259119585024] - task_controller.py[line:254]: job 202107260820309976351 task 202107260820309976351_upload_0 0 on local 0 process 90 kill success</span><br></pre></td></tr></table></figure>
+<p>然后调用 JobController.update_job_status 更新信息，不同于3中，这里执行失败，不会进行资源回收。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:47,984] [1:140259119585024] - job_saver.py[line:45]: try to update job 202107260820309976351 status to success</span><br><span class="line">[INFO] [2021-07-26 08:20:47,991] [1:140259119585024] - job_saver.py[line:56]: update job 202107260820309976351 status does not take effect</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>返回成功信息<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:47,997] [1:140259369826048] - federated_scheduler.py[line:92]: stop job 202107260820309976351 success</span><br><span class="line">[INFO] [2021-07-26 08:20:47,997] [1:140259369826048] - dag_scheduler.py[line:448]: stop job 202107260820309976351 with success successfully</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li><p>dag_scheduler.py：执行finish 执行clean_job<br>FederatedScheduler.clean_job() -&gt; api_utils.federated_coordination_on_http() 这里endpoint 是clean -&gt; fate_flow_server通过flask -&gt; party_app.stop_job -&gt;    JobController.stop_jobs -&gt;  JobController.clean_job<br>然后clean_job，只打了日志，啥也没干</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def clean_job(cls, job_id, role, party_id, roles):</span><br><span class="line">    schedule_logger(job_id).info(&#x27;Job &#123;&#125; on &#123;&#125; &#123;&#125; start to clean&#x27;.format(job_id, role, party_id))</span><br><span class="line">    # todo</span><br><span class="line">    schedule_logger(job_id).info(&#x27;job &#123;&#125; on &#123;&#125; &#123;&#125; clean done&#x27;.format(job_id, role, party_id))</span><br></pre></td></tr></table></figure>
+<p>对应在${job_log_dir}/fate_flow_schedule.log 输出日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:47,997] [1:140259369826048] - federated_scheduler.py[line:107]: try to clean job 202107260820309976351</span><br><span class="line">[INFO] [2021-07-26 08:20:48,003] [1:140259119585024] - job_controller.py[line:344]: Job 202107260820309976351 on local 0 start to clean</span><br><span class="line">[INFO] [2021-07-26 08:20:48,003] [1:140259119585024] - job_controller.py[line:346]: job 202107260820309976351 on local 0 clean done</span><br><span class="line">[INFO] [2021-07-26 08:20:48,007] [1:140259369826048] - federated_scheduler.py[line:110]: clean job 202107260820309976351 success</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>dag_scheduler.py： finish执行结束，输出日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:48,007] [1:140259369826048] - dag_scheduler.py[line:505]: Job 202107260820309976351 finished with success, done</span><br></pre></td></tr></table></figure>
+<p>至此，job finish 结束，当然，调度器本轮调度也结束了，打出日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:48,007] [1:140259369826048] - dag_scheduler.py[line:325]: finish scheduling job 202107260820309976351</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FATE/" rel="tag"># FATE</a>
+              <a href="/tags/FedAI/" rel="tag"># FedAI</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-log-8-upload-task-finish/" rel="prev" title="FATE学习：跟着日志读源码（八）upload任务task finsih阶段">
+      <i class="fa fa-chevron-left"></i> FATE学习：跟着日志读源码（八）upload任务task finsih阶段
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-log-10-polling/" rel="next" title="FATE学习：跟着日志读源码（十）polling">
+      FATE学习：跟着日志读源码（十）polling <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%BC%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">执行步骤</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">喵十八</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2fbc96c0bbe149b498b5',
+      clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+      repo        : 'Yao544303.github.io',
+      owner       : 'Yao544303',
+      admin       : ['Yao544303'],
+      id          : '0002e732b2c0ff371f4aca2bbcdc1245',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

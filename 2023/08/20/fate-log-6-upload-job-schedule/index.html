@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0-rc2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="综述在前文的基础上，因为job已经处于running状态，会按照task的依赖关系，依次调度该job下的task。  调度之后的操作有2部分：   Part1. 申请资源   Part2. start job：将job的状态从waiting -&gt; running 状态涉及的主要方法：   dag_scheduler.schedule_running_jobs()  执行步骤  dag_sch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FATE学习：跟着日志读源码（六）upload任务task schedule阶段">
+<meta property="og:url" content="http://yoursite.com/2023/08/20/fate-log-6-upload-job-schedule/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="综述在前文的基础上，因为job已经处于running状态，会按照task的依赖关系，依次调度该job下的task。  调度之后的操作有2部分：   Part1. 申请资源   Part2. start job：将job的状态从waiting -&gt; running 状态涉及的主要方法：   dag_scheduler.schedule_running_jobs()  执行步骤  dag_sch">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/image/fate/8ea2c9e7fee841dc82c8448a00efbf5d.png">
+<meta property="article:published_time" content="2023-08-20T04:11:47.000Z">
+<meta property="article:modified_time" content="2023-08-20T05:36:39.274Z">
+<meta property="article:author" content="喵十八">
+<meta property="article:tag" content="FATE">
+<meta property="article:tag" content="FedAI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/image/fate/8ea2c9e7fee841dc82c8448a00efbf5d.png">
+
+<link rel="canonical" href="http://yoursite.com/2023/08/20/fate-log-6-upload-job-schedule/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>FATE学习：跟着日志读源码（六）upload任务task schedule阶段 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">喵十八の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fate-log-6-upload-job-schedule/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FATE学习：跟着日志读源码（六）upload任务task schedule阶段
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-08-20 12:11:47 / Modified: 13:36:39" itemprop="dateCreated datePublished" datetime="2023-08-20T12:11:47+08:00">2023-08-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FATE/" itemprop="url" rel="index"><span itemprop="name">FATE</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>在前文的基础上，因为job已经处于running状态，会按照task的依赖关系，依次调度该job下的task。</p>
+<p> 调度之后的操作有2部分： </p>
+<ul>
+<li>Part1. 申请资源  </li>
+<li>Part2. start job：将job的状态从waiting -&gt; running 状态<br>涉及的主要方法：   dag_scheduler.schedule_running_jobs()</li>
+</ul>
+<h1 id="执行步骤"><a href="#执行步骤" class="headerlink" title="执行步骤"></a>执行步骤</h1><p><img src="/image/fate/8ea2c9e7fee841dc82c8448a00efbf5d.png" alt="在这里插入图片描述"></p>
+<ol>
+<li>dag_scheduler.py：rundo轮询，发现处于running状态的job（这一部分见fate flow server 启动部分）<br>对应fate_flow/fate_flow_schedule.log依次为<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,117] [1:140259369826048] - dag_scheduler.py[line:148]: start schedule running jobs</span><br><span class="line">[INFO] [2021-07-26 08:20:32,127] [1:140259369826048] - dag_scheduler.py[line:150]: have 1 running jobs</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>对应查询running状态的fate_flow/peewee.log为<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:34,354] [1:140259369826048] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_user_id`, `t1`.`f_job_id`, `t1`.`f_name`, `t1`.`f_description`, `t1`.`f_tag`, `t1`.`f_dsl`, `t1`.`f_runtime_conf`, `t1`.`f_runtime_conf_on_party`, `t1`.`f_train_runtime_conf`, `t1`.`f_roles`, `t1`.`f_work_mode`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_is_initiator`, `t1`.`f_progress`, `t1`.`f_ready_signal`, `t1`.`f_ready_time`, `t1`.`f_cancel_signal`, `t1`.`f_cancel_time`, `t1`.`f_rerun_signal`, `t1`.`f_end_scheduling_updates`, `t1`.`f_engine_name`, `t1`.`f_engine_type`, `t1`.`f_cores`, `t1`.`f_memory`, `t1`.`f_remaining_cores`, `t1`.`f_remaining_memory`, `t1`.`f_resource_in_use`, `t1`.`f_apply_resource_time`, `t1`.`f_return_resource_time`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_job` AS `t1` WHERE ((`t1`.`f_is_initiator` = %s) AND (`t1`.`f_status` = %s)) ORDER BY `t1`.`f_create_time` ASC&#x27;, [True, &#x27;running&#x27;])</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>dag_scheduler.py：执行schedule_running_jobs 调度处于running 状态的job。<br>先在${job_log_dir}/fate_flow_schedule.log 输出<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,128] [1:140259369826048] - dag_scheduler.py[line:152]: schedule running job 202107260820309976351</span><br></pre></td></tr></table></figure></li>
+<li>dag_scheduler.py：调用schedule_utils.get_job_dsl_parser 解析参数</li>
+<li>schedule_utils.py：返回解析完毕的 dsl_parser</li>
+<li>dag_scheduler.py：调用TaskScheduler.schedule(job=job, dsl_parser=dsl_parser, canceled=job.f_cancel_signal)调度task，注意这里的f_cancel_signal，这个是在detector 轮询时，更新的状态。</li>
+<li>task_scheduler.py：执行task调度。<br>先在${job_log_dir}/fate_flow_schedule.log 输出<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,130] [1:140259369826048] - task_scheduler.py[line:28]: scheduling job 202107260820309976351 tasks</span><br></pre></td></tr></table></figure>
+调用JobSaver.get_tasks_asc 获取相关信息。</li>
+<li>job_saver.py： 执行如下源码，获取该job对应的task<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tasks = Task.select().where(Task.f_job_id == job_id, Task.f_role == role, Task.f_party_id == party_id).order_by(Task.f_create_time.asc())</span><br><span class="line">tasks_group = cls.get_latest_tasks(tasks=tasks)</span><br></pre></td></tr></table></figure>
+按照create_time，升序获取当前job中涉及的task。从前文可知，create job 的时候，会根据job涉及的component， 依次create 不同的task ，所以在这里按照create_time顺序获取，也就是task的执行顺序（？如果db出问题，create_time 乱了，咋玩？）<br>操作数据库的日志在fate_flow/peewee.log 中</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:32,133] [1:140259369826048] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_job_id`, `t1`.`f_component_name`, `t1`.`f_task_id`, `t1`.`f_task_version`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_federated_mode`, `t1`.`f_federated_status_collect_type`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_run_on_this_party`, `t1`.`f_run_ip`, `t1`.`f_run_pid`, `t1`.`f_party_status`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_task` AS `t1` WHERE (((`t1`.`f_job_id` = %s) AND (`t1`.`f_role` = %s)) AND (`t1`.`f_party_id` = %s)) ORDER BY `t1`.`f_create_time` ASC&#x27;, [&#x27;202107260820309976351&#x27;, &#x27;local&#x27;, &#x27;0&#x27;])</span><br></pre></td></tr></table></figure>
+<p>get_latest_tasks 的作用是，获取new version 的task。<br>最后，将需要执行的tasks 返回给task_scheduler</p>
+<ol>
+<li>task_scheduler.py：遍历待执行的task，针对每个task执行如下操作：<br>判断federated_status_collect_type，如是PULL 需要执行collect_task_of_all_party()通过调用JobSaver.query_task()获取各个party 上task的信息。（步骤9 -10）<br>调用federated_task_status 并计算当前task状态（11-13）<br>更新task状态 14<br>加入waiting task 队列 15<br><strong>注：PULL需要主动拉取多方计算下，其余party上，对应task的信息</strong></li>
+<li>job_saver.py：执行query_task，返回结果，对应的fate_flow/peewee.log日志如下<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:32,139] [1:140259369826048] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_job_id`, `t1`.`f_component_name`, `t1`.`f_task_id`, `t1`.`f_task_version`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_federated_mode`, `t1`.`f_federated_status_collect_type`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_run_on_this_party`, `t1`.`f_run_ip`, `t1`.`f_run_pid`, `t1`.`f_party_status`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_task` AS `t1` WHERE ((`t1`.`f_task_id` = %s) AND (`t1`.`f_task_version` = %s))&#x27;, [&#x27;202107260820309976351_upload_0&#x27;, 0])</span><br></pre></td></tr></table></figure></li>
+<li><p>task_scheduler.py：紧接着8，对9的查询结果进行判断。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">if not len(tasks_status_on_all) &gt; 1 and not TaskStatus.RUNNING in tasks_status_on_all:</span><br><span class="line">    return</span><br></pre></td></tr></table></figure>
+<p>当前是upload任务，不涉及多方计算，故len(tasks_status_on_all) = 1，且此时task处于waiting，故直接返回，后面task 变为runing，便会执行下文的collect。</p>
+</li>
+<li><p>task_scheduler.py：执行federated_task_status 获取当前task状态。先调用JobSaver.query_job()进行查询</p>
+</li>
+<li>job_saver.py：执行query_task，返回结果，对应的fate_flow/peewee.log日志如下<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:32,144] [1:140259369826048] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_job_id`, `t1`.`f_component_name`, `t1`.`f_task_id`, `t1`.`f_task_version`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_federated_mode`, `t1`.`f_federated_status_collect_type`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_run_on_this_party`, `t1`.`f_run_ip`, `t1`.`f_run_pid`, `t1`.`f_party_status`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_task` AS `t1` WHERE ((`t1`.`f_task_id` = %s) AND (`t1`.`f_task_version` = %s))&#x27;, [&#x27;202107260820309976351_upload_0&#x27;, 0])</span><br></pre></td></tr></table></figure></li>
+<li><p>task_scheduler.py：判断除non-idmapping role之外，所有的party上，该task的状态（？non-idmapping 这段逻辑没看懂），如存在非SUCCESS状态的，则收集所有状态，调用calculate_multi_party_task_status() 计算当前状态。并输出日志到${job_log_dir}/fate_flow_schedule.log </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,148] [1:140259369826048] - task_scheduler.py[line:143]: job 202107260820309976351 task 202107260820309976351_upload_0 0 status is waiting, calculate by task party status list: [&#x27;waiting&#x27;]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>task_scheduler.py：判断13计算得到的状态和原状态是否一致，如不一致，则更新原状态，并调用FederatedScheduler.sync_task_status 更新各个party该task的状态。（这里都为waiting，状态一致无需更新）</p>
+</li>
+<li><p>task_scheduler.py：判断状态，如为waiting则加入waiting_tasks队列，如为EndStatus，则调用FederatedScheduler.stop_task</p>
+</li>
+<li><p>task_scheduler.py：判断是否canceled，如未cancel 则遍历waiting_tasks执行17-48。（疑问：为啥不是先判断？）</p>
+</li>
+<li><p>task_scheduler.py：针对每个task，调用dsl_parser.get_upstream_dependent_components() 获取其依赖的components，如果前置components中存在未success的，break跳出遍历。<br>（？？ 存疑 这里的else缩进）</p>
+</li>
+<li><p>task_scheduler.py：调用start_task，启动task。<br>执行第一步，先输出日志到${job_log_dir}/fate_flow_schedule.log </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,148] [1:140259369826048] - task_scheduler.py[line:80]: try to start job 202107260820309976351 task 202107260820309976351_upload_0 0 on local 0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>task_scheduler.py：调用ResourceManager.apply_for_task_resource 申请资源</p>
+</li>
+<li><p>resource_manager.py：执行resource_for_task，先调用calculate_task_resource计算该task所需的资源。<br>这里需要注意的是，调用的代码是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cores_per_task, memory_per_task = cls.calculate_task_resource(task_info=task_info)</span><br></pre></td></tr></table></figure>
+<p>而calculate_task_resource的定义是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">def calculate_task_resource(cls, task_parameters: RunParameters = None, task_info: dict = None):</span><br><span class="line">    if not task_parameters:</span><br><span class="line">        job_parameters = job_utils.get_job_parameters(job_id=task_info[&quot;job_id&quot;],</span><br><span class="line">                                                      role=task_info[&quot;role&quot;],</span><br><span class="line">                                                      party_id=task_info[&quot;party_id&quot;])</span><br><span class="line">        task_parameters = RunParameters(**job_parameters)</span><br><span class="line">    if task_info[&quot;role&quot;] in IGNORE_RESOURCE_ROLES and task_parameters.computing_engine in SUPPORT_IGNORE_RESOURCE_ENGINES:</span><br><span class="line">        cores_per_task = 0</span><br><span class="line">        memory_per_task = 0</span><br><span class="line">    else:</span><br><span class="line">        cores_per_task = task_parameters.adaptation_parameters[&quot;task_cores_per_node&quot;] * \</span><br><span class="line">                         task_parameters.adaptation_parameters[&quot;task_nodes&quot;]</span><br><span class="line">        memory_per_task = task_parameters.adaptation_parameters[&quot;task_memory_per_node&quot;] * \</span><br><span class="line">                          task_parameters.adaptation_parameters[&quot;task_nodes&quot;]</span><br><span class="line">    return cores_per_task, memory_per_task</span><br></pre></td></tr></table></figure>
+<p>task_parameters 为空，故而会调用job_utils.get_job_parameters 对应的fate_flow/peewee.log日志为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:32,149] [1:140259369826048] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_runtime_conf_on_party` FROM `t_job` AS `t1` WHERE (((`t1`.`f_job_id` = %s) AND (`t1`.`f_role` = %s)) AND (`t1`.`f_party_id` = %s))&#x27;, [&#x27;202107260820309976351&#x27;, &#x27;local&#x27;, &#x27;0&#x27;])</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>如申请到的cores_per_task 和 memory_per_task 有非0值，则执行update_resource_sql 生成filters 和updates 操作，再更新resource表。<br>执行sql对应的fate_flow/peewee.log日志为<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:32,152] [1:140259369826048] - peewee.py[line:2863]: (&#x27;UPDATE `t_job` SET `f_remaining_cores` = (`t_job`.`f_remaining_cores` - %s), `f_remaining_memory` = (`t_job`.`f_remaining_memory` - %s) WHERE ((((((`t_job`.`f_remaining_cores` &gt;= %s) AND (`t_job`.`f_remaining_memory` &gt;= %s)) AND (`t_job`.`f_job_id` = %s)) AND (`t_job`.`f_role` = %s)) AND (`t_job`.`f_party_id` = %s)) AND (`t_job`.`f_resource_in_use` = %s))&#x27;, [4, 0, 4, 0, &#x27;202107260820309976351&#x27;, &#x27;local&#x27;, &#x27;0&#x27;, True])</span><br></pre></td></tr></table></figure><br>执行成功，会在${job_log_dir}/fate_flow_schedule.log 输出日志，并将成功状态返回<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,158] [1:140259369826048] - resource_manager.py[line:285]: task 202107260820309976351_upload_0 0 apply resource successfully</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li><p>task_scheduler.py：若未申请资源成功，返回无资源。否则将task 状态置为running，并调用jobsaver.update_task_status 更新状态。</p>
+</li>
+<li><p>job_saver.py：执行update_task_status()<br>先在${job_log_dir}/fate_flow_schedule.log 输出日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,159] [1:140259369826048] - job_saver.py[line:71]: try to update job 202107260820309976351 task 202107260820309976351_upload_0 0 status</span><br></pre></td></tr></table></figure>
+<p>执行update_status，先通过select，获取task基本信息，fate_flow/peewee.log日志为</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:32,160] [1:140259369826048] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_job_id`, `t1`.`f_component_name`, `t1`.`f_task_id`, `t1`.`f_task_version`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_federated_mode`, `t1`.`f_federated_status_collect_type`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_run_on_this_party`, `t1`.`f_run_ip`, `t1`.`f_run_pid`, `t1`.`f_party_status`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_task` AS `t1` WHERE (((((`t1`.`f_job_id` = %s) AND (`t1`.`f_task_id` = %s)) AND (`t1`.`f_task_version` = %s)) AND (`t1`.`f_role` = %s)) AND (`t1`.`f_party_id` = %s))&#x27;, [&#x27;202107260820309976351&#x27;, &#x27;202107260820309976351_upload_0&#x27;, 0, &#x27;local&#x27;, &#x27;0&#x27;])</span><br></pre></td></tr></table></figure>
+<p>修改之后再update，fate_flow/peewee.log日志<br><strong>注：这里update 会是调用update_status() 方法，会先判断能否从oldStatus 转换成newStatus，如不能，不会执行update语句，直接返回false</strong><br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:32,165] [1:140259369826048] - peewee.py[line:2863]: (&#x27;UPDATE `t_task` SET `f_status` = %s WHERE ((((((`t_task`.`f_job_id` = %s) AND (`t_task`.`f_task_id` = %s)) AND (`t_task`.`f_task_version` = %s)) AND (`t_task`.`f_role` = %s)) AND (`t_task`.`f_party_id` = %s)) AND (`t_task`.`f_status` = %s))&#x27;, [&#x27;running&#x27;, &#x27;202107260820309976351&#x27;, &#x27;202107260820309976351_upload_0&#x27;, 0, &#x27;local&#x27;, &#x27;0&#x27;, &#x27;waiting&#x27;])</span><br></pre></td></tr></table></figure><br>如执行成功，则在${job_log_dir}/fate_flow_schedule.log 输出日志，并返回执行状态（如失败，打出失败日志update does not take effect）<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,172] [1:140259369826048] - job_saver.py[line:74]: update job 202107260820309976351 task 202107260820309976351_upload_0 0 status successfully: &#123;&#x27;job_id&#x27;: &#x27;202107260820309976351&#x27;, &#x27;task_id&#x27;: &#x27;202107260820309976351_upload_0&#x27;, &#x27;task_version&#x27;: 0, &#x27;role&#x27;: &#x27;local&#x27;, &#x27;party_id&#x27;: &#x27;0&#x27;, &#x27;status&#x27;: &#x27;running&#x27;&#125;</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>task_scheduler.py：如状态未更新成功，打出失败日志${job_log_dir}/fate_flow_schedule.log ，并回收资源。否则输出成功日志，对应18<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,173] [1:140259369826048] - task_scheduler.py[line:93]: start job 202107260820309976351 task 202107260820309976351_upload_0 0 on local 0</span><br></pre></td></tr></table></figure></li>
+<li>task_scheduler.py：调用FederatedScheduler.sync_task_status() 同步状态至所有party</li>
+<li><p>federated_scheduler.py： 执行sync_task_status()<br>先打印日志到${job_log_dir}/fate_flow_schedule.log </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,173] [1:140259369826048] - federated_scheduler.py[line:192]: job 202107260820309976351 task 202107260820309976351_upload_0 0 is running, sync to all party</span><br></pre></td></tr></table></figure>
+<p>再调用 task_command() 通过 federated_coordination_on_http 发起http 请求</p>
+</li>
+<li><p>api_utils.py：发起请求，日志见 ${job_log_dir}/fate_flow_audit.log </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,175] [1:140259369826048] - api_utils.py[line:122]: remote http api request: http://10.200.96.235:9380/v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/status/running</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>fate_flow_server.py：接受请求，通过flask，转移到party_app</p>
+</li>
+<li><p>party_app.py： 执行task_status，调用TaskController.update_task_status(task_info=task_info)，更新task信息。实际操作是调用JobSaver.update_task_status</p>
+</li>
+<li><p>job_saver.py：执行update_task_status()<br>先输出日志到${job_log_dir}/fate_flow_schedule.log </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,183] [1:140259119585024] - job_saver.py[line:71]: try to update job 202107260820309976351 task 202107260820309976351_upload_0 0 status</span><br></pre></td></tr></table></figure>
+<p>再执行update_status，先通过select，获取task基本信息，fate_flow/peewee.log日志为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:32,187] [1:140259119585024] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_job_id`, `t1`.`f_component_name`, `t1`.`f_task_id`, `t1`.`f_task_version`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_federated_mode`, `t1`.`f_federated_status_collect_type`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_run_on_this_party`, `t1`.`f_run_ip`, `t1`.`f_run_pid`, `t1`.`f_party_status`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_task` AS `t1` WHERE (((((`t1`.`f_job_id` = %s) AND (`t1`.`f_task_id` = %s)) AND (`t1`.`f_task_version` = %s)) AND (`t1`.`f_role` = %s)) AND (`t1`.`f_party_id` = %s))&#x27;, [&#x27;202107260820309976351&#x27;, &#x27;202107260820309976351_upload_0&#x27;, 0, &#x27;local&#x27;, &#x27;0&#x27;])</span><br></pre></td></tr></table></figure>
+<p>这里和22 的操作一样，但是时间戳不同。接下去update部分，则因为running状态不能转变为running 状态，不会执行update，所以就返回了false。<br>输出失败的日志到${job_log_dir}/fate_flow_schedule.log </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,192] [1:140259119585024] - job_saver.py[line:76]: update job 202107260820309976351 task 202107260820309976351_upload_0 0 status update does not take effect: &#123;&#x27;job_id&#x27;: &#x27;202107260820309976351&#x27;, &#x27;task_id&#x27;: &#x27;202107260820309976351_upload_0&#x27;, &#x27;task_version&#x27;: &#x27;0&#x27;, &#x27;role&#x27;: &#x27;local&#x27;, &#x27;party_id&#x27;: &#x27;0&#x27;, &#x27;status&#x27;: &#x27;running&#x27;&#125;</span><br></pre></td></tr></table></figure>
+<p>返回false 信息。<br>执行report_task_to_initiator(), 查询task信息，如task.f_federated_status_collect_typePUSH 架构下，调用FederatedScheduler.report_task_to_initiator() 主动推送信息。<br>对应的fate_flow/peewee.log日志为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:32,196] [1:140259119585024] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_job_id`, `t1`.`f_component_name`, `t1`.`f_task_id`, `t1`.`f_task_version`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_federated_mode`, `t1`.`f_federated_status_collect_type`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_run_on_this_party`, `t1`.`f_run_ip`, `t1`.`f_run_pid`, `t1`.`f_party_status`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_task` AS `t1` WHERE ((((`t1`.`f_task_id` = %s) AND (`t1`.`f_task_version` = %s)) AND (`t1`.`f_role` = %s)) AND (`t1`.`f_party_id` = %s))&#x27;, [&#x27;202107260820309976351_upload_0&#x27;, 0, &#x27;local&#x27;, &#x27;0&#x27;])</span><br></pre></td></tr></table></figure>
+<p>前文所述，这里是PULL，故不会执行。直接返回状态给app_party.py 对应28</p>
+</li>
+<li><p>party_app.py：返回执行失败信息，对应27</p>
+</li>
+<li>fate_flow_server.py：返回失败信息给api_utils.py 对应26</li>
+<li>api_utils.py：接受失败信息，在${job_log_dir}/fate_flow_audit.log  输出如下日志<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,203] [1:140259369826048] - api_utils.py[line:129]: &#123;&quot;retcode&quot;:103,&quot;retmsg&quot;:&quot;update task status failed&quot;&#125;</span><br><span class="line"></span><br><span class="line">[INFO] [2021-07-26 08:20:32,203] [1:140259369826048] - api_utils.py[line:131]: remote http api response: /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/status/running &#123;&#x27;retcode&#x27;: 103, &#x27;retmsg&#x27;: &#x27;update task status failed&#x27;&#125;</span><br></pre></td></tr></table></figure>
+对应的容器日志为<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:32] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/status/running HTTP/1.1&quot; 200 -</span><br></pre></td></tr></table></figure>
+并返回结果给federated_scheduler.py 对应25</li>
+<li><p>federated_scheduler.py：在${job_log_dir}/fate_flow_schedule.log 输出日志，并返回信息</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[WARNING] [2021-07-26 08:20:32,203] [1:140259369826048] - federated_scheduler.py[line:260]: an error occurred while status/running the task to role local party 0: </span><br><span class="line">update task status failed</span><br><span class="line">[INFO] [2021-07-26 08:20:32,203] [1:140259369826048] - federated_scheduler.py[line:197]: sync job 202107260820309976351 task 202107260820309976351_upload_0 0 status running to all party failed: </span><br><span class="line">&#123;&#x27;local&#x27;: &#123;0: &#123;&#x27;retcode&#x27;: 103, &#x27;retmsg&#x27;: &#x27;update task status failed&#x27;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>task_scheduler.py：调用FederatedScheduler.start_task() 启动多方任务</p>
+</li>
+<li><p>federated_scheduler.py：执行start_task()<br>发起http请求 ${job_log_dir}/fate_flow_audit.log</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,205] [1:140259369826048] - api_utils.py[line:122]: remote http api request: http://10.200.96.235:9380/v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/start</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>fate_flow_server.py：接受请求，通过flask，转移到party_app</p>
+</li>
+<li><p>party_app.py： 执行task_status，调用TaskController.start_task<br>这里不论调用结果，返回的都是success。</p>
+</li>
+<li><p>task_controller.py：执行start_task。<br>先调用job_utils.get_job_dsl() 获取job的dsl。这里需要查询DB，产生fate_flow/peewee.log日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:32,212] [1:140259119585024] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_dsl` FROM `t_job` AS `t1` WHERE (((`t1`.`f_job_id` = %s) AND (`t1`.`f_role` = %s)) AND (`t1`.`f_party_id` = %s))&#x27;, [&#x27;202107260820309976351&#x27;, &#x27;local&#x27;, &#x27;0&#x27;])</span><br></pre></td></tr></table></figure>
+<p>鉴权，（接上文，本job无鉴权，故不会执行）。<br>输出日志到${job_log_dir}/fate_flow_schedule.log</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,214] [1:140259119585024] - task_controller.py[line:71]: try to start job 202107260820309976351 task 202107260820309976351_upload_0 0 on local 0 executor subprocess</span><br></pre></td></tr></table></figure>
+<p>生成task等目录，并创建。将task_parameters_path 写入对应文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">task_dir = os.path.join(job_utils.get_job_directory(job_id=job_id), role, party_id, component_name, task_id, task_version)</span><br><span class="line">/data/projects/fate/jobs/202107260820309976351/local/0/upload_0/202107260820309976351_upload_0/0/</span><br><span class="line"></span><br><span class="line">task_parameters_path = os.path.join(task_dir, &#x27;task_parameters.json&#x27;)</span><br><span class="line">run_parameters_dict = job_utils.get_job_parameters(job_id, role, party_id)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>获取run_parameters，对应fate_flow/peewee.log日志<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:32,216] [1:140259119585024] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_runtime_conf_on_party` FROM `t_job` AS `t1` WHERE (((`t1`.`f_job_id` = %s) AND (`t1`.`f_role` = %s)) AND (`t1`.`f_party_id` = %s))&#x27;, [&#x27;202107260820309976351&#x27;, &#x27;local&#x27;, &#x27;0&#x27;])</span><br></pre></td></tr></table></figure></p>
+<p>输出日志：${job_log_dir}/fate_flow_schedule.log<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,218] [1:140259119585024] - task_controller.py[line:90]: use computing engine EGGROLL</span><br></pre></td></tr></table></figure></p>
+<p>根据computing engine，生成process_cmd。这里可以看下源码，比较有意思<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">if run_parameters.computing_engine in &#123;ComputingEngine.EGGROLL, ComputingEngine.STANDALONE&#125;:</span><br><span class="line">    process_cmd = [</span><br><span class="line">        sys.executable,</span><br><span class="line">        sys.modules[TaskExecutor.__module__].__file__,</span><br><span class="line">        &#x27;-j&#x27;, job_id,</span><br><span class="line">        &#x27;-n&#x27;, component_name,</span><br><span class="line">        &#x27;-t&#x27;, task_id,</span><br><span class="line">        &#x27;-v&#x27;, task_version,</span><br><span class="line">        &#x27;-r&#x27;, role,</span><br><span class="line">        &#x27;-p&#x27;, party_id,</span><br><span class="line">        &#x27;-c&#x27;, task_parameters_path,</span><br><span class="line">        &#x27;--run_ip&#x27;, RuntimeConfig.JOB_SERVER_HOST,</span><br><span class="line">        &#x27;--job_server&#x27;, &#x27;&#123;&#125;:&#123;&#125;&#x27;.format(RuntimeConfig.JOB_SERVER_HOST, RuntimeConfig.HTTP_PORT),</span><br><span class="line">    ]</span><br><span class="line">elif run_parameters.computing_engine == ComputingEngine.SPARK:</span><br><span class="line">    if &quot;SPARK_HOME&quot; not in os.environ:</span><br><span class="line">        raise EnvironmentError(&quot;SPARK_HOME not found&quot;)</span><br><span class="line">    spark_home = os.environ[&quot;SPARK_HOME&quot;]</span><br><span class="line"></span><br><span class="line">    # additional configs</span><br><span class="line">    spark_submit_config = run_parameters.spark_run</span><br><span class="line"></span><br><span class="line">    deploy_mode = spark_submit_config.get(&quot;deploy-mode&quot;, &quot;client&quot;)</span><br><span class="line">    if deploy_mode not in [&quot;client&quot;]:</span><br><span class="line">        raise ValueError(f&quot;deploy mode &#123;deploy_mode&#125; not supported&quot;)</span><br><span class="line"></span><br><span class="line">    spark_submit_cmd = os.path.join(spark_home, &quot;bin/spark-submit&quot;)</span><br><span class="line">    process_cmd = [spark_submit_cmd, f&#x27;--name=&#123;task_id&#125;#&#123;role&#125;&#x27;]</span><br><span class="line">    for k, v in spark_submit_config.items():</span><br><span class="line">        if k != &quot;conf&quot;:</span><br><span class="line">            process_cmd.append(f&#x27;--&#123;k&#125;=&#123;v&#125;&#x27;)</span><br><span class="line">    if &quot;conf&quot; in spark_submit_config:</span><br><span class="line">        for ck, cv in spark_submit_config[&quot;conf&quot;].items():</span><br><span class="line">            process_cmd.append(f&#x27;--conf&#x27;)</span><br><span class="line">            process_cmd.append(f&#x27;&#123;ck&#125;=&#123;cv&#125;&#x27;)</span><br><span class="line">    process_cmd.extend([</span><br><span class="line">        sys.modules[TaskExecutor.__module__].__file__,</span><br><span class="line">        &#x27;-j&#x27;, job_id,</span><br><span class="line">        &#x27;-n&#x27;, component_name,</span><br><span class="line">        &#x27;-t&#x27;, task_id,</span><br><span class="line">        &#x27;-v&#x27;, task_version,</span><br><span class="line">        &#x27;-r&#x27;, role,</span><br><span class="line">        &#x27;-p&#x27;, party_id,</span><br><span class="line">        &#x27;-c&#x27;, task_parameters_path,</span><br><span class="line">        &#x27;--run_ip&#x27;, RuntimeConfig.JOB_SERVER_HOST,</span><br><span class="line">        &#x27;--job_server&#x27;, &#x27;&#123;&#125;:&#123;&#125;&#x27;.format(RuntimeConfig.JOB_SERVER_HOST, RuntimeConfig.HTTP_PORT),</span><br><span class="line">    ])</span><br><span class="line">else:</span><br><span class="line">    raise ValueError(f&quot;$&#123;run_parameters.computing_engine&#125; is not supported&quot;)</span><br></pre></td></tr></table></figure></p>
+<p><strong>注：spark 只支持client模式</strong><br><strong>注：spark 的submint 是 $sparkhome/bin/spark-submit</strong><br>建立task的日志目录<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">task_log_dir = os.path.join(job_utils.get_job_log_directory(job_id=job_id), role, party_id, component_name)</span><br><span class="line">对应</span><br><span class="line">local/0/upload_0/</span><br></pre></td></tr></table></figure><br>输出日志：${job_log_dir}/fate_flow_schedule.log<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,218] [1:140259119585024] - task_controller.py[line:144]: job 202107260820309976351 task 202107260820309976351_upload_0 0 on local 0 executor subprocess is ready</span><br></pre></td></tr></table></figure><br>调用job_utils.run_subprocess() 真正执行的部分来了</p>
+<ol>
+<li>job_utils.py：执行run_subprocess<br>先输出日志：${job_log_dir}/fate_flow_schedule.log<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,218] [1:140259119585024] - job_utils.py[line:310]: start process command: /opt/app-root/bin/python /data/projects/fate/python/fate_flow/operation/task_executor.py -j 202107260820309976351 -n upload_0 -t 202107260820309976351_upload_0 -v 0 -r local -p 0 -c /data/projects/fate/jobs/202107260820309976351/local/0/upload_0/202107260820309976351_upload_0/0/task_parameters.json --run_ip 10.200.96.235 --job_server 10.200.96.235:9380</span><br></pre></td></tr></table></figure>
+这里会把真实执行的命令打出。<br><strong>注：小技巧，本地debug 可以直接执行这条命令，这也是真正的入口，可以参考文档<a href="https://github.com/FederatedAI/DOC-CHN/blob/master/%E6%9C%89%E5%A5%96%E5%BE%81%E9%9B%86%E6%B4%BB%E5%8A%A8/%E6%95%99%E7%A8%8B%E7%B1%BB/Mac%E4%B8%8B%E4%BD%BF%E7%94%A8Pycharm/MAC%E4%B8%8B%E4%BD%BF%E7%94%A8PyCharm%E8%BF%9B%E8%A1%8C%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95fate.md">Mac下使用Pycharm</a></strong></li>
+</ol>
+<p>获取相关目录<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">os.makedirs(config_dir, exist_ok=True)</span><br><span class="line">if log_dir:</span><br><span class="line">    os.makedirs(log_dir, exist_ok=True)</span><br><span class="line">std_log = open(os.path.join(log_dir if log_dir else config_dir, &#x27;std.log&#x27;), &#x27;w&#x27;)</span><br><span class="line">pid_path = os.path.join(config_dir, &#x27;pid&#x27;)</span><br></pre></td></tr></table></figure><br>判断操作系统。<br>执行cmd<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">p = subprocess.Popen(process_cmd,</span><br><span class="line">                         stdout=std_log,</span><br><span class="line">                         stderr=std_log,</span><br><span class="line">                         startupinfo=startupinfo</span><br><span class="line">                         )</span><br></pre></td></tr></table></figure><br>并将pid 写入对应目录。<br>打出日志${job_log_dir}/fate_flow_schedule.log<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,258] [1:140259119585024] - job_utils.py[line:333]: start process command: /opt/app-root/bin/python /data/projects/fate/python/fate_flow/operation/task_executor.py -j 202107260820309976351 -n upload_0 -t 202107260820309976351_upload_0 -v 0 -r local -p 0 -c /data/projects/fate/jobs/202107260820309976351/local/0/upload_0/202107260820309976351_upload_0/0/task_parameters.json --run_ip 10.200.96.235 --job_server 10.200.96.235:9380 successfully, pid is 90</span><br></pre></td></tr></table></figure><br>至此 schedule 结束，并返回进程给task_controller.py 对应38</p>
+<ol>
+<li><p>task_controller.py：接收38返回值，更新task变量状态。在finally部分，调用update_task，update_task_status更新DB中task状态。两个方法均会调用job_saver.py 的对应方法。</p>
+</li>
+<li><p>task_controller.py：update_task调用执行job_saver.update_task()<br>先打印日志${job_log_dir}/fate_flow_schedule.log</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,259] [1:140259119585024] - job_saver.py[line:81]: try to update job 202107260820309976351 task 202107260820309976351_upload_0 0</span><br></pre></td></tr></table></figure>
+<p><strong>注：这里和update_task_status 相比，少了一个status（参考步骤20）</strong><br>执行update_entity_table()，先查询，再执行update，对应fate_flow/peewee.log日志为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:32,263] [1:140259119585024] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_job_id`, `t1`.`f_component_name`, `t1`.`f_task_id`, `t1`.`f_task_version`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_federated_mode`, `t1`.`f_federated_status_collect_type`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_run_on_this_party`, `t1`.`f_run_ip`, `t1`.`f_run_pid`, `t1`.`f_party_status`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_task` AS `t1` WHERE (((((`t1`.`f_job_id` = %s) AND (`t1`.`f_task_id` = %s)) AND (`t1`.`f_task_version` = %s)) AND (`t1`.`f_role` = %s)) AND (`t1`.`f_party_id` = %s))&#x27;, [&#x27;202107260820309976351&#x27;, &#x27;202107260820309976351_upload_0&#x27;, 0, &#x27;local&#x27;, &#x27;0&#x27;])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:32,270] [1:140259119585024] - peewee.py[line:2863]: (&#x27;UPDATE `t_task` SET `f_start_time` = %s, `f_start_date` = %s WHERE (((((`t_task`.`f_job_id` = %s) AND (`t_task`.`f_task_id` = %s)) AND (`t_task`.`f_task_version` = %s)) AND (`t_task`.`f_role` = %s)) AND (`t_task`.`f_party_id` = %s))&#x27;, [1627287632259, datetime.datetime(2021, 7, 26, 8, 20, 32), &#x27;202107260820309976351&#x27;, &#x27;202107260820309976351_upload_0&#x27;, 0, &#x27;local&#x27;, &#x27;0&#x27;])</span><br></pre></td></tr></table></figure>
+<p>update成功，输出日志${job_log_dir}/fate_flow_schedule.log</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,275] [1:140259119585024] - job_saver.py[line:84]: job 202107260820309976351 task 202107260820309976351_upload_0 0 update successfully</span><br></pre></td></tr></table></figure>
+<p>执行 report_task_to_initiator，同29中，只执行了query，不发起请求。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:32,277] [1:140259119585024] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_job_id`, `t1`.`f_component_name`, `t1`.`f_task_id`, `t1`.`f_task_version`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_federated_mode`, `t1`.`f_federated_status_collect_type`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_run_on_this_party`, `t1`.`f_run_ip`, `t1`.`f_run_pid`, `t1`.`f_party_status`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_task` AS `t1` WHERE ((((`t1`.`f_task_id` = %s) AND (`t1`.`f_task_version` = %s)) AND (`t1`.`f_role` = %s)) AND (`t1`.`f_party_id` = %s))&#x27;, [&#x27;202107260820309976351_upload_0&#x27;, 0, &#x27;local&#x27;, &#x27;0&#x27;])</span><br></pre></td></tr></table></figure>
+<p>返回update_status</p>
+</li>
+<li><p>task_controller.py：update_task_status调用job_saver.update_task_status()<br>过程参照22，对应fate_flow/peewee.log日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:32,283] [1:140259119585024] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_job_id`, `t1`.`f_component_name`, `t1`.`f_task_id`, `t1`.`f_task_version`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_federated_mode`, `t1`.`f_federated_status_collect_type`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_run_on_this_party`, `t1`.`f_run_ip`, `t1`.`f_run_pid`, `t1`.`f_party_status`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_task` AS `t1` WHERE (((((`t1`.`f_job_id` = %s) AND (`t1`.`f_task_id` = %s)) AND (`t1`.`f_task_version` = %s)) AND (`t1`.`f_role` = %s)) AND (`t1`.`f_party_id` = %s))&#x27;, [&#x27;202107260820309976351&#x27;, &#x27;202107260820309976351_upload_0&#x27;, 0, &#x27;local&#x27;, &#x27;0&#x27;])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:32,289] [1:140259119585024] - peewee.py[line:2863]: (&#x27;UPDATE `t_task` SET `f_party_status` = %s WHERE ((((((`t_task`.`f_job_id` = %s) AND (`t_task`.`f_task_id` = %s)) AND (`t_task`.`f_task_version` = %s)) AND (`t_task`.`f_role` = %s)) AND (`t_task`.`f_party_id` = %s)) AND (`t_task`.`f_party_status` = %s))&#x27;, [&#x27;running&#x27;, &#x27;202107260820309976351&#x27;, &#x27;202107260820309976351_upload_0&#x27;, 0, &#x27;local&#x27;, &#x27;0&#x27;, &#x27;waiting&#x27;])</span><br></pre></td></tr></table></figure>
+<p>对应${job_log_dir}/fate_flow_schedule.log</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,281] [1:140259119585024] - job_saver.py[line:71]: try to update job 202107260820309976351 task 202107260820309976351_upload_0 0 status</span><br><span class="line">[INFO] [2021-07-26 08:20:32,295] [1:140259119585024] - job_saver.py[line:74]: update job 202107260820309976351 task 202107260820309976351_upload_0 0 status successfully: &#123;&#x27;job_id&#x27;: &#x27;202107260820309976351&#x27;, &#x27;task_id&#x27;: &#x27;202107260820309976351_upload_0&#x27;, &#x27;task_version&#x27;: &#x27;0&#x27;, &#x27;role&#x27;: &#x27;local&#x27;, &#x27;party_id&#x27;: &#x27;0&#x27;, &#x27;party_status&#x27;: &#x27;running&#x27;, &#x27;start_time&#x27;: 1627287632259&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注：29失败，这里成功,因为字段不同，29是f_status，这里是f_party_status</strong><br>执行 report_task_to_initiator，同29中，只执行了query，不发起请求。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:32,300] [1:140259119585024] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_job_id`, `t1`.`f_component_name`, `t1`.`f_task_id`, `t1`.`f_task_version`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_federated_mode`, `t1`.`f_federated_status_collect_type`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_run_on_this_party`, `t1`.`f_run_ip`, `t1`.`f_run_pid`, `t1`.`f_party_status`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_task` AS `t1` WHERE ((((`t1`.`f_task_id` = %s) AND (`t1`.`f_task_version` = %s)) AND (`t1`.`f_role` = %s)) AND (`t1`.`f_party_id` = %s))&#x27;, [&#x27;202107260820309976351_upload_0&#x27;, 0, &#x27;local&#x27;, &#x27;0&#x27;])</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><strong>注：对比22 和 29 可以发现，job_saver 不发起report ,task_control 中的方法有report</strong></p>
+<ol>
+<li><p>task_controller.py：执行完毕，无异常，在${job_log_dir}/fate_flow_schedule.log输出日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,304] [1:140259119585024] - task_controller.py[line:163]: job 202107260820309976351 task 202107260820309976351_upload_0 0 on local 0 executor subprocess start success</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>party_app.py： 对应37，返回结果。这里不论上文的执行情况，返回的都是success。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TaskController.create_task(role, party_id, True, request.json)</span><br><span class="line">return get_json_result(retcode=0, retmsg=&#x27;success&#x27;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>fate_flow_server.py：返回结果给api_utils.py 对应36</p>
+</li>
+<li><p>api_utils.py：接受信息，在${job_log_dir}/fate_flow_audit.log  输出如下日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,310] [1:140259369826048] - api_utils.py[line:129]: &#123;&quot;retcode&quot;:0,&quot;retmsg&quot;:&quot;success&quot;&#125;</span><br><span class="line"></span><br><span class="line">[INFO] [2021-07-26 08:20:32,311] [1:140259369826048] - api_utils.py[line:131]: remote http api response: /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/start &#123;&#x27;retcode&#x27;: 0, &#x27;retmsg&#x27;: &#x27;success&#x27;&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的容器日志为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:32] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/start HTTP/1.1&quot; 200 -</span><br></pre></td></tr></table></figure>
+<p>并返回结果给federated_scheduler.py 对应35</p>
+</li>
+<li><p>federated_scheduler.py：返回结果给task_scheduler.py，对应34</p>
+</li>
+<li>task_scheduler.py：status_code 为SUCCESS，返回SchedulingStatusCode.SUCCESS，对应16。</li>
+<li>task_scheduler.py：对应16，依次遍历，完成本轮该job下task的调度，并在${job_log_dir}/fate_flow_schedule.log输出日志<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,311] [1:140259369826048] - task_scheduler.py[line:75]: finish scheduling job 202107260820309976351 tasks</span><br></pre></td></tr></table></figure>
+<strong>注：这里不是一次性调度该job下的所有task，当task的前置依赖task不满足时，会跳出循环，等下一次轮询</strong></li>
+<li>task_scheduler.py：返回各task的当前状态给dag_scheduler.py 对应5</li>
+<li>dag_scheduler.py：调用calculate_job_status() 计算当前job状态，如果收到cancel信号，且job处于waiting，将状态置为canceled。<br>计算当前的进度。完成的task/总task（吐槽，无视了各个task的耗时）<br>${job_log_dir}/fate_flow_schedule.log输出日志<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,312] [1:140259369826048] - dag_scheduler.py[line:310]: Job 202107260820309976351 status is running, calculate by task status list: [&#x27;running&#x27;]</span><br></pre></td></tr></table></figure></li>
+<li>dag_scheduler.py：根据job状态和进度变化情况，向多方同步相关信息。</li>
+<li>dag_scheduler.py：整个schedule_running_job结束。${job_log_dir}/fate_flow_schedule.log输出日志<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:32,312] [1:140259369826048] - dag_scheduler.py[line:325]: finish scheduling job 202107260820309976351</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FATE/" rel="tag"># FATE</a>
+              <a href="/tags/FedAI/" rel="tag"># FedAI</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-log-5-upload-task-schedule/" rel="prev" title="FATE学习：跟着日志读源码（五）upload任务job schedule阶段">
+      <i class="fa fa-chevron-left"></i> FATE学习：跟着日志读源码（五）upload任务job schedule阶段
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-log-7-upload-task-execute/" rel="next" title="FATE学习：跟着日志读源码（七）upload任务task excute阶段">
+      FATE学习：跟着日志读源码（七）upload任务task excute阶段 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%BC%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">执行步骤</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">喵十八</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2fbc96c0bbe149b498b5',
+      clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+      repo        : 'Yao544303.github.io',
+      owner       : 'Yao544303',
+      admin       : ['Yao544303'],
+      id          : '43504926dde9cdaffa78ee4e01bacd8e',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

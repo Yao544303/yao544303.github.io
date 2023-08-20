@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0-rc2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="综述 代码：python&#x2F;fate_flow&#x2F;fate_flow_server.py web框架：Flask  流程为：  执行 python fate_flow_server.py ，这部分会在容器中打出相应日志。 fate_flow_server 执行启动过程。这里可以看下logs目录 123456(app-root) bash-4.2# pwd&#x2F;data&#x2F;projects&#x2F;fate&#x2F;logs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FATE学习：跟着日志读源码（二）fate_flow server 启动">
+<meta property="og:url" content="http://yoursite.com/2023/08/20/fate-log-2-start-fateflow/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="综述 代码：python&#x2F;fate_flow&#x2F;fate_flow_server.py web框架：Flask  流程为：  执行 python fate_flow_server.py ，这部分会在容器中打出相应日志。 fate_flow_server 执行启动过程。这里可以看下logs目录 123456(app-root) bash-4.2# pwd&#x2F;data&#x2F;projects&#x2F;fate&#x2F;logs">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/image/fate/a87d7d3622cc4f37a72b64b57de9577b.png">
+<meta property="article:published_time" content="2023-08-20T04:10:46.000Z">
+<meta property="article:modified_time" content="2023-08-20T04:24:01.634Z">
+<meta property="article:author" content="喵十八">
+<meta property="article:tag" content="FATE">
+<meta property="article:tag" content="FedAI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/image/fate/a87d7d3622cc4f37a72b64b57de9577b.png">
+
+<link rel="canonical" href="http://yoursite.com/2023/08/20/fate-log-2-start-fateflow/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>FATE学习：跟着日志读源码（二）fate_flow server 启动 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">喵十八の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fate-log-2-start-fateflow/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FATE学习：跟着日志读源码（二）fate_flow server 启动
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-08-20 12:10:46 / Modified: 12:24:01" itemprop="dateCreated datePublished" datetime="2023-08-20T12:10:46+08:00">2023-08-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FATE/" itemprop="url" rel="index"><span itemprop="name">FATE</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><ul>
+<li>代码：python/fate_flow/fate_flow_server.py</li>
+<li>web框架：Flask</li>
+</ul>
+<p>流程为：</p>
+<ol>
+<li>执行 python fate_flow_server.py ，这部分会在容器中打出相应日志。</li>
+<li><p>fate_flow_server 执行启动过程。这里可以看下logs目录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(app-root) bash-4.2# pwd</span><br><span class="line">/data/projects/fate/logs</span><br><span class="line">(app-root) bash-4.2# ls</span><br><span class="line">fate_flow</span><br><span class="line">(app-root) bash-4.2# ls fate_flow/</span><br><span class="line">DEBUG.log  fate_flow_detect.log  fate_flow_schedule.log  fate_flow_stat.log  INFO.log  peewee.log</span><br></pre></td></tr></table></figure>
+<p>可以看到，由于没有提交任何任务，当前只有一个fate_flow的目录，这里记录的是fate_flow_server启动的日志。具体而言</p>
+<ul>
+<li>peewee.log：fate中操作db，使用了peewee，这里记录所有通过peewee操作数据库的日志</li>
+<li>fate_flow_detect.log：探测器日志</li>
+<li>fate_flow_schedule.log：调度器日志</li>
+<li>fate_flow_stat.log：除以上3部分外的其余状态日志</li>
+<li>DEBUG.log、INFO.log、WARNING.log、ERROR.log：各级别日志，会将以上各部分（除了fate_flow_detect.log，这个后续单独说明逻辑）中对应级别的日志收集。<br>因fate_flow_server 启动的日志，均输出在fate_flow 目录中，故本文所述的日志，均为fate_flow目录中的对应日志。</li>
+</ul>
+</li>
+</ol>
+<h1 id="执行-fate-flow-server-py"><a href="#执行-fate-flow-server-py" class="headerlink" title="执行 fate_flow_server.py"></a>执行 fate_flow_server.py</h1><p>由于是KubeFATE 部署，直接查看容器日志即可。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+ mkdir -p /data/projects/fate/conf/</span><br><span class="line">+ cp /data/projects/fate/conf1/transfer_conf.yaml /data/projects/fate/conf/transfer_conf.yaml</span><br><span class="line">+ cp /data/projects/fate/conf1/service_conf.yaml /data/projects/fate/conf/service_conf.yaml</span><br><span class="line">+ cp /data/projects/fate/conf1/pipeline_conf.yaml /data/projects/fate/conf/pipeline_conf.yaml</span><br><span class="line">+ sed -i &#x27;s/host: fateflow/host: 10.200.96.237/g&#x27; /data/projects/fate/conf/service_conf.yaml</span><br><span class="line">+ sed -i &#x27;s/ip: fateflow/ip: 10.200.96.237/g&#x27; /data/projects/fate/conf/pipeline_conf.yaml</span><br><span class="line">+ cp -r /data/projects/fate/examples /data/projects/fate/examples-shared-for-client</span><br><span class="line">+ sleep 5</span><br><span class="line">+ python ./fate_flow/fate_flow_server.py</span><br><span class="line"> * Running on http://10.200.96.237:9380/ (Press CTRL+C to quit)</span><br></pre></td></tr></table></figure></p>
+<p>从上述命令可以看出，涉及操作是创建目录-&gt;复制配置文件-&gt;启动 fate_flow_server.py。</p>
+<h1 id="fate-flow-server-启动细节"><a href="#fate-flow-server-启动细节" class="headerlink" title="fate_flow_server 启动细节"></a>fate_flow_server 启动细节</h1><p><img src="/image/fate/a87d7d3622cc4f37a72b64b57de9577b.png" alt="fate_flow server 启动uml图"></p>
+<ol>
+<li><p>fate_flow_server.py：定义app变量，定义server能提供的服务，这一部分源码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">app = DispatcherMiddleware(</span><br><span class="line">    manager,</span><br><span class="line">    &#123;</span><br><span class="line">        &#x27;/&#123;&#125;/data&#x27;.format(API_VERSION): data_access_app_manager,</span><br><span class="line">        &#x27;/&#123;&#125;/model&#x27;.format(API_VERSION): model_app_manager,</span><br><span class="line">        &#x27;/&#123;&#125;/job&#x27;.format(API_VERSION): job_app_manager,</span><br><span class="line">        &#x27;/&#123;&#125;/table&#x27;.format(API_VERSION): table_app_manager,</span><br><span class="line">        &#x27;/&#123;&#125;/tracking&#x27;.format(API_VERSION): tracking_app_manager,</span><br><span class="line">        &#x27;/&#123;&#125;/pipeline&#x27;.format(API_VERSION): pipeline_app_manager,</span><br><span class="line">        &#x27;/&#123;&#125;/permission&#x27;.format(API_VERSION): permission_app_manager,</span><br><span class="line">        &#x27;/&#123;&#125;/version&#x27;.format(API_VERSION): version_app_manager,</span><br><span class="line">        &#x27;/&#123;&#125;/party&#x27;.format(API_VERSION): party_app_manager,</span><br><span class="line">        &#x27;/&#123;&#125;/initiator&#x27;.format(API_VERSION): initiator_app_manager,</span><br><span class="line">        &#x27;/&#123;&#125;/tracker&#x27;.format(API_VERSION): tracker_app_manager,</span><br><span class="line">        &#x27;/&#123;&#125;/forward&#x27;.format(API_VERSION): proxy_app_manager</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>不同的manager对应不同模块的功能。详细说明参照REF1，</p>
+</li>
+<li><p>fate_flow_server.py：调用db_models.init_database_tables()具体执行在 3 中。这里代码里是init_flow_db()，实际是db_models.init_database_tables()的别名。用来和init_arch_db()区分。</p>
+</li>
+<li><p>fate_flow/db/db_models.py： 初始化fate_flow相关表。注意，在类初始化时，这里会进行一次判断，cluster模式使用mysql，standalone 模式使用sqlite。这一部分日志会输出到fate_flow_stat.log 中：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 07:14:02,439] [1:140691673888576] - db_models.py[line:60]: init mysql database on cluster mode successfully</span><br></pre></td></tr></table></figure>
+<p>这里涉及t_job、t_task、t_tracking_metric、t_tracking_output_data_info、t_machine_learning_model_info、t_model_tag、t_tags、t_component_summary、t_model_operation_log、t_engine_registry 等10张表。会执行建表和建索引的相关操作。各表具体字段可以查看源码。这部分日志会在peewee.log 中打出。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(&#x27;CREATE TABLE IF NOT EXISTS `componentsummary` (`f_id` BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY, `f_create_time` BIGINT, `f_create_date` DATETIME, `f_update_time` BIGINT, `f_update_date` DATETIME, `f_job_id` VARCHAR(25) NOT NULL, `f_role` VARCHAR(25) NOT NULL, `f_party_id` VARCHAR(10) NOT NULL, `f_component_name` TEXT NOT NULL, `f_task_id` VARCHAR(50), `f_task_version` VARCHAR(50), `f_summary` LONGTEXT NOT NULL)&#x27;, [])</span><br></pre></td></tr></table></figure>
+<p><strong>注：本地debug时，默认为standalone模式，会在目录生成一个fate_flow_sqlite.db数据库文件</strong></p>
+</li>
+<li><p>fate_flow_server.py： 调用db_models.init_database_tables() 具体执行在5。</p>
+</li>
+<li>fate_arch/storage/metastore/db_models.py：初始化fate_arch相关表，和3类似，也会根据部署模式选择不同的数据库。<br>诶，然后这里没打日志。。。<br>这里涉及t_storage_table_meta、t_session_record 两张表。也会执行建表和建索引的相关操作。各表具体字段可以查看源码。这部分日志会在peewee.log 中紧接着3打出。</li>
+<li>fate_flow_server.py： 使用argparse解析入参</li>
+<li>fate_flow_server.py：调用RuntimeConfig.init_ent() 加载环境变量，调用RuntimeConfig.set_process_role() 设置为driver(?这里driver和executor 的区别？）</li>
+<li>fate_flow_server.py：调用PrivilegeAuth.init() 进行鉴权模块初始化。</li>
+<li>authentication_utils.py：根据配置项（默认是否）决定是否初始化各个role支持的component，这一部分日志会输出在fate_flow_stat.log中。</li>
+<li>fate_flow_server.py：调用ServiceUtils.register() 注册服务</li>
+<li>authentication_utils.py：根据配置项（默认是否），决定是否注册。如需注册，需要安装zookeeper，这一部分日志会输出在fate_flow_stat.log中。</li>
+<li>fate_flow_server.py：调用ResourceManager.initialize() 初始化资源管理器</li>
+<li>resource_manager.py：调用register_engine 初始化各项信息。<br>这里会根据配置文件python/fate_flow/settings.py 中的如下内容<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># Storage engine is used for component output data</span><br><span class="line">SUPPORT_BACKENDS_ENTRANCE = &#123;</span><br><span class="line">    &quot;fate_on_eggroll&quot;: &#123;</span><br><span class="line">        EngineType.COMPUTING: (ComputingEngine.EGGROLL, &quot;clustermanager&quot;),</span><br><span class="line">        EngineType.STORAGE: (StorageEngine.EGGROLL, &quot;clustermanager&quot;),</span><br><span class="line">        EngineType.FEDERATION: (FederationEngine.EGGROLL, &quot;rollsite&quot;),</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;fate_on_spark&quot;: &#123;</span><br><span class="line">        EngineType.COMPUTING: (ComputingEngine.SPARK, &quot;spark&quot;),</span><br><span class="line">        EngineType.STORAGE: (StorageEngine.HDFS, &quot;hdfs&quot;),</span><br><span class="line">        EngineType.FEDERATION: (FederationEngine.RABBITMQ, &quot;rabbitmq&quot;),</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+遍历不同的EngineType的engine_name，即COMPUTING、STORAGE、FEDERATION三个部分，创建相关记录。再将如上EngineType中各个engine_name替换为standalone，再遍历一次。<br>创建相关记录流程为先查询f_engine_entrance表中，是有有该f_engine_type和f_engine_name的值，如没有，执行insert 如有，则update 相关信息。故而针对如上配置的流程为：<ul>
+<li>依此遍历fate_on_eggroll，fate_on_spark中 clustermanager，clustermanager，rollsite。因select 之后的结果都为空，故相关操作都是create信息，在peewee.log 中的日志为INSERT</li>
+<li>fate_on_eggroll中，将engine_name替换为standalone后，再一次遍历。因select 之后的结果都为空，故相关操作都是create信息，在peewee.log 中的日志为INSERT。</li>
+<li>fate_on_spark中，将engine_name替换为standalone后，再一次遍历。因上一步已经create相关记录，皆为update操作，在peewee.log 中的日志为UPDATE。</li>
+</ul>
+</li>
+</ol>
+<p>sql执行情况样例见 peewee.log<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 07:14:06,066] [1:140691673888576] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_engine_type`, `t1`.`f_engine_name`, `t1`.`f_engine_entrance`, `t1`.`f_engine_config`, `t1`.`f_cores`, `t1`.`f_memory`, `t1`.`f_remaining_cores`, `t1`.`f_remaining_memory`, `t1`.`f_nodes` FROM `t_engine_registry` AS `t1` WHERE ((`t1`.`f_engine_type` = %s) AND (`t1`.`f_engine_name` = %s))&#x27;, [&#x27;computing&#x27;, &#x27;EGGROLL&#x27;])</span><br><span class="line">[DEBUG] [2021-07-26 07:14:06,072] [1:140691673888576] - peewee.py[line:2863]: (&#x27;INSERT INTO `t_engine_registry` (`f_create_time`, `f_create_date`, `f_update_time`, `f_update_date`, `f_engine_type`, `f_engine_name`, `f_engine_entrance`, `f_engine_config`, `f_cores`, `f_memory`, `f_remaining_cores`, `f_remaining_memory`, `f_nodes`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)&#x27;, [1627283646068, datetime.datetime(2021, 7, 26, 7, 14, 6), 1627283646068, datetime.datetime(2021, 7, 26, 7, 14, 6), &#x27;computing&#x27;, &#x27;EGGROLL&#x27;, &#x27;clustermanager&#x27;, &#x27;&#123;&quot;cores_per_node&quot;: 20, &quot;nodes&quot;: 1&#125;&#x27;, 20, 0, 20, 0, 1])</span><br><span class="line"></span><br><span class="line">[DEBUG] [2021-07-26 07:14:06,242] [1:140691673888576] - peewee.py[line:2863]: (&#x27;UPDATE `t_engine_registry` SET `f_engine_config` = %s, `f_cores` = %s, `f_memory` = %s, `f_remaining_cores` = (`t_engine_registry`.`f_remaining_cores` + %s), `f_remaining_memory` = (`t_engine_registry`.`f_remaining_memory` + %s), `f_nodes` = %s WHERE ((`t_engine_registry`.`f_engine_type` = %s) AND (`t_engine_registry`.`f_engine_name` = %s))&#x27;, [&#x27;&#123;&quot;nodes&quot;: 1, &quot;cores_per_node&quot;: 20&#125;&#x27;, 20, 0, 0, 0, 1, &#x27;storage&#x27;, &#x27;STANDALONE&#x27;])</span><br></pre></td></tr></table></figure></p>
+<p>fate_flow具体的日志，打在fate_flow_stat.log 中，如下：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 07:14:06,077] [1:140691673888576] - resource_manager.py[line:94]: create computing engine EGGROLL clustermanager registration information</span><br><span class="line">[INFO] [2021-07-26 07:14:06,097] [1:140691673888576] - resource_manager.py[line:94]: create storage engine EGGROLL clustermanager registration information</span><br><span class="line">[INFO] [2021-07-26 07:14:06,117] [1:140691673888576] - resource_manager.py[line:94]: create federation engine EGGROLL rollsite registration information</span><br><span class="line">[INFO] [2021-07-26 07:14:06,139] [1:140691673888576] - resource_manager.py[line:94]: create computing engine SPARK spark registration information</span><br><span class="line">[INFO] [2021-07-26 07:14:06,175] [1:140691673888576] - resource_manager.py[line:94]: create storage engine HDFS hdfs registration information</span><br><span class="line">[INFO] [2021-07-26 07:14:06,199] [1:140691673888576] - resource_manager.py[line:94]: create federation engine RABBITMQ rabbitmq registration information</span><br><span class="line">[INFO] [2021-07-26 07:14:06,207] [1:140691673888576] - resource_manager.py[line:94]: create computing engine STANDALONE fateflow registration information</span><br><span class="line">[INFO] [2021-07-26 07:14:06,216] [1:140691673888576] - resource_manager.py[line:94]: create storage engine STANDALONE fateflow registration information</span><br><span class="line">[INFO] [2021-07-26 07:14:06,227] [1:140691673888576] - resource_manager.py[line:94]: create federation engine STANDALONE fateflow registration information</span><br><span class="line">[INFO] [2021-07-26 07:14:06,236] [1:140691673888576] - resource_manager.py[line:76]: update computing engine STANDALONE fateflow registration information takes no effect</span><br><span class="line">[INFO] [2021-07-26 07:14:06,243] [1:140691673888576] - resource_manager.py[line:76]: update storage engine STANDALONE fateflow registration information takes no effect</span><br><span class="line">[INFO] [2021-07-26 07:14:06,253] [1:140691673888576] - resource_manager.py[line:76]: update federation engine STANDALONE fateflow registration information takes no effect</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>fate_flow_server.py：启动探测器， Detecor().start，每隔5秒轮询</li>
+<li>detect.py： 一次探测如下四个类型的任务running_task，running_job，resource_record，expired_session，探测到之后，执行相关操作。日志包括两部分，查询DB的日志记录在peewee.log，fate_flow的日志记录在fate_flow/fate_flow_detect.log 中<ul>
+<li>running_task：查询db获取所有处于running的TASK的信息-&gt;遍历每个TASK的pid，查看是否存在(通过kill(pid,0)检查）。如不存在（不在运行），则存入stop_job_ids-&gt; 遍历stop_job_ids，发起stop请求(此处仍为异步)-&gt;打印出running状态的task数量。</li>
+<li>running_job：查询db获取所有处于running的JOB的信息-&gt;遍历每个JOB判断是否超时（默认超时限制为3天）-&gt; 对超时的job发起stop请求。</li>
+<li>resource_record：回收资源，查询DB，获取所有资源处于使用中，且任务状态已经结束，并且申请资源时间超过600s的任务，依次遍历任务回收资源。</li>
+<li>expired_session：查询过期(超过5小时)session ，依次遍历并终止</li>
+</ul>
+</li>
+</ol>
+<p>注意，这里打日志，是调用log.py 中 detect_log() 方法，而不是 settings.py 中的LoggerFactory.getLogger(“fate_flow_detect”)<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 07:14:11,255] [1:140691103205120] - detector.py[line:38]: start to detect running task..</span><br><span class="line">[INFO] [2021-07-26 07:14:11,264] [1:140691103205120] - detector.py[line:70]: finish detect 0 running task</span><br><span class="line">[INFO] [2021-07-26 07:14:11,264] [1:140691103205120] - detector.py[line:74]: start detect running job</span><br><span class="line">[INFO] [2021-07-26 07:14:11,272] [1:140691103205120] - detector.py[line:88]: finish detect running job</span><br><span class="line">[INFO] [2021-07-26 07:14:11,273] [1:140691103205120] - detector.py[line:93]: start detect resource recycle</span><br><span class="line">[INFO] [2021-07-26 07:14:11,280] [1:140691103205120] - detector.py[line:116]: finish detect resource recycle</span><br><span class="line">[INFO] [2021-07-26 07:14:11,280] [1:140691103205120] - detector.py[line:120]: start detect expired session</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>fate_flow_server.py：启动DagScheduler，每隔2秒轮询，调度处于waiting状态的任务</li>
+<li>dag_scheduler.py：调度job，依次调度如下五部分</li>
+</ol>
+<ul>
+<li>调度处于waiting 状态的job:schedule_waiting_jobs(job=job)，调用start_job 启动任务 ，调度的日志输出在fate_flow/fate_flow_scheduler.log 中，start_job 中，再调用FederatedScheduler.start_job(job=job)的日志，就输出到jobid/fate_flow_scheduler.log 中了。<br>这里每次只能调度一个处于waiting 状态的任务，通过order_by=”create_time” 和  job = jobs[0] 实现</li>
+<li>调度处于running 状态的job:，不同于waiting，因为是异步提交，考虑到资源问题，每次只调度一个，running状态的调度，主要检查状态等，故从DB中获取到所有running状态的任务后，都会依次遍历，调用schedule_running_job(job=job)，是判断任务是否被取消，任务状态为结束时，保存模型。并调用FederatedScheduler.sync_job_status(job=job)同步任务状态。</li>
+<li>调度ready状态的job:schedule_ready_job(job=job)</li>
+<li>调度rerun任务的job:schedule_rerun_job(job=job)</li>
+<li>更新已经为endstatus的job的status：end_scheduling_updates(job_id=job.f_job_id)</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 07:14:08,324] [1:140259369826048] - dag_scheduler.py[line:134]: start schedule waiting jobs</span><br><span class="line">[INFO] [2021-07-26 07:14:08,339] [1:140259369826048] - dag_scheduler.py[line:136]: have 0 waiting jobs</span><br><span class="line">[INFO] [2021-07-26 07:14:08,339] [1:140259369826048] - dag_scheduler.py[line:146]: schedule waiting jobs finished</span><br><span class="line">[INFO] [2021-07-26 07:14:08,339] [1:140259369826048] - dag_scheduler.py[line:148]: start schedule running jobs</span><br><span class="line">[INFO] [2021-07-26 07:14:08,348] [1:140259369826048] - dag_scheduler.py[line:150]: have 0 running jobs</span><br><span class="line">[INFO] [2021-07-26 07:14:08,349] [1:140259369826048] - dag_scheduler.py[line:158]: schedule running jobs finished</span><br><span class="line">[INFO] [2021-07-26 07:14:08,349] [1:140259369826048] - dag_scheduler.py[line:161]: start schedule ready jobs</span><br><span class="line">[INFO] [2021-07-26 07:14:08,359] [1:140259369826048] - dag_scheduler.py[line:163]: have 0 ready jobs</span><br><span class="line">[INFO] [2021-07-26 07:14:08,359] [1:140259369826048] - dag_scheduler.py[line:171]: schedule ready jobs finished</span><br><span class="line">[INFO] [2021-07-26 07:14:08,359] [1:140259369826048] - dag_scheduler.py[line:173]: start schedule rerun jobs</span><br><span class="line">[INFO] [2021-07-26 07:14:08,367] [1:140259369826048] - dag_scheduler.py[line:175]: have 0 rerun jobs</span><br><span class="line">[INFO] [2021-07-26 07:14:08,367] [1:140259369826048] - dag_scheduler.py[line:183]: schedule rerun jobs finished</span><br><span class="line">[INFO] [2021-07-26 07:14:08,368] [1:140259369826048] - dag_scheduler.py[line:185]: start schedule end status jobs to update status</span><br><span class="line">[INFO] [2021-07-26 07:14:08,375] [1:140259369826048] - dag_scheduler.py[line:187]: have 0 end status jobs</span><br><span class="line">[INFO] [2021-07-26 07:14:08,376] [1:140259369826048] - dag_scheduler.py[line:199]: schedule end status jobs finished</span><br></pre></td></tr></table></figure>
+<p>每次查询各状态的任务时，都会操作db，对应的peewee.log 日志类似<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 07:14:08,260] [1:140691094812416] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_user_id`, `t1`.`f_job_id`, `t1`.`f_name`, `t1`.`f_description`, `t1`.`f_tag`, `t1`.`f_dsl`, `t1`.`f_runtime_conf`, `t1`.`f_runtime_conf_on_party`, `t1`.`f_train_runtime_conf`, `t1`.`f_roles`, `t1`.`f_work_mode`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_is_initiator`, `t1`.`f_progress`, `t1`.`f_ready_signal`, `t1`.`f_ready_time`, `t1`.`f_cancel_signal`, `t1`.`f_cancel_time`, `t1`.`f_rerun_signal`, `t1`.`f_end_scheduling_updates`, `t1`.`f_engine_name`, `t1`.`f_engine_type`, `t1`.`f_cores`, `t1`.`f_memory`, `t1`.`f_remaining_cores`, `t1`.`f_remaining_memory`, `t1`.`f_resource_in_use`, `t1`.`f_apply_resource_time`, `t1`.`f_return_resource_time`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_job` AS `t1` WHERE ((`t1`.`f_is_initiator` = %s) AND (`t1`.`f_status` = %s)) ORDER BY `t1`.`f_create_time` ASC&#x27;, [True, &#x27;waiting&#x27;])</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>fate_flow_server.py：启动grpc server服务，用于不同的rollsite 通信<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 07:14:06,255] [1:140691673888576] - fate_flow_server.py[line:107]: start grpc server thread pool by 40 max workers</span><br><span class="line">[INFO] [2021-07-26 07:14:06,268] [1:140691673888576] - fate_flow_server.py[line:115]: FATE Flow grpc server start successfully</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li>fate_flow_server.py：启动http server服务，用于处理本地fate_flow_client 和 fate_flow_server 之间的通信。<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 07:14:06,269] [1:140691673888576] - fate_flow_server.py[line:118]: FATE Flow http server start...</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="REF"><a href="#REF" class="headerlink" title="REF"></a>REF</h1><p><a href="https://flask.palletsprojects.com/en/2.0.x/">Flask</a><br><a href="https://os.51cto.com/art/202105/664200.htm">os.kill(pid,0)</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FATE/" rel="tag"># FATE</a>
+              <a href="/tags/FedAI/" rel="tag"># FedAI</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-log-1-dir-struct/" rel="prev" title="FATE学习：跟着日志读源码（一）日志目录结构">
+      <i class="fa fa-chevron-left"></i> FATE学习：跟着日志读源码（一）日志目录结构
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-log-3-lifecycle/" rel="next" title="FATE学习：跟着日志读源码（三）一般任务生命周期">
+      FATE学习：跟着日志读源码（三）一般任务生命周期 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%BC%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C-fate-flow-server-py"><span class="nav-number">2.</span> <span class="nav-text">执行 fate_flow_server.py</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fate-flow-server-%E5%90%AF%E5%8A%A8%E7%BB%86%E8%8A%82"><span class="nav-number">3.</span> <span class="nav-text">fate_flow_server 启动细节</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#REF"><span class="nav-number">4.</span> <span class="nav-text">REF</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">喵十八</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2fbc96c0bbe149b498b5',
+      clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+      repo        : 'Yao544303.github.io',
+      owner       : 'Yao544303',
+      admin       : ['Yao544303'],
+      id          : '5d0c3e1ce0b9bcdb942cf740fdbb4fd6',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

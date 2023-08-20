@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0-rc2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="说明以下内容来自群中出现的问题，大家讨论的结果Q群：432600958微信群：加微信w3aboutyun,附上about云铁粉 2018.03.29_01问题描述如何成为技术大牛 根据阿里的分享do moredo betterdo exercise如何成为技术大牛 2018.03.29_02问题描述淘宝如何保持宝贝数量的一致性 思路淘宝宝贝数量先减去购卖数，不为0就可以同步处理，处理失败再加回来。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="群内2018_3月讨论整理">
+<meta property="og:url" content="http://yoursite.com/2018/03/31/spark-discuss201803/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="说明以下内容来自群中出现的问题，大家讨论的结果Q群：432600958微信群：加微信w3aboutyun,附上about云铁粉 2018.03.29_01问题描述如何成为技术大牛 根据阿里的分享do moredo betterdo exercise如何成为技术大牛 2018.03.29_02问题描述淘宝如何保持宝贝数量的一致性 思路淘宝宝贝数量先减去购卖数，不为0就可以同步处理，处理失败再加回来。">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-03-31T14:28:09.000Z">
+<meta property="article:modified_time" content="2018-04-16T12:22:11.000Z">
+<meta property="article:author" content="喵十八">
+<meta property="article:tag" content="spark">
+<meta property="article:tag" content="问题讨论">
+<meta property="article:tag" content="大数据交流群">
+<meta property="article:tag" content="阿里技术大牛">
+<meta property="article:tag" content="spark executor">
+<meta property="article:tag" content="spark 并行度和partition">
+<meta property="article:tag" content="半连接">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2018/03/31/spark-discuss201803/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>群内2018_3月讨论整理 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">喵十八の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/31/spark-discuss201803/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          群内2018_3月讨论整理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-03-31 22:28:09" itemprop="dateCreated datePublished" datetime="2018-03-31T22:28:09+08:00">2018-03-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2018-04-16 20:22:11" itemprop="dateModified" datetime="2018-04-16T20:22:11+08:00">2018-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/bigdata/" itemprop="url" rel="index"><span itemprop="name">bigdata</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>以下内容来自群中出现的问题，大家讨论的结果<br>Q群：432600958<br>微信群：加微信w3aboutyun,附上about云铁粉</p>
+<h1 id="2018-03-29-01"><a href="#2018-03-29-01" class="headerlink" title="2018.03.29_01"></a>2018.03.29_01</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>如何成为技术大牛</p>
+<h2 id="根据阿里的分享"><a href="#根据阿里的分享" class="headerlink" title="根据阿里的分享"></a>根据阿里的分享</h2><p>do more<br>do better<br>do exercise<br><a href="http://mp.weixin.qq.com/s/t1P0mw9Hf4y27EiZB2biXw">如何成为技术大牛</a></p>
+<h1 id="2018-03-29-02"><a href="#2018-03-29-02" class="headerlink" title="2018.03.29_02"></a>2018.03.29_02</h1><h2 id="问题描述-1"><a href="#问题描述-1" class="headerlink" title="问题描述"></a>问题描述</h2><p>淘宝如何保持宝贝数量的一致性</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>淘宝宝贝数量先减去购卖数，不为0就可以同步处理，处理失败再加回来。如果宝贝数量减到一，则竞争。</p>
+<h1 id="2018-03-28-01"><a href="#2018-03-28-01" class="headerlink" title="2018.03.28_01"></a>2018.03.28_01</h1><h2 id="问题描述-2"><a href="#问题描述-2" class="headerlink" title="问题描述"></a>问题描述</h2><p>worker 与 executor 线程和进程的相关理解，以及引申为spark 分区等概念</p>
+<h2 id="相关思路讨论"><a href="#相关思路讨论" class="headerlink" title="相关思路讨论"></a>相关思路讨论</h2><h3 id="MR的多进程-Vs-Spark的多线程"><a href="#MR的多进程-Vs-Spark的多线程" class="headerlink" title="MR的多进程　Vs Spark的多线程"></a>MR的多进程　Vs Spark的多线程</h3><p>executor 是进程，在其中执行的task 是线程，spark 所谓的多线程，是一个executor 中可以多个task 执行。　　<br>MR 采用了多进程模型，Spark采用了多线程模式，这里指的是同一个节点上多个任务的运行模式。因为无论MR 和 Spark 整体上看，都是多进程：MR是由多个独立的Task 进程组成，Spark 应用程序的运行环境是由多个独立的Executor 进程构建的临时资源池构成的。<br>多进程模型便于细粒度控制每个任务占用的资源，但会消耗较多的启动时间，不适合运行低延迟类型的作业，这是MapReduce广为诟病的原因之一。而多线程模型则相反，该模型使得Spark很适合运行低延迟类型的作业。总之，Spark同节点上的任务以多线程的方式运行在一个JVM进程中，可带来以下好处：<br>1）任务启动速度快，与之相反的是MapReduce Task进程的慢启动速度，通常需要1s左右；<br>2）同节点上所有任务运行在一个进程中，有利于共享内存。这非常适合内存密集型任务，尤其对于那些需要加载大量词典的应用程序，可大大节省内存。<br>3）同节点上所有任务可运行在一个JVM进程(Executor)中，且Executor所占资源可连续被多批任务使用，不会在运行部分任务后释放掉，这避免了每个任务重复申请资源带来的时间开销，对于任务数目非常多的应用，可大大降低运行时间。与之对比的是MapReduce中的Task：每个Task单独申请资源，用完后马上释放，不能被其他任务重用，尽管1.0支持JVM重用在一定程度上弥补了该问题，但2.0尚未支持该功能。<br>尽管Spark的过线程模型带来了很多好处，但同样存在不足，主要有：<br>1）由于同节点上所有任务运行在一个进程中，因此，会出现严重的资源争用，难以细粒度控制每个任务占用资源。与之相反的是MapReduce，它允许用户单独为Map Task和Reduce Task设置不同的资源，进而细粒度控制任务占用资源量，有利于大作业的正常平稳运行<br>ref: <a href="http://dongxicheng.org/framework-on-yarn/apache-spark-multi-threads-model/">董西城的解释</a></p>
+<h3 id="spark分区数-task数目-core数-worker节点个数-excutor数量梳理"><a href="#spark分区数-task数目-core数-worker节点个数-excutor数量梳理" class="headerlink" title="spark分区数,task数目,core数,worker节点个数,excutor数量梳理"></a>spark分区数,task数目,core数,worker节点个数,excutor数量梳理</h3><p>输入可能以多个文件的形式存储在HDFS上，每个File都包含了很多块，称为Block。<br>当Spark读取这些文件作为输入时，会根据具体数据格式对应的InputFormat进行解析，一般是将若干个Block合并成一个输入分片，称为InputSplit，注意InputSplit不能跨越文件。<br>随后将为这些输入分片生成具体的Task。InputSplit与Task是一一对应的关系。<br>随后这些具体的Task每个都会被分配到集群上的某个节点的某个Executor去执行。</p>
+<ul>
+<li>每个节点可以起一个或多个Executor。</li>
+<li>每个Executor由若干core组成，每个Executor的每个core一次只能执行一个Task。</li>
+<li>每个Task执行的结果就是生成了目标RDD的一个partiton。<br>这里的core是虚拟的core而不是机器的物理CPU核，可以理解为就是Executor的一个工作线程。</li>
+</ul>
+<h3 id="至于partition的数目："><a href="#至于partition的数目：" class="headerlink" title="至于partition的数目："></a>至于partition的数目：</h3><ul>
+<li>对于数据读入阶段，例如sc.textFile，输入文件被划分为多少InputSplit就会需要多少初始Task。</li>
+<li>在Map阶段partition数目保持不变。</li>
+<li>在Reduce阶段，RDD的聚合会触发shuffle操作，聚合后的RDD的partition数目跟具体操作有关，例如repartition操作会聚合成指定分区数，还有一些算子是可配置的。</li>
+</ul>
+<p>ref <a href="https://www.cnblogs.com/hadoop-dev/p/6669232.html">梳理</a></p>
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><h3 id="一种理解："><a href="#一种理解：" class="headerlink" title="一种理解："></a>一种理解：</h3><p>executor 不是越多越好，假设你给spark 分配总的资源 为48 个vcore<br>(这个不是物理的CPU核，一个物理CPU核可以划分成多个vcore，是为了更细粒度的资源控制，<br>这样对应小任务较多情况，能提升资源利用率，打个比方，我一个CPU能分成4个vcore 和 1 个vcore，<br> 我任务1,2,3,4 其实都只要使用1个vcore 即1/4 个物理CPU，在分成4个vcore 的时候，<br> 一个CPU能并行处理4个任务，在分1个vcore时，只能串行)<br>然后96G 的内存<br>及 48c 96g<br>假设你的参数如下：<br>num-executor 8<br>executor-cores 8</p>
+<p>8*8 =64 &gt; 48 了，这个时候，只会给你 48/8 =6 个executor</p>
+<p>同理对于<br>num-executor    8<br>executor-menory 18<br>8*18=144 &gt; 96 了， 这个时候只会给你 96/8 =12 个executor</p>
+<p>当 cores 和 menory 都超的时候，取小的，总之资源不能超总的。</p>
+<p>在每个stage的时候，会根据partition的数据，划分出task的数量，一个vcore 同一时间只能处理一个task<br>假设有4个executor ，每个executor 有4个vcore，即同时处理的task数量为16 （这是你集群的处理能力）<br>那么当你的分区，只有4个的时候，即只有4个task，就意味着你的集群资源是空着的，没有利用满。（最好reparation）</p>
+<p>当你的分区有32个的时候， 意味着需要 32/16 2轮能处理完。这时候，你再调大并行度，也没有用，集群资源就那么多。</p>
+<p>还有关于并行度的提高，也并不是越大越好。<br>1是小文件的问题<br>2是任务太小的话，启动任务的时间占比 相对任务的处理时间占比也会很高，这样得不偿失。</p>
+<h3 id="另一种思路"><a href="#另一种思路" class="headerlink" title="另一种思路"></a>另一种思路</h3><p>一般每个partition对应一个task。在我的测试过程中，如果没有设置spark.default.parallelism参数，spark计算出来的partition非常巨大，与我的cores非常不搭。我在两台机器上（8cores <em>2 +6g </em> 2）上，spark计算出来的partition达到2.8万个，也就是2.9万个tasks，每个task完成时间都是几毫秒或者零点几毫秒，执行起来非常缓慢。在我尝试设置了 spark.default.parallelism 后，任务数减少到10，执行一次计算过程从minute降到20second</p>
+<p>spark.default.parallelism 的说明见 <a href="https://blog.csdn.net/bbaiggey/article/details/51984753">说明</a><br>一句话，就是触发shuffle 操作之后的默认分区数，相当于手动reparation</p>
+<h1 id="2018-03-28-02"><a href="#2018-03-28-02" class="headerlink" title="2018.03.28_02"></a>2018.03.28_02</h1><h2 id="问题描述-3"><a href="#问题描述-3" class="headerlink" title="问题描述"></a>问题描述</h2><p>两个巨大的表,默认都要用reduce join. 且其中一个表中join依赖的相同key的数据大量重复.考虑到数据倾斜,这个partitioner怎么实现?</p>
+<h2 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h2><p>这是一个半连接的问题<br>先把重复比较厉害的key 过滤了，（合并了） 再做map侧的join</p>
+<p>ref：<br><a href="https://www.zhihu.com/question/39680151">如何利用spark快速计算笛卡尔积？</a><br><a href="https://www.zhihu.com/question/31979689?utm_medium=social&amp;utm_source=qq">spark千万数据join问题?</a><br><a href="https://blog.csdn.net/lzm1340458776/article/details/43017425">MapReduce表连接之半连接SemiJoin</a></p>
+<h1 id="2018-03-28-03"><a href="#2018-03-28-03" class="headerlink" title="2018.03.28_03"></a>2018.03.28_03</h1><h2 id="问题描述-4"><a href="#问题描述-4" class="headerlink" title="问题描述"></a>问题描述</h2><p>spark sql 的partition 数目</p>
+<h2 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h2><p>我是这么理解Spark 200G 内存处理2T数据的。<br>打个比方，内存为100G 有2000G 的数据，一共10000个partition，每个partition就是200M （方便起见按1G=1000M 计算）<br>假设触发shuffle的stage1，每个partition处理的约为200M数据。<br>默认的配置，一个executor 1C2G。 2G内存处理200M数据，还是没问题的。<br>这样就有100/2=50 个executor，处理10000个task 一共需要10000/50 = 200轮。</p>
+<p>stage1的数据处理的结果，你可以选择cache 到内存，也可以选择到disk。这样再进行stage2的操作。<br>（假设处理结果为1000G 还是10000个partition， 这样只能到disk 了）<br>那stage2处理方式一样，从disk读数据，然后进行10000/50 = 200轮 的操作。每个executor 有2G，处理100M 还是可以的。</p>
+<p>hive的分区数目和Spark 的partition 数无关<br>你可以去hdfs上查看，hive的分区目录下也有分片的文件如：(假设分区字段为时间)<br>table/20180101/part-00000<br>~<br>table/20180101/part-00010<br>那这个分区下的文件，对应Spark 中10个partition<br>然后通过spark.sql.shuffle.partitions 参数来调节执行sql中shuffle 时的task数量</p>
+<h1 id="2017-03-27-01"><a href="#2017-03-27-01" class="headerlink" title="2017.03.27_01"></a>2017.03.27_01</h1><h2 id="问题描述："><a href="#问题描述：" class="headerlink" title="问题描述："></a>问题描述：</h2><p>如这样的 rdd(k,v):RDD[(String, String)]<br>需要对第一个字段 k进行归并，然后统计v去重之后出现次数最多的字符（分组 top1）。</p>
+<p>例如<br>a,A<br>a,B<br>a,A<br>b,C<br>b,D<br>c,D<br>c,D  </p>
+<p>结果为 (a,A) (b,C) (c,D)</p>
+<h2 id="思路-3"><a href="#思路-3" class="headerlink" title="思路"></a>思路</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">rdd.map(x=&gt;(x._1 + &quot;|&quot; +  x._2, 1))</span><br><span class="line">  .reduceByKey(_ + _)</span><br><span class="line">  .map(x=&gt;(x._1.split(&quot;\\|&quot;, -1)(0), (x._1.split(&quot;\\|&quot;, -1)(1),x._2)))</span><br><span class="line">  .reduceByKey((x,y) =&gt;&#123;</span><br><span class="line">    val re = if (x._2 &gt; y._2)&#123;</span><br><span class="line">      x</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">      y</span><br><span class="line">    &#125;</span><br><span class="line">    re</span><br><span class="line">  &#125;)</span><br><span class="line">  .map(x=&gt;(x._1,x._2._1))</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+<h2 id="扩展-1"><a href="#扩展-1" class="headerlink" title="扩展"></a>扩展</h2><ul>
+<li>topN 的问题该如何处理？ 除了groupBy 还有别的思路么？ 效率？</li>
+<li>次数相同该如何处理？</li>
+</ul>
+<h1 id="2018-03-27-02"><a href="#2018-03-27-02" class="headerlink" title="2018.03.27_02"></a>2018.03.27_02</h1><h2 id="问题描述：-1"><a href="#问题描述：-1" class="headerlink" title="问题描述："></a>问题描述：</h2><p>如这样的 rdd(k,v):RDD[(String, String)]<br>需要对第一个字段 k进行归并，然后统计v去重之后出现的次数。</p>
+<p>例如<br>a,A<br>a,B<br>a,A<br>b,C<br>b,D<br>c,D<br>c,D  </p>
+<p>结果为 (a,2) (b,2) (c,1)</p>
+<h2 id="目前整理的几种思路是："><a href="#目前整理的几种思路是：" class="headerlink" title="目前整理的几种思路是："></a>目前整理的几种思路是：</h2><h3 id="先进行reduceBy-将v合并为字符串，之后再拆分、去重，统计出现次数"><a href="#先进行reduceBy-将v合并为字符串，之后再拆分、去重，统计出现次数" class="headerlink" title="先进行reduceBy,将v合并为字符串，之后再拆分、去重，统计出现次数"></a>先进行reduceBy,将v合并为字符串，之后再拆分、去重，统计出现次数</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">map(a,b).reduceByKey((x1,x2)=&gt;&#123;</span><br><span class="line">val sum =x1+&quot;\t&quot;+x2</span><br><span class="line">sum&#125;).map&#123;x._2.split(&quot;\t&quot;).distinct.size&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="将k-v-拼接为一个字符串，去重，之后再差分，然后再进行reduceBy"><a href="#将k-v-拼接为一个字符串，去重，之后再差分，然后再进行reduceBy" class="headerlink" title="将k,v 拼接为一个字符串，去重，之后再差分，然后再进行reduceBy"></a>将k,v 拼接为一个字符串，去重，之后再差分，然后再进行reduceBy</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rdd.map(x=&gt;(x._1 +&quot;|&quot; x._2)).distinct().map((_.split(&quot;|&quot;)(0),1)).reduceByKey(_+_)</span><br></pre></td></tr></table></figure>
+<h3 id="将v-改为Set，reduce-之后再统计size"><a href="#将v-改为Set，reduce-之后再统计size" class="headerlink" title="将v 改为Set，reduce 之后再统计size"></a>将v 改为Set，reduce 之后再统计size</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rdd.map(x=&gt;(x._1, Set(x._2)).reduceByKey(_ ++ _).map(x=&gt;(x._1, x._2.size))</span><br></pre></td></tr></table></figure>
+<h3 id="使用dropDuplicates"><a href="#使用dropDuplicates" class="headerlink" title="使用dropDuplicates()"></a>使用dropDuplicates()</h3><p>需要spark 2.x ，将rdd转为DataSet 之后再进行操作。</p>
+<h2 id="扩展-2"><a href="#扩展-2" class="headerlink" title="扩展"></a>扩展</h2><ul>
+<li>四种思路比较？ 是否有更好的解决方案？</li>
+<li>当v 也是多个字段该如何处理？</li>
+<li>Set 和 String的序列化效率差异？即 String 合并之后再拆分的开销，和使用Set 序列化增长的开销 哪个比较大？</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/spark/" rel="tag"># spark</a>
+              <a href="/tags/%E9%97%AE%E9%A2%98%E8%AE%A8%E8%AE%BA/" rel="tag"># 问题讨论</a>
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%B5%81%E7%BE%A4/" rel="tag"># 大数据交流群</a>
+              <a href="/tags/%E9%98%BF%E9%87%8C%E6%8A%80%E6%9C%AF%E5%A4%A7%E7%89%9B/" rel="tag"># 阿里技术大牛</a>
+              <a href="/tags/spark-executor/" rel="tag"># spark executor</a>
+              <a href="/tags/spark-%E5%B9%B6%E8%A1%8C%E5%BA%A6%E5%92%8Cpartition/" rel="tag"># spark 并行度和partition</a>
+              <a href="/tags/%E5%8D%8A%E8%BF%9E%E6%8E%A5/" rel="tag"># 半连接</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/12/27/percentrank/" rel="prev" title="Spark 爬坑记录之percent_rank()">
+      <i class="fa fa-chevron-left"></i> Spark 爬坑记录之percent_rank()
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/04/11/lookalike/" rel="next" title="Lookalike 技术调研">
+      Lookalike 技术调研 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2018-03-29-01"><span class="nav-number">2.</span> <span class="nav-text">2018.03.29_01</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E9%98%BF%E9%87%8C%E7%9A%84%E5%88%86%E4%BA%AB"><span class="nav-number">2.2.</span> <span class="nav-text">根据阿里的分享</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2018-03-29-02"><span class="nav-number">3.</span> <span class="nav-text">2018.03.29_02</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0-1"><span class="nav-number">3.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-number">3.2.</span> <span class="nav-text">思路</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2018-03-28-01"><span class="nav-number">4.</span> <span class="nav-text">2018.03.28_01</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0-2"><span class="nav-number">4.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%80%9D%E8%B7%AF%E8%AE%A8%E8%AE%BA"><span class="nav-number">4.2.</span> <span class="nav-text">相关思路讨论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MR%E7%9A%84%E5%A4%9A%E8%BF%9B%E7%A8%8B-Vs-Spark%E7%9A%84%E5%A4%9A%E7%BA%BF%E7%A8%8B"><span class="nav-number">4.2.1.</span> <span class="nav-text">MR的多进程　Vs Spark的多线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#spark%E5%88%86%E5%8C%BA%E6%95%B0-task%E6%95%B0%E7%9B%AE-core%E6%95%B0-worker%E8%8A%82%E7%82%B9%E4%B8%AA%E6%95%B0-excutor%E6%95%B0%E9%87%8F%E6%A2%B3%E7%90%86"><span class="nav-number">4.2.2.</span> <span class="nav-text">spark分区数,task数目,core数,worker节点个数,excutor数量梳理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%B3%E4%BA%8Epartition%E7%9A%84%E6%95%B0%E7%9B%AE%EF%BC%9A"><span class="nav-number">4.2.3.</span> <span class="nav-text">至于partition的数目：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95"><span class="nav-number">4.3.</span> <span class="nav-text">扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E7%A7%8D%E7%90%86%E8%A7%A3%EF%BC%9A"><span class="nav-number">4.3.1.</span> <span class="nav-text">一种理解：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%A6%E4%B8%80%E7%A7%8D%E6%80%9D%E8%B7%AF"><span class="nav-number">4.3.2.</span> <span class="nav-text">另一种思路</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2018-03-28-02"><span class="nav-number">5.</span> <span class="nav-text">2018.03.28_02</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0-3"><span class="nav-number">5.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF-1"><span class="nav-number">5.2.</span> <span class="nav-text">思路</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2018-03-28-03"><span class="nav-number">6.</span> <span class="nav-text">2018.03.28_03</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0-4"><span class="nav-number">6.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF-2"><span class="nav-number">6.2.</span> <span class="nav-text">思路</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2017-03-27-01"><span class="nav-number">7.</span> <span class="nav-text">2017.03.27_01</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0%EF%BC%9A"><span class="nav-number">7.1.</span> <span class="nav-text">问题描述：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF-3"><span class="nav-number">7.2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95-1"><span class="nav-number">7.3.</span> <span class="nav-text">扩展</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2018-03-27-02"><span class="nav-number">8.</span> <span class="nav-text">2018.03.27_02</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0%EF%BC%9A-1"><span class="nav-number">8.1.</span> <span class="nav-text">问题描述：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E5%89%8D%E6%95%B4%E7%90%86%E7%9A%84%E5%87%A0%E7%A7%8D%E6%80%9D%E8%B7%AF%E6%98%AF%EF%BC%9A"><span class="nav-number">8.2.</span> <span class="nav-text">目前整理的几种思路是：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%88%E8%BF%9B%E8%A1%8CreduceBy-%E5%B0%86v%E5%90%88%E5%B9%B6%E4%B8%BA%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%8C%E4%B9%8B%E5%90%8E%E5%86%8D%E6%8B%86%E5%88%86%E3%80%81%E5%8E%BB%E9%87%8D%EF%BC%8C%E7%BB%9F%E8%AE%A1%E5%87%BA%E7%8E%B0%E6%AC%A1%E6%95%B0"><span class="nav-number">8.2.1.</span> <span class="nav-text">先进行reduceBy,将v合并为字符串，之后再拆分、去重，统计出现次数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86k-v-%E6%8B%BC%E6%8E%A5%E4%B8%BA%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%8C%E5%8E%BB%E9%87%8D%EF%BC%8C%E4%B9%8B%E5%90%8E%E5%86%8D%E5%B7%AE%E5%88%86%EF%BC%8C%E7%84%B6%E5%90%8E%E5%86%8D%E8%BF%9B%E8%A1%8CreduceBy"><span class="nav-number">8.2.2.</span> <span class="nav-text">将k,v 拼接为一个字符串，去重，之后再差分，然后再进行reduceBy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86v-%E6%94%B9%E4%B8%BASet%EF%BC%8Creduce-%E4%B9%8B%E5%90%8E%E5%86%8D%E7%BB%9F%E8%AE%A1size"><span class="nav-number">8.2.3.</span> <span class="nav-text">将v 改为Set，reduce 之后再统计size</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8dropDuplicates"><span class="nav-number">8.2.4.</span> <span class="nav-text">使用dropDuplicates()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95-2"><span class="nav-number">8.3.</span> <span class="nav-text">扩展</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">喵十八</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2fbc96c0bbe149b498b5',
+      clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+      repo        : 'Yao544303.github.io',
+      owner       : 'Yao544303',
+      admin       : ['Yao544303'],
+      id          : 'f43d39e52a2ab81d1d432180e8938e61',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

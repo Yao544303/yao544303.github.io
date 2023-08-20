@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0-rc2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="综述R是用于统计分析、绘图的语言和操作环境。R是属于GNU系统的一个自由、免费、源代码开放的软件，它是一个用于统计计算和统计制图的优秀工具。许多数据工程师或者数据分析师都习惯使用R进行数据挖掘和建模分析。本文介绍了如何将R中的模型导出为PMML文件，方便后续的工程上线操作，内容包括涉及环境的搭建和中间遇到的坑。本文介绍的三种方式，各自支持的机器学习模型种类不完全一致，文中附有官方文档链接，模型支持">
+<meta property="og:type" content="article">
+<meta property="og:title" content="R训练的模型导出为PMML">
+<meta property="og:url" content="http://yoursite.com/2018/07/11/R-PMML/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="综述R是用于统计分析、绘图的语言和操作环境。R是属于GNU系统的一个自由、免费、源代码开放的软件，它是一个用于统计计算和统计制图的优秀工具。许多数据工程师或者数据分析师都习惯使用R进行数据挖掘和建模分析。本文介绍了如何将R中的模型导出为PMML文件，方便后续的工程上线操作，内容包括涉及环境的搭建和中间遇到的坑。本文介绍的三种方式，各自支持的机器学习模型种类不完全一致，文中附有官方文档链接，模型支持">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-07-11T14:30:20.000Z">
+<meta property="article:modified_time" content="2018-07-11T14:33:40.000Z">
+<meta property="article:author" content="喵十八">
+<meta property="article:tag" content="R2PMML">
+<meta property="article:tag" content="JPMML-R">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2018/07/11/R-PMML/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>R训练的模型导出为PMML | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">喵十八の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/11/R-PMML/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          R训练的模型导出为PMML
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2018-07-11 22:30:20 / Modified: 22:33:40" itemprop="dateCreated datePublished" datetime="2018-07-11T22:30:20+08:00">2018-07-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PMML/" itemprop="url" rel="index"><span itemprop="name">PMML</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>R是用于统计分析、绘图的语言和操作环境。R是属于GNU系统的一个自由、免费、源代码开放的软件，它是一个用于统计计算和统计制图的优秀工具。<br>许多数据工程师或者数据分析师都习惯使用R进行数据挖掘和建模分析。<br>本文介绍了如何将R中的模型导出为PMML文件，方便后续的工程上线操作，内容包括涉及环境的搭建和中间遇到的坑。<br>本文介绍的三种方式，各自支持的机器学习模型种类不完全一致，文中附有官方文档链接，模型支持程度请查阅官方文档。</p>
+<h1 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h1><ul>
+<li>R 基本操作</li>
+<li>Maven 基本操作</li>
+<li>Java 命令基本操作</li>
+</ul>
+<h1 id="R2PMML"><a href="#R2PMML" class="headerlink" title="R2PMML"></a>R2PMML</h1><p>这是一个R的包，用于将R中训练好的模型导出为PMML。<a href="https://github.com/jpmml/r2pmml">github链接</a></p>
+<h2 id="软件版本"><a href="#软件版本" class="headerlink" title="软件版本"></a>软件版本</h2><ul>
+<li>Java 1.7 或者更新</li>
+<li>R 3.5.0</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>使用devtools 从github的分支安装。代码如下：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">install.packages(&quot;devtools&quot;)</span><br><span class="line">library(&quot;devtools&quot;)</span><br><span class="line">install_git(&quot;git://github.com/jpmml/r2pmml.git&quot;)</span><br></pre></td></tr></table></figure></p>
+<p><strong>注</strong><br>因为某些不可描述的原因，可能出现网站访问的问题，请灵活使用科学上网手段。<br>博主自己测试的时候，耗时在3min 左右。</p>
+<h2 id="基本用法（只有模型部分）"><a href="#基本用法（只有模型部分）" class="headerlink" title="基本用法（只有模型部分）"></a>基本用法（只有模型部分）</h2><p>载入该包，然后调用保存模型即可，代码如下：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">library(&quot;randomForest&quot;)</span><br><span class="line">library(&quot;r2pmml&quot;)</span><br><span class="line"></span><br><span class="line">data(iris)</span><br><span class="line"></span><br><span class="line"># 训练模型</span><br><span class="line">iris.rf = randomForest(Species ~ ., data = iris, ntree = 7)</span><br><span class="line">print(iris.rf)</span><br><span class="line"></span><br><span class="line"># 导出为 PMML</span><br><span class="line">r2pmml(iris.rf, &quot;iris_rf.pmml&quot;)</span><br></pre></td></tr></table></figure></p>
+<h2 id="添加预处理过程"><a href="#添加预处理过程" class="headerlink" title="添加预处理过程"></a>添加预处理过程</h2><p>数据在进入模型前，可以先进行预处理，一线简单的预处理操作也可以定义在PMML中，R代码如下：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">library(&quot;caret&quot;)</span><br><span class="line">library(&quot;randomForest&quot;)</span><br><span class="line">library(&quot;r2pmml&quot;)</span><br><span class="line"></span><br><span class="line">data(iris)</span><br><span class="line"></span><br><span class="line"># 创建预处理过程，0-1 标准化</span><br><span class="line">iris.preProcess = preProcess(iris, method = c(&quot;range&quot;))</span><br><span class="line"></span><br><span class="line"># 对原始数据进行预处理</span><br><span class="line">iris.transformed = predict(iris.preProcess, newdata = iris)</span><br><span class="line"></span><br><span class="line"># 使用预处理之后的数据训练模型</span><br><span class="line">iris.rf = randomForest(Species ~., data = iris.transformed, ntree = 7)</span><br><span class="line">print(iris.rf)</span><br><span class="line"></span><br><span class="line"># 导出PMML 文件</span><br><span class="line">r2pmml(iris.rf, &quot;iris_rf.pmml&quot;, preProcess = iris.preProcess)</span><br></pre></td></tr></table></figure></p>
+<h1 id="PMML包"><a href="#PMML包" class="headerlink" title="PMML包"></a>PMML包</h1><p>R 中也支持了自带的PMML包,在最近的一次更新(2018.07.06)中，增加了支持模型的数量。</p>
+<h2 id="软件版本-1"><a href="#软件版本-1" class="headerlink" title="软件版本"></a>软件版本</h2><ul>
+<li>R 3.5.0</li>
+</ul>
+<h2 id="安装过程"><a href="#安装过程" class="headerlink" title="安装过程"></a>安装过程</h2><p>需要用到的包有：XML PMML 需要提前安装，命令如下：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">install.packages(“XML”) </span><br><span class="line">install.packages(&#x27;pmml&#x27;)</span><br></pre></td></tr></table></figure><br>选择镜像之后，等几分钟就行了。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>训练模型，和上面一致<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">library(&quot;randomForest&quot;)</span><br><span class="line">data(iris)</span><br><span class="line">iris.rf = randomForest(Species ~ ., data = iris, ntree = 7)</span><br><span class="line">print(iris.rf)</span><br></pre></td></tr></table></figure></p>
+<p>将模型转为pmml之后，导出为pmml格式<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">library(&quot;pmml&quot;)</span><br><span class="line">iris.rf.pmml &lt;- pmml(iris.rf,name=&quot;Iris Random Forest&quot;,data=iris.rf)</span><br><span class="line">savePMML(iris.rf.pmml,&quot;iris.rf.pmml&quot;,version=4.3)</span><br></pre></td></tr></table></figure></p>
+<h1 id="JPMML-R"><a href="#JPMML-R" class="headerlink" title="JPMML-R"></a>JPMML-R</h1><p>上面两种方式，都是在R中，直接将模型导出为PMML。还可以将R的模型存为rds文件之后，调用Java 的方式安装。</p>
+<h2 id="软件版本-2"><a href="#软件版本-2" class="headerlink" title="软件版本"></a>软件版本</h2><ul>
+<li>Java 1.8 或者更新</li>
+<li>R 3.5.0</li>
+</ul>
+<h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><p>在github 下载相关源码之后，编译<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone git@github.com:jpmml/jpmml-r.git</span><br><span class="line">mvn clean install</span><br></pre></td></tr></table></figure><br>在 target 目录下会生成converter-executable-1.3-SNAPSHOT.jar 文件。</p>
+<h2 id="R中生成rds文件"><a href="#R中生成rds文件" class="headerlink" title="R中生成rds文件"></a>R中生成rds文件</h2><p>将训练好的模型保存为rds，代码如下：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">library(&quot;randomForest&quot;)</span><br><span class="line">rf = randomForest(Species ~ ., data = iris)</span><br><span class="line">saveRDS(rf, &quot;rf.rds&quot;)</span><br></pre></td></tr></table></figure></p>
+<h2 id="将rds文件转为pmml文件"><a href="#将rds文件转为pmml文件" class="headerlink" title="将rds文件转为pmml文件"></a>将rds文件转为pmml文件</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar target/converter-executable-1.3-SNAPSHOT.jar --rds-input rf.rds --pmml-output rf.pmml</span><br></pre></td></tr></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本文介绍了三种不同的方式，将R中训练好的模型导出为pmml文件。3种方式支持的模型不完全一致，比如 R2PMML 不支持glmnet，需要存glmnet的模型时，可以使用另外的方式。</p>
+<h1 id="REF"><a href="#REF" class="headerlink" title="REF"></a>REF</h1><p><a href="https://github.com/jpmml/r2pmml">R2PMML</a><br><a href="https://cran.r-project.org/web/packages/pmml/">pmml: Generate PMML for Various Models</a><br><a href="https://github.com/jpmml/jpmml-r">JPMML-R</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/R2PMML/" rel="tag"># R2PMML</a>
+              <a href="/tags/JPMML-R/" rel="tag"># JPMML-R</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/07/08/pmml-GeneralStructure/" rel="prev" title="PMML文档翻译 基本结构（GeneralStructure）">
+      <i class="fa fa-chevron-left"></i> PMML文档翻译 基本结构（GeneralStructure）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/07/11/sklearn-PMML/" rel="next" title="Python sklearn中训练的模型导出为PMML">
+      Python sklearn中训练的模型导出为PMML <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%BC%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="nav-number">2.</span> <span class="nav-text">前置知识</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#R2PMML"><span class="nav-number">3.</span> <span class="nav-text">R2PMML</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E7%89%88%E6%9C%AC"><span class="nav-number">3.1.</span> <span class="nav-text">软件版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95%EF%BC%88%E5%8F%AA%E6%9C%89%E6%A8%A1%E5%9E%8B%E9%83%A8%E5%88%86%EF%BC%89"><span class="nav-number">3.3.</span> <span class="nav-text">基本用法（只有模型部分）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E9%A2%84%E5%A4%84%E7%90%86%E8%BF%87%E7%A8%8B"><span class="nav-number">3.4.</span> <span class="nav-text">添加预处理过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PMML%E5%8C%85"><span class="nav-number">4.</span> <span class="nav-text">PMML包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E7%89%88%E6%9C%AC-1"><span class="nav-number">4.1.</span> <span class="nav-text">软件版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B"><span class="nav-number">4.2.</span> <span class="nav-text">安装过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">4.3.</span> <span class="nav-text">使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JPMML-R"><span class="nav-number">5.</span> <span class="nav-text">JPMML-R</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E7%89%88%E6%9C%AC-2"><span class="nav-number">5.1.</span> <span class="nav-text">软件版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-1"><span class="nav-number">5.2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#R%E4%B8%AD%E7%94%9F%E6%88%90rds%E6%96%87%E4%BB%B6"><span class="nav-number">5.3.</span> <span class="nav-text">R中生成rds文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86rds%E6%96%87%E4%BB%B6%E8%BD%AC%E4%B8%BApmml%E6%96%87%E4%BB%B6"><span class="nav-number">5.4.</span> <span class="nav-text">将rds文件转为pmml文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#REF"><span class="nav-number">7.</span> <span class="nav-text">REF</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">喵十八</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2fbc96c0bbe149b498b5',
+      clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+      repo        : 'Yao544303.github.io',
+      owner       : 'Yao544303',
+      admin       : ['Yao544303'],
+      id          : '96602b0b3a5dbe695023119dea3c1ffc',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

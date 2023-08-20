@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0-rc2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="说明 基于PMML Version4.3 基本可以视为官方文档的一个翻译 如有疏漏，请联系yao544303963@gmail.com  数据字典数据字典包含了数据挖掘模型中使用的字段定义。指定了字段类型和字段值的取值范围。这些定义是独立的，无关于使用了何种数据集训练了何种模型。一个数据字典，可以被多个模型、统计值以及其他相关的操作共享。 Schema12345678910111213141516">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PMML文档翻译 数据字典（DataDictionary）">
+<meta property="og:url" content="http://yoursite.com/2018/07/08/pmml-DataDictionary/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="说明 基于PMML Version4.3 基本可以视为官方文档的一个翻译 如有疏漏，请联系yao544303963@gmail.com  数据字典数据字典包含了数据挖掘模型中使用的字段定义。指定了字段类型和字段值的取值范围。这些定义是独立的，无关于使用了何种数据集训练了何种模型。一个数据字典，可以被多个模型、统计值以及其他相关的操作共享。 Schema12345678910111213141516">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-07-08T10:41:12.000Z">
+<meta property="article:modified_time" content="2018-07-08T10:42:02.000Z">
+<meta property="article:author" content="喵十八">
+<meta property="article:tag" content="PMML">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2018/07/08/pmml-DataDictionary/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>PMML文档翻译 数据字典（DataDictionary） | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">喵十八の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/08/pmml-DataDictionary/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PMML文档翻译 数据字典（DataDictionary）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2018-07-08 18:41:12 / Modified: 18:42:02" itemprop="dateCreated datePublished" datetime="2018-07-08T18:41:12+08:00">2018-07-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PMML/" itemprop="url" rel="index"><span itemprop="name">PMML</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><ul>
+<li>基于PMML Version4.3</li>
+<li>基本可以视为官方文档的一个翻译</li>
+<li>如有疏漏，请联系yao544303963@gmail.com</li>
+</ul>
+<h1 id="数据字典"><a href="#数据字典" class="headerlink" title="数据字典"></a>数据字典</h1><p>数据字典包含了数据挖掘模型中使用的字段定义。指定了字段类型和字段值的取值范围。<br>这些定义是独立的，无关于使用了何种数据集训练了何种模型。<br>一个数据字典，可以被多个模型、统计值以及其他相关的操作共享。</p>
+<h1 id="Schema"><a href="#Schema" class="headerlink" title="Schema"></a>Schema</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:element name=&quot;DataDictionary&quot;&gt;</span><br><span class="line">  &lt;xs:complexType&gt;</span><br><span class="line">    &lt;xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Extension&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;DataField&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Taxonomy&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">    &lt;/xs:sequence&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;numberOfFields&quot; type=&quot;xs:nonNegativeInteger&quot;/&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:element name=&quot;DataField&quot;&gt;</span><br><span class="line">  &lt;xs:complexType&gt;</span><br><span class="line">    &lt;xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Extension&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">      &lt;xs:sequence&gt;</span><br><span class="line">        &lt;xs:element ref=&quot;Interval&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">        &lt;xs:element ref=&quot;Value&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">      &lt;/xs:sequence&gt;</span><br><span class="line">    &lt;/xs:sequence&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;name&quot; type=&quot;FIELD-NAME&quot; use=&quot;required&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;displayName&quot; type=&quot;xs:string&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;optype&quot; type=&quot;OPTYPE&quot; use=&quot;required&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;dataType&quot; type=&quot;DATATYPE&quot; use=&quot;required&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;taxonomy&quot; type=&quot;xs:string&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;isCyclic&quot; default=&quot;0&quot;&gt;</span><br><span class="line">      &lt;xs:simpleType&gt;</span><br><span class="line">        &lt;xs:restriction base=&quot;xs:string&quot;&gt;</span><br><span class="line">          &lt;xs:enumeration value=&quot;0&quot;/&gt;</span><br><span class="line">          &lt;xs:enumeration value=&quot;1&quot;/&gt;</span><br><span class="line">        &lt;/xs:restriction&gt;</span><br><span class="line">      &lt;/xs:simpleType&gt;</span><br><span class="line">    &lt;/xs:attribute&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:simpleType name=&quot;OPTYPE&quot;&gt;      </span><br><span class="line">  &lt;xs:restriction base=&quot;xs:string&quot;&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;categorical&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;ordinal&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;continuous&quot;/&gt;</span><br><span class="line">  &lt;/xs:restriction&gt;</span><br><span class="line">&lt;/xs:simpleType&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:simpleType name=&quot;DATATYPE&quot;&gt;      </span><br><span class="line">  &lt;xs:restriction base=&quot;xs:string&quot;&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;string&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;integer&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;float&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;double&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;boolean&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;date&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;time&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;dateTime&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;dateDaysSince[0]&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;dateDaysSince[1960]&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;dateDaysSince[1970]&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;dateDaysSince[1980]&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;timeSeconds&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;dateTimeSecondsSince[0]&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;dateTimeSecondsSince[1960]&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;dateTimeSecondsSince[1970]&quot;/&gt;</span><br><span class="line">    &lt;xs:enumeration value=&quot;dateTimeSecondsSince[1980]&quot;/&gt;</span><br><span class="line">  &lt;/xs:restriction&gt;</span><br><span class="line">&lt;/xs:simpleType&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="说明-1"><a href="#说明-1" class="headerlink" title="说明"></a>说明</h1><h2 id="DataDictionary"><a href="#DataDictionary" class="headerlink" title="DataDictionary"></a>DataDictionary</h2><p>该元素定义了数据字典的顶层。可以包含三种类型的子元素： Extension、DataField、Taxonomy  </p>
+<p><strong>包含属性：</strong></p>
+<p><strong>numberOfFields</strong><br>该属性值是数据字典中定义的字段的数量，可以用来进行前后一致性的校验（字段数量的校验）</p>
+<h2 id="DataField"><a href="#DataField" class="headerlink" title="DataField"></a>DataField</h2><p>该元素定义了字段。<br>在整个数据字典中，字段名称必须唯一。也有一些特殊情况，在整个PMML文档中，名称以必须唯一。</p>
+<p><strong>包含属性：</strong><br><strong>displayName</strong>：<br>应用程序使用该名称来关联该字段。在XML文档内部，只有<strong>name</strong>的值是必须的，如果没有给出<strong>displayName</strong>，那其默认值就是<strong>name</strong>的值。<br>举个例子：<br>某个字段的<strong>name=”SCTAGE” displayName=”Customer age”</strong>。应用程序在调用PMML 消费者时，会在接口处使用Customer age来请求输入数据。一旦消费者接受了参数，并且和miningFields匹配上了，那么<strong>displayName</strong>就没有什么实际意义了，在内部处理中，都是使用<strong>name</strong>。</p>
+<p><strong>optype</strong>：<br>字段的类型，即定义在这些字段值上的操作类型，主要有三类。</p>
+<ul>
+<li>categorical 类别型 只能进行相等或不相等的运算。（即，是这个分类，或者不是这个分类）</li>
+<li>ordinal 定序型 有内在排序，可以比较，但是不适合加减运算。如年级编号。</li>
+<li>continuous 连续型  数值</li>
+</ul>
+<p><strong>dataType</strong>：<br>字段值的类型（这个更类似于Java 或 C中的数据类型），比如类别型，就是所有的string<br>可选值如下：</p>
+<ul>
+<li>string</li>
+<li>integer</li>
+<li>float</li>
+<li>double</li>
+<li>boolean</li>
+<li>date</li>
+<li>time</li>
+<li>dateTime</li>
+<li>dateDaysSince[0]</li>
+<li>dateDaysSince[1960]</li>
+<li>dateDaysSince[1970]</li>
+<li>dateDaysSince[1980]</li>
+<li>timeSeconds</li>
+<li>dateTimeSecondsSince[0]</li>
+<li>dateTimeSecondsSince[1960]</li>
+<li>dateTimeSecondsSince[1970]</li>
+<li>dateTimeSecondsSince[1980]</li>
+</ul>
+<p>类型的定义，详见<a href="https://www.w3.org/TR/xmlschema-2/">XML Schema Part 2: Datatypes</a><br>其中有三个类型是PMML 相较于 XML Schema 新增的，分别是timeSeconds,dateDaysSince[a Year],dateTimesSecondsSince[a Year],其中a Year 可以是0、1960、1970、1980中的一个值。注意到，a Year不是一个任意值，必须在允许的值中进行选取。如果可变的a Year 是必须的，那就需要考虑使用<a href="http://dmg.org/pmml/v4-3/BuiltinFunctions.html#datedayssinceyear">內建函数</a><br>PMML支持这些额外的类型，原因在于在数据挖掘中，经常需要将时间转化为可以比较和计算的数值。例如 2003-04-01 就可以通过 dateDaysSince[1960] 转为15796。</p>
+<p><strong>taxonomy</strong>：<br>可选属性 <strong>taxonomy</strong> 关联了一个<a href="https://en.wikipedia.org/wiki/Taxonomy">taxonomy</a> 值。用来描述一个分层的值的情况。<br><em>Tips</em>：<br>这个值体现了一个继承性和分层性。</p>
+<p><strong>isCyclic</strong>:<br>表示定序型的值是否可循环，如周日至周六</p>
+<h1 id="有效性"><a href="#有效性" class="headerlink" title="有效性"></a>有效性</h1><p>DataFiled 定义了一组规则来验证值的有效性。<br>数据挖掘模型区分了如下三种值的情况：  </p>
+<ul>
+<li>Missing Data： 缺失值。  </li>
+<li>Invalid Value： 无效值，即输入不为空，但是取值范围超出了给该值的取值区间。</li>
+<li>Valid Value： 有效值，即不为以上两种情况的值。</li>
+</ul>
+<h1 id="值和区间"><a href="#值和区间" class="headerlink" title="值和区间"></a>值和区间</h1><p>Value 和 Interval 元素用来描述数据字典中值的情况和取值区间。</p>
+<h2 id="Value-Schema"><a href="#Value-Schema" class="headerlink" title="Value Schema"></a>Value Schema</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:element name=&quot;Value&quot;&gt;</span><br><span class="line">  &lt;xs:complexType&gt;</span><br><span class="line">    &lt;xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Extension&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">    &lt;/xs:sequence&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;value&quot; type=&quot;xs:string&quot; use=&quot;required&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;displayValue&quot; type=&quot;xs:string&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;property&quot; default=&quot;valid&quot;&gt;</span><br><span class="line">      &lt;xs:simpleType&gt;</span><br><span class="line">        &lt;xs:restriction base=&quot;xs:string&quot;&gt;</span><br><span class="line">          &lt;xs:enumeration value=&quot;valid&quot;/&gt;</span><br><span class="line">          &lt;xs:enumeration value=&quot;invalid&quot;/&gt;</span><br><span class="line">          &lt;xs:enumeration value=&quot;missing&quot;/&gt;</span><br><span class="line">        &lt;/xs:restriction&gt;</span><br><span class="line">      &lt;/xs:simpleType&gt;</span><br><span class="line">    &lt;/xs:attribute&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="Interval-Schema"><a href="#Interval-Schema" class="headerlink" title="Interval Schema"></a>Interval Schema</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:element name=&quot;Interval&quot;&gt;</span><br><span class="line">  &lt;xs:complexType&gt;</span><br><span class="line">    &lt;xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Extension&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">    &lt;/xs:sequence&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;closure&quot; use=&quot;required&quot;&gt;</span><br><span class="line">      &lt;xs:simpleType&gt;</span><br><span class="line">        &lt;xs:restriction base=&quot;xs:string&quot;&gt;</span><br><span class="line">          &lt;xs:enumeration value=&quot;openClosed&quot;/&gt;</span><br><span class="line">          &lt;xs:enumeration value=&quot;openOpen&quot;/&gt;</span><br><span class="line">          &lt;xs:enumeration value=&quot;closedOpen&quot;/&gt;</span><br><span class="line">          &lt;xs:enumeration value=&quot;closedClosed&quot;/&gt;</span><br><span class="line">        &lt;/xs:restriction&gt;</span><br><span class="line">      &lt;/xs:simpleType&gt;</span><br><span class="line">    &lt;/xs:attribute&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;leftMargin&quot; type=&quot;NUMBER&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;rightMargin&quot; type=&quot;NUMBER&quot;/&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="连续型demo"><a href="#连续型demo" class="headerlink" title="连续型demo"></a>连续型demo</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;DataField name=&quot;SomeVariable&quot; dataType=&quot;double&quot; optype=&quot;continuous&quot;&gt;</span><br><span class="line">  &lt;Interval closure=&quot;closedClosed&quot; leftMargin=&quot;0&quot; rightMargin=&quot;100&quot;/&gt;</span><br><span class="line">  &lt;Value property=&quot;missing&quot; value=&quot;-999&quot;/&gt;</span><br><span class="line">&lt;/DataField&gt;</span><br></pre></td></tr></table></figure>
+<p>表示取值区间[0, 100]，若为空，则取-999<br>Interval 只支持连续型（continuous)</p>
+<h2 id="类别型demo"><a href="#类别型demo" class="headerlink" title="类别型demo"></a>类别型demo</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;DataField name=&quot;_target&quot; optype=&quot;categorical&quot; dataType=&quot;string&quot;&gt;</span><br><span class="line">	&lt;Value value=&quot;0&quot;/&gt;</span><br><span class="line">	&lt;Value value=&quot;1&quot;/&gt;</span><br><span class="line">&lt;/DataField&gt;</span><br></pre></td></tr></table></figure>
+<p>不存在二分类的数据类型，所以二分类的定义如上。</p>
+<h2 id="定序型demo"><a href="#定序型demo" class="headerlink" title="定序型demo"></a>定序型demo</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;DataField name=&quot;Volume&quot; optype=&quot;ordinal&quot; dataType=&quot;string&quot;&gt;</span><br><span class="line">  &lt;Value value=&quot;loud&quot;/&gt;</span><br><span class="line">  &lt;Value value=&quot;louder&quot;/&gt;</span><br><span class="line">  &lt;Value value=&quot;insane&quot;/&gt;</span><br><span class="line">&lt;/DataField&gt;</span><br></pre></td></tr></table></figure>
+<p>如上，定序为出现顺序的逆序，及loud &lt; louder &lt; insane<br>加上 cyclic 参数，即可形成循环，如周日至周六</p>
+<h1 id="REF"><a href="#REF" class="headerlink" title="REF"></a>REF</h1><p><a href="http://dmg.org/pmml/v4-3/DataDictionary.html">PMML 4.3 - Data Dictionary</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/PMML/" rel="tag"># PMML</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/07/08/pmml-Header/" rel="prev" title="PMML文档翻译-文件头（Header）">
+      <i class="fa fa-chevron-left"></i> PMML文档翻译-文件头（Header）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/07/08/pmml-GeneralStructure/" rel="next" title="PMML文档翻译 基本结构（GeneralStructure）">
+      PMML文档翻译 基本结构（GeneralStructure） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AD%97%E5%85%B8"><span class="nav-number">2.</span> <span class="nav-text">数据字典</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Schema"><span class="nav-number">3.</span> <span class="nav-text">Schema</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E-1"><span class="nav-number">4.</span> <span class="nav-text">说明</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DataDictionary"><span class="nav-number">4.1.</span> <span class="nav-text">DataDictionary</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DataField"><span class="nav-number">4.2.</span> <span class="nav-text">DataField</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%89%E6%95%88%E6%80%A7"><span class="nav-number">5.</span> <span class="nav-text">有效性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%80%BC%E5%92%8C%E5%8C%BA%E9%97%B4"><span class="nav-number">6.</span> <span class="nav-text">值和区间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Value-Schema"><span class="nav-number">6.1.</span> <span class="nav-text">Value Schema</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Interval-Schema"><span class="nav-number">6.2.</span> <span class="nav-text">Interval Schema</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E7%BB%AD%E5%9E%8Bdemo"><span class="nav-number">6.3.</span> <span class="nav-text">连续型demo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E5%88%AB%E5%9E%8Bdemo"><span class="nav-number">6.4.</span> <span class="nav-text">类别型demo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E5%BA%8F%E5%9E%8Bdemo"><span class="nav-number">6.5.</span> <span class="nav-text">定序型demo</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#REF"><span class="nav-number">7.</span> <span class="nav-text">REF</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">喵十八</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2fbc96c0bbe149b498b5',
+      clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+      repo        : 'Yao544303.github.io',
+      owner       : 'Yao544303',
+      admin       : ['Yao544303'],
+      id          : '70cec70b8a4c4a6b061ead878fb195d9',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

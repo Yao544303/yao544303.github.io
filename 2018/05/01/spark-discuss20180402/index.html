@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0-rc2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="说明以下内容来自群中出现的问题，大家讨论的结果Q群：432600958微信群：加微信w3aboutyun,附上about云铁粉  部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。 这次整理开始，按照问题进行分类  银行存储金额,使用什么类型时间2018.04.27 思路用Int，直接存分 今日头条用户定向预估的实现方案　讨论时间2018.04.27 说明r">
+<meta property="og:type" content="article">
+<meta property="og:title" content="群内2018_４月讨论整理2">
+<meta property="og:url" content="http://yoursite.com/2018/05/01/spark-discuss20180402/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="说明以下内容来自群中出现的问题，大家讨论的结果Q群：432600958微信群：加微信w3aboutyun,附上about云铁粉  部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。 这次整理开始，按照问题进行分类  银行存储金额,使用什么类型时间2018.04.27 思路用Int，直接存分 今日头条用户定向预估的实现方案　讨论时间2018.04.27 说明r">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-05-01T15:04:27.000Z">
+<meta property="article:modified_time" content="2018-05-01T15:12:48.000Z">
+<meta property="article:author" content="喵十八">
+<meta property="article:tag" content="面试">
+<meta property="article:tag" content="kafka">
+<meta property="article:tag" content="技术人员工作经验">
+<meta property="article:tag" content="今日头条用户定向预估的实现方案">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2018/05/01/spark-discuss20180402/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>群内2018_４月讨论整理2 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">喵十八の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/01/spark-discuss20180402/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          群内2018_４月讨论整理2
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2018-05-01 23:04:27 / Modified: 23:12:48" itemprop="dateCreated datePublished" datetime="2018-05-01T23:04:27+08:00">2018-05-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/bigdata/" itemprop="url" rel="index"><span itemprop="name">bigdata</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>以下内容来自群中出现的问题，大家讨论的结果<br>Q群：432600958<br>微信群：加微信w3aboutyun,附上about云铁粉</p>
+<ul>
+<li>部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。</li>
+<li>这次整理开始，按照问题进行分类</li>
+</ul>
+<h1 id="银行存储金额-使用什么类型"><a href="#银行存储金额-使用什么类型" class="headerlink" title="银行存储金额,使用什么类型"></a>银行存储金额,使用什么类型</h1><h2 id="时间"><a href="#时间" class="headerlink" title="时间"></a>时间</h2><p>2018.04.27</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>用Int，直接存分</p>
+<h1 id="今日头条用户定向预估的实现方案-讨论"><a href="#今日头条用户定向预估的实现方案-讨论" class="headerlink" title="今日头条用户定向预估的实现方案　讨论"></a>今日头条用户定向预估的实现方案　讨论</h1><h2 id="时间-1"><a href="#时间-1" class="headerlink" title="时间"></a>时间</h2><p>2018.04.27</p>
+<h2 id="说明-1"><a href="#说明-1" class="headerlink" title="说明"></a>说明</h2><p><a href="http://wsq.discuz.com/?siteid=264104844&amp;c=index&amp;a=viewthread&amp;tid=24415&amp;source=pcscan">ref</a><br>看到今日头条的广告投放平台，可以选择各种维度的用户定向条件，并根据不同的条件组合实时给出预估覆盖用户量，感觉把各种维度组合存储下来这个数据量太大了，尤其App行为定向几乎涵盖了市场上所有的App，还有商圈定向，所有维度组合得上亿条吧？有没有人知道这块的技术是如何实现的呢？1.如何存储？2.如何快速查询？ </p>
+<h2 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h2><ul>
+<li>类似kylin那样玩 </li>
+<li>计算广告领域的 adx 受众定向，有些维度需要存 有些不需要  有的维度只是为了分流 给adx或dsp等</li>
+<li>不是实时计算 实时计算的一般是ctr 和 反作弊 其它的都是以前计算  推荐的也是多数提前计算 kylin满足不了  单纯的dsp的qps可以到5000+ 不超 100ms访给头条  头条的qps会更大</li>
+<li>应该也是给用户打上标签了。所以也可以计算很快。 类似hbase这样的数据库</li>
+</ul>
+<h1 id="kafka提升写入速度"><a href="#kafka提升写入速度" class="headerlink" title="kafka提升写入速度"></a>kafka提升写入速度</h1><h2 id="时间-2"><a href="#时间-2" class="headerlink" title="时间"></a>时间</h2><p>2018.04.26</p>
+<h2 id="相关讨论"><a href="#相关讨论" class="headerlink" title="相关讨论"></a>相关讨论</h2><ul>
+<li>加分区  我一天700亿，就是普通配置，加分区提升速度  我最大的topic 500亿一天，70个分区  qps我以前看大概单台1w多吧，非高峰期  分区计算要根据机器数和磁盘数来定 最好小于 机器数*磁盘数 磁盘大小决定你可以保存多久，有多长时间的备份</li>
+</ul>
+<h1 id="各大hadoop-版本比较-—by-刘明-阿黄生"><a href="#各大hadoop-版本比较-—by-刘明-阿黄生" class="headerlink" title="各大hadoop 版本比较  —by 刘明 阿黄生"></a>各大hadoop 版本比较  —by 刘明 阿黄生</h1><h2 id="时间-3"><a href="#时间-3" class="headerlink" title="时间"></a>时间</h2><p>2018.04.25</p>
+<h2 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h2><p>1.原生hadoop，用脚本管理。<br>（缺点：无界面管理 优点：以后经常升级组件会比较方便）<br>2.Cloudera发行版（Cloudera’s Distribution Including Apache Hadoop，简称 CDH ） 免费<br>  Cloudera公司也提供了类似的工具：Cloudera Manager（简称 CM ）来配置、监控和管理CDH集群<br>（缺点：需要厂商支持的时候贵的一逼 优点：组件升级、性能图标方面更方面）<br>3.Hortonworks发行版（Hortonworks Data Platform，简称 HDP ） 免费<br>  Hortonworks公司的Apache Ambari项目的目的就是通过软件来配置、监控和管理Hadoop（HDP）集群，以使Hadoop的管理更加  简单。Ambari提供了一个基于它自身RESTful的api实现的直观的、简单易用的web界面。<br>（缺点：暂不明 优点：日常管理更方便）<br>总结：Cloudera、Hortonworks都是大厂发布，性能稳定，运维人员喜欢用，管理方便。原生hadoop一般适用于开发人员。</p>
+<h1 id="关于数据挖掘中-模型、算法和数据的一些看法"><a href="#关于数据挖掘中-模型、算法和数据的一些看法" class="headerlink" title="关于数据挖掘中 模型、算法和数据的一些看法"></a>关于数据挖掘中 模型、算法和数据的一些看法</h1><h2 id="时间-4"><a href="#时间-4" class="headerlink" title="时间"></a>时间</h2><p>2018.04.20</p>
+<h2 id="观点"><a href="#观点" class="headerlink" title="观点"></a>观点</h2><ul>
+<li>一般是先看有哪些数据，再看要产出什么，算法是最后的，而且也不是最重要，顶多就是一个速度快慢的问题了。模型算法这种大家似懂非懂的，出去忽悠甲方，才好吹牛B啊。</li>
+<li>底层的基础算法公式是一致的，然后去和业务做匹配，形成针对业务的模型迭代算法。比如，人口模型，用地模型什么的。</li>
+<li>挖掘初期，能尽量用简单的方法处理好适当数据，产生效果就不错了。上升期，模型数据都可以进一步突破，也可以选择不同场景来做。是的，先要有东西出来，而不是说做的完美。先找合适场景，能产生数据价值，搞简单算法，先落地为主</li>
+<li>分公司，像搜索的几家公司，除了全文检索的技术，后面自然语言的算法，模型太多了。</li>
+<li>场景不同，除非老板给你的定位就是搞搜索，nlp，否则你开始就搞这个，几个月都弄不出来成绩就完了</li>
+<li>算法模型是要有大量训练数据和测试数据进行模型验证的。要不然模型容易过拟合或者欠拟合。</li>
+<li>数据量不够的话，可以用k折交叉验证来进行模型验证</li>
+<li>我看过一本书忘记名字了，讲大数据的，书中一个观点挺有意思的，说大数据的本质不是数据量的大小，我的理解就是不抽样的数据，会有很多看似无用的数据，但当数据量上来了，这些没用的数据就能挖掘出实际价值</li>
+</ul>
+<h1 id="关于大公司的开源技术，解决方案的一些看法"><a href="#关于大公司的开源技术，解决方案的一些看法" class="headerlink" title="关于大公司的开源技术，解决方案的一些看法"></a>关于大公司的开源技术，解决方案的一些看法</h1><h2 id="时间-5"><a href="#时间-5" class="headerlink" title="时间"></a>时间</h2><p>2018.04.20_3</p>
+<h2 id="观点-1"><a href="#观点-1" class="headerlink" title="观点"></a>观点</h2><ul>
+<li>很多解决方案，大厂的虽然是out的，在外面也可以吃很长一段时间</li>
+<li>大厂开源看思路，照搬就是作死，正好拿些小厂商做试验，如果可行，就分分钟钟拷贝出来</li>
+<li>很多技术，小公司并没有机会用到比如数据上云，和数据挖掘</li>
+<li>阿里主要是有盈利目标。就算懂了，也是自己小范围使用。最恶心就是阿里开源。明知道自己的东西需要一大堆外围配合，例如ssd阵列冷热分离，仍然阉割之后拿出来社区版，结果造成你上坑几率极大。</li>
+</ul>
+<h1 id="Spark中-hashshuffle-和-sortshuffle"><a href="#Spark中-hashshuffle-和-sortshuffle" class="headerlink" title="Spark中　hashshuffle 和 sortshuffle"></a>Spark中　hashshuffle 和 sortshuffle</h1><h2 id="时间-6"><a href="#时间-6" class="headerlink" title="时间"></a>时间</h2><p>2018.04.18</p>
+<h2 id="说明-2"><a href="#说明-2" class="headerlink" title="说明"></a>说明</h2><p>1.6 以上默认Sort-Based Shuffle<br>1.2 是HashShuffle</p>
+<p><strong>原始HashShuffle 机制</strong><br>思考核心点：上游数据是怎么分配给下游数据的。<br>假设有4个Map 要分成3类，也就是有3个Reducer,中间会生成4*3 个小文件</p>
+<p><strong>优化后的HashShuffle 机制</strong><br>因为Hash算法会根据你的 Key 进行分类，在同一个进程中，无论是有多少过Task，都会把同样的Key放在同一个Buffer里，然后把Buffer中的数据写入以Core数量为单位的本地文件中，(一个Core只有一种类型的Key的数据)，每1个Task所在的进程中，分别写入共同进程中的3份本地文件，这里有4个Mapper Tasks，所以总共输出是 2个Cores x 3个分类文件 = 6个本地小文件。</p>
+<p><strong>Sort Shuffle</strong></p>
+<ul>
+<li>首先每个ShuffleMapTask不会为每个Reducer单独生成一个文件，相反，Sort-based Shuffle会把Mapper中每个ShuffleMapTask所有的输出数据Data只写到一个文件中。因为每个ShuffleMapTask中的数据会被分类，所以Sort-based Shuffle使用了index文件存储具体ShuffleMapTask输出数据在同一个Data文件中是如何分类的信息！！</li>
+<li>基于Sort-base的Shuffle会在Mapper中的每一个ShuffleMapTask中产生两个文件：Data文件和Index文件，其中Data文件是存储当前Task的Shuffle输出的。而index文件中则存储了Data文件中的数据通过Partitioner的分类信息，此时下一个阶段的Stage中的Task就是根据这个Index文件获取自己所要抓取的上一个Stage中的ShuffleMapTask产生的数据的，Reducer就是根据index文件来获取属于自己的数据。<br>Sorted-based Shuffle：会产生 2*M(M代表了Mapper阶段中并行的Partition的总数量，其实就是ShuffleMapTask的总数量)个Shuffle临时文件。</li>
+</ul>
+<h2 id="ref"><a href="#ref" class="headerlink" title="ref:"></a>ref:</h2><p><a href="https://www.cnblogs.com/jcchoiling/p/6431969.html">[Spark性能调优] 第二章：彻底解密Spark的HashShuffle</a><br><a href="http://zhou-yuefei.iteye.com/blog/2294132">Spark sort-based Shuffle内幕彻底解密</a></p>
+<h1 id="一些零散的关于技术的想法："><a href="#一些零散的关于技术的想法：" class="headerlink" title="一些零散的关于技术的想法："></a>一些零散的关于技术的想法：</h1><p>技术的广度 Vs 深度<br>知识体系的力量</p>
+<h2 id="时间-7"><a href="#时间-7" class="headerlink" title="时间"></a>时间</h2><p>2018.04.17</p>
+<h2 id="相关讨论内容"><a href="#相关讨论内容" class="headerlink" title="相关讨论内容"></a>相关讨论内容</h2><ul>
+<li>编程我的感觉就是：有基础就可以做了，但是要成为资深程序猿的话，学习能力、创新能力、思维开阔性很重要</li>
+<li>自我认知的四个层次，不知道自己不知道，知道自己不知道，知道自己知道和不知道自己知道</li>
+<li>系统的教育，比零散的学习，思维的深度 和强度要高不少，我是这么觉得的，受过这种教育的人，会构建自己的知识体系，然后学到新的东西，都能放到这个体系中</li>
+<li>知识体系的例子：打个比方，你看到一个新的分布式技术，自然而然会想到并发，高可用，存储结构计算框架，按着一个套路去套，去学习</li>
+<li>我老大是搞cdn的， 我那时候搞storm抓不住重点， 我老大听我说完 就告诉我看他的通信模型就够了， 现在想来就是他有知识体系 我没有</li>
+<li>一般说30就不干程序员的，都是新创业公司，因为付不起工资其实30后能力和经验才开始体现，思考思维才逐步成熟。</li>
+<li>30岁以前写代码是体力劳动，积累经验。一旦30岁开始，年龄和职业能力出现巨大偏差就有问题了。</li>
+<li>昨天我和领导谈话，领导说做完项目，小组互相评价，我说好，后来我补充了一句，另外技术方面也得总结，最好这个项目能为下个项目做铺垫。后来领导问我做了这么长时间，有提高么，仔细想想，其实压力还是蛮大的，学习是一方面，但技术设限这点上确实是我没法独立去突破的，优质的程序员得到什么程度都是去自己评估，这就问题很大了。</li>
+</ul>
+<h1 id="面试相关"><a href="#面试相关" class="headerlink" title="面试相关"></a>面试相关</h1><h2 id="时间-8"><a href="#时间-8" class="headerlink" title="时间"></a>时间</h2><p>2018.04.17 及之后</p>
+<h2 id="相关讨论内容-1"><a href="#相关讨论内容-1" class="headerlink" title="相关讨论内容"></a>相关讨论内容</h2><ul>
+<li>怎么筛选人： 公司用什么？需要什么样的人？怎么去判断一个人技术是否牛逼？要人的标准是什么？</li>
+<li>注重的方面：技术、团队、态度</li>
+<li>面试是双向选择，并不是跪舔，打破这个规则以后工作都是不平等的。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="作为面试者："><a href="#作为面试者：" class="headerlink" title="作为面试者："></a>作为面试者：</h3><ul>
+<li>态度要端正</li>
+<li>打好基础，具备相应的实力。对于技术问题，一定要做，而且总结。</li>
+<li>摆正心态，平稳应对难题，特别你的职位越高，心态越重要。遇到难题，就有点懊恼，这是不行的。</li>
+<li>做好简历</li>
+</ul>
+<h3 id="作为面试官："><a href="#作为面试官：" class="headerlink" title="作为面试官："></a>作为面试官：</h3><ul>
+<li>明确招人的需求和目的</li>
+<li>通过阅读简历及提问，认清面试者的真实水平<br>这个地方，可以考虑设计一下有层次的问题。一来，逐层挖深，能更好的分析出面试者技术水平。二来，可以考验面试者思维的逻辑性和缜密性。三来，更有逻辑条理的问题，能更好的挖掘出一些深层次的问题，形成一些思维的交锋，能够让面试者感受面试官的技术水平。毕竟面试是个双向选择的过程，要是面试官太水，真的人才说不定就看不上了。</li>
+<li>人品、态度考察。 这个可能hr会比技术人员更在行。技术人员从整体上给出一个把握就行。</li>
+</ul>
+<h3 id="一些面试问题"><a href="#一些面试问题" class="headerlink" title="一些面试问题"></a>一些面试问题</h3><h4 id="面试问题集合-—by-一杯咖啡。"><a href="#面试问题集合-—by-一杯咖啡。" class="headerlink" title="面试问题集合　—by 一杯咖啡。"></a>面试问题集合　—by 一杯咖啡。</h4><p>1、多线程的锁有哪几种<br>2、standby NN 和 secondary NN的区别？<br>3、Hadoop的HA如何避免脑裂？<br>4、讲讲HBase rowkey的设计<br>5、hbase访问热点问题<br>6、flume的数据源有哪些？<br>7、hive中数据倾斜问题？<br>8、写MR topN<br>9、spark rdd的lineage是怎么回事？<br>10、spark的宽依赖和窄依赖？（画出来）<br>11、rdd的懒加载是如何实现的？<br>12、HBase的major compaction机制，如何避免它对我们的业务的影响<br>13、oracle的分页？<br>14、窗口函数（我不知道这题问的是hive的窗口函数还是spark的窗口函数）<br>15、用SQL统计UV、PV指标<br>16、kafka是如何实现消息的副本？怎么控制N+1?<br>17、HBase查询的时候用什么对象？（这题不知道要问啥，面试官说：表操作的几个对象？？）</p>
+<h4 id="从头写一个简单的分布式服务，我只要最简单的功能，work-向master发心跳，超时剔除。-—-by-王二铁"><a href="#从头写一个简单的分布式服务，我只要最简单的功能，work-向master发心跳，超时剔除。-—-by-王二铁" class="headerlink" title="从头写一个简单的分布式服务，我只要最简单的功能，work 向master发心跳，超时剔除。 — by 王二铁"></a>从头写一个简单的分布式服务，我只要最简单的功能，work 向master发心跳，超时剔除。 — by 王二铁</h4><p>参考zk 实现原理，要求对分布式架构有一定的了解</p>
+<h4 id="大文件放到内存处理"><a href="#大文件放到内存处理" class="headerlink" title="大文件放到内存处理"></a>大文件放到内存处理</h4><p>有一个5000w的用户文件，一个2亿记录的用户看电影的记录文件，列出前1000个看电影最多的用户（内存只有1G) 那前1000w个呢<br>一个5000万长度的数组加一个5000万个key的HashMap，内存消耗会超过1个G吗？遍历2亿次加上5000万*log(5000wan）时间效率。这应该是最蠢的方法了。<br>所有数据肯定内存是没法容下的，先把大文件hash成许多个小文件直到内存可以处理，之后算每个小文件的top1000，然后再递归合并小文件，直到内存可以处理</p>
+<h1 id="一些好的经验总结"><a href="#一些好的经验总结" class="headerlink" title="一些好的经验总结"></a>一些好的经验总结</h1><p><a href="https://mp.weixin.qq.com/s?__biz=MzA3MjQ1NDYzOQ==&amp;mid=2660384603&amp;idx=1&amp;sn=410f152d3fa02f928f43e0dd1b1ad6b8&amp;chksm=847887dbb30f0ecda1b66da265561166a31d7f71e2bafd66ce86ca9f39e4d410c7cc9553ce3a&amp;mpshare=1&amp;scene=1&amp;srcid=0422wzyGBSQvfUjbNHBlCUl7#rd">MapReduce执行过程分析</a><br><a href="https://www.cnblogs.com/hd-zg/p/5831219.html">kafka 的offset</a><br><a href="http://dongxicheng.org/mapreduce/hadoop-permission-management/">Hadoop权限管理</a><br><a href="http://www.importnew.com/27645.html">JVM 堆内存和非堆内存</a><br><a href="https://wenku.baidu.com/view/34c3529a804d2b160a4ec0b4.html?qq-pf-to=pcqq.group">YARN ResourceManager调度器的分析</a><br><a href="https://blog.csdn.net/cymvp/article/details/50781727">YARN 内存参数终极详解</a></p>
+<p><a href="https://pan.baidu.com/s/1YjE34zgfV3k16I-Ye57CLA">Docker</a> 密码: 8m4a<br><a href="http://www.aboutyun.com/thread-24377-1-1.html">实战Docker到Kubernetes技术系列视频教程</a><br><a href="http://www.aboutyun.com/forum.php?mod=viewthread&amp;tid=22614">如何免费上谷歌</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag"># 面试</a>
+              <a href="/tags/kafka/" rel="tag"># kafka</a>
+              <a href="/tags/%E6%8A%80%E6%9C%AF%E4%BA%BA%E5%91%98%E5%B7%A5%E4%BD%9C%E7%BB%8F%E9%AA%8C/" rel="tag"># 技术人员工作经验</a>
+              <a href="/tags/%E4%BB%8A%E6%97%A5%E5%A4%B4%E6%9D%A1%E7%94%A8%E6%88%B7%E5%AE%9A%E5%90%91%E9%A2%84%E4%BC%B0%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88/" rel="tag"># 今日头条用户定向预估的实现方案</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/04/16/spark-discuss20180401/" rel="prev" title="群内2018_４月讨论整理1">
+      <i class="fa fa-chevron-left"></i> 群内2018_４月讨论整理1
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/05/30/spark-discuss201805/" rel="next" title="群内2018_5月讨论整理">
+      群内2018_5月讨论整理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%93%B6%E8%A1%8C%E5%AD%98%E5%82%A8%E9%87%91%E9%A2%9D-%E4%BD%BF%E7%94%A8%E4%BB%80%E4%B9%88%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">银行存储金额,使用什么类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4"><span class="nav-number">2.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-number">2.2.</span> <span class="nav-text">思路</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8A%E6%97%A5%E5%A4%B4%E6%9D%A1%E7%94%A8%E6%88%B7%E5%AE%9A%E5%90%91%E9%A2%84%E4%BC%B0%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88-%E8%AE%A8%E8%AE%BA"><span class="nav-number">3.</span> <span class="nav-text">今日头条用户定向预估的实现方案　讨论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4-1"><span class="nav-number">3.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E-1"><span class="nav-number">3.2.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF-1"><span class="nav-number">3.3.</span> <span class="nav-text">思路</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kafka%E6%8F%90%E5%8D%87%E5%86%99%E5%85%A5%E9%80%9F%E5%BA%A6"><span class="nav-number">4.</span> <span class="nav-text">kafka提升写入速度</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4-2"><span class="nav-number">4.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E8%AE%A8%E8%AE%BA"><span class="nav-number">4.2.</span> <span class="nav-text">相关讨论</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%84%E5%A4%A7hadoop-%E7%89%88%E6%9C%AC%E6%AF%94%E8%BE%83-%E2%80%94by-%E5%88%98%E6%98%8E-%E9%98%BF%E9%BB%84%E7%94%9F"><span class="nav-number">5.</span> <span class="nav-text">各大hadoop 版本比较  —by 刘明 阿黄生</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4-3"><span class="nav-number">5.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9"><span class="nav-number">5.2.</span> <span class="nav-text">内容</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98%E4%B8%AD-%E6%A8%A1%E5%9E%8B%E3%80%81%E7%AE%97%E6%B3%95%E5%92%8C%E6%95%B0%E6%8D%AE%E7%9A%84%E4%B8%80%E4%BA%9B%E7%9C%8B%E6%B3%95"><span class="nav-number">6.</span> <span class="nav-text">关于数据挖掘中 模型、算法和数据的一些看法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4-4"><span class="nav-number">6.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%82%E7%82%B9"><span class="nav-number">6.2.</span> <span class="nav-text">观点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%A4%A7%E5%85%AC%E5%8F%B8%E7%9A%84%E5%BC%80%E6%BA%90%E6%8A%80%E6%9C%AF%EF%BC%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E7%9A%84%E4%B8%80%E4%BA%9B%E7%9C%8B%E6%B3%95"><span class="nav-number">7.</span> <span class="nav-text">关于大公司的开源技术，解决方案的一些看法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4-5"><span class="nav-number">7.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%82%E7%82%B9-1"><span class="nav-number">7.2.</span> <span class="nav-text">观点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spark%E4%B8%AD-hashshuffle-%E5%92%8C-sortshuffle"><span class="nav-number">8.</span> <span class="nav-text">Spark中　hashshuffle 和 sortshuffle</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4-6"><span class="nav-number">8.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E-2"><span class="nav-number">8.2.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ref"><span class="nav-number">8.3.</span> <span class="nav-text">ref:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E9%9B%B6%E6%95%A3%E7%9A%84%E5%85%B3%E4%BA%8E%E6%8A%80%E6%9C%AF%E7%9A%84%E6%83%B3%E6%B3%95%EF%BC%9A"><span class="nav-number">9.</span> <span class="nav-text">一些零散的关于技术的想法：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4-7"><span class="nav-number">9.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E8%AE%A8%E8%AE%BA%E5%86%85%E5%AE%B9"><span class="nav-number">9.2.</span> <span class="nav-text">相关讨论内容</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3"><span class="nav-number">10.</span> <span class="nav-text">面试相关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4-8"><span class="nav-number">10.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E8%AE%A8%E8%AE%BA%E5%86%85%E5%AE%B9-1"><span class="nav-number">10.2.</span> <span class="nav-text">相关讨论内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">10.3.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E4%B8%BA%E9%9D%A2%E8%AF%95%E8%80%85%EF%BC%9A"><span class="nav-number">10.3.1.</span> <span class="nav-text">作为面试者：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E4%B8%BA%E9%9D%A2%E8%AF%95%E5%AE%98%EF%BC%9A"><span class="nav-number">10.3.2.</span> <span class="nav-text">作为面试官：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98"><span class="nav-number">10.3.3.</span> <span class="nav-text">一些面试问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98%E9%9B%86%E5%90%88-%E2%80%94by-%E4%B8%80%E6%9D%AF%E5%92%96%E5%95%A1%E3%80%82"><span class="nav-number">10.3.3.1.</span> <span class="nav-text">面试问题集合　—by 一杯咖啡。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%8E%E5%A4%B4%E5%86%99%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%8D%E5%8A%A1%EF%BC%8C%E6%88%91%E5%8F%AA%E8%A6%81%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E5%8A%9F%E8%83%BD%EF%BC%8Cwork-%E5%90%91master%E5%8F%91%E5%BF%83%E8%B7%B3%EF%BC%8C%E8%B6%85%E6%97%B6%E5%89%94%E9%99%A4%E3%80%82-%E2%80%94-by-%E7%8E%8B%E4%BA%8C%E9%93%81"><span class="nav-number">10.3.3.2.</span> <span class="nav-text">从头写一个简单的分布式服务，我只要最简单的功能，work 向master发心跳，超时剔除。 — by 王二铁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%A7%E6%96%87%E4%BB%B6%E6%94%BE%E5%88%B0%E5%86%85%E5%AD%98%E5%A4%84%E7%90%86"><span class="nav-number">10.3.3.3.</span> <span class="nav-text">大文件放到内存处理</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%A5%BD%E7%9A%84%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93"><span class="nav-number">11.</span> <span class="nav-text">一些好的经验总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">喵十八</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2fbc96c0bbe149b498b5',
+      clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+      repo        : 'Yao544303.github.io',
+      owner       : 'Yao544303',
+      admin       : ['Yao544303'],
+      id          : 'bca25fd78a6ae12fce98c8e81c3ab561',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

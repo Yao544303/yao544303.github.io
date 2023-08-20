@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0-rc2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="综述存储fate 训练过程中的模型目录: &#x2F;data&#x2F;projects&#x2F;fate&#x2F;model_local_cache&#x2F;{model_version}&#x2F;{model_id}  内容123456789101112131415161718192021222324252627(app-root) bash-4.2# ls -R.:define  pipeline.pb  variables.&#x2F;define">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FATE学习：运行过程中产生的数据（四） model_cache">
+<meta property="og:url" content="http://yoursite.com/2023/08/20/fate-data-4-model-cache/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="综述存储fate 训练过程中的模型目录: &#x2F;data&#x2F;projects&#x2F;fate&#x2F;model_local_cache&#x2F;{model_version}&#x2F;{model_id}  内容123456789101112131415161718192021222324252627(app-root) bash-4.2# ls -R.:define  pipeline.pb  variables.&#x2F;define">
+<meta property="og:locale">
+<meta property="article:published_time" content="2023-08-20T05:44:10.000Z">
+<meta property="article:modified_time" content="2023-08-20T05:47:50.784Z">
+<meta property="article:author" content="喵十八">
+<meta property="article:tag" content="FATE">
+<meta property="article:tag" content="FedAI">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2023/08/20/fate-data-4-model-cache/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>FATE学习：运行过程中产生的数据（四） model_cache | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">喵十八の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fate-data-4-model-cache/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FATE学习：运行过程中产生的数据（四） model_cache
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-08-20 13:44:10 / Modified: 13:47:50" itemprop="dateCreated datePublished" datetime="2023-08-20T13:44:10+08:00">2023-08-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FATE/" itemprop="url" rel="index"><span itemprop="name">FATE</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>存储fate 训练过程中的模型<br>目录: /data/projects/fate/model_local_cache/{model_version}/{model_id} </p>
+<h1 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">(app-root) bash-4.2# ls -R</span><br><span class="line">.:</span><br><span class="line">define  pipeline.pb  variables</span><br><span class="line"></span><br><span class="line">./define:</span><br><span class="line">define_meta.yaml  proto</span><br><span class="line"></span><br><span class="line">./define/proto:</span><br><span class="line">boosting-tree-model-meta.proto   data-io-param.proto          feature-selection-meta.proto   hetero-kmeans-param.proto    lr-model-meta.proto   onehot-param.proto         poisson-model-meta.proto   sir-param.proto</span><br><span class="line">boosting-tree-model-param.proto  feature-binning-meta.proto   feature-selection-param.proto  hetero-nn-model-meta.proto   lr-model-param.proto  one-vs-rest-param.proto    poisson-model-param.proto  statistic-meta.proto</span><br><span class="line">column-expand-meta.proto         feature-binning-param.proto  ftl-model-meta.proto           hetero-nn-model-param.proto  nn-model-meta.proto   pearson-model-meta.proto   psi-model-meta.proto       statistic-param.proto</span><br><span class="line">column-expand-param.proto        feature-scale-meta.proto     ftl-model-param.proto          linr-model-meta.proto        nn-model-param.proto  pearson-model-param.proto  psi-model-param.proto</span><br><span class="line">data-io-meta.proto               feature-scale-param.proto    hetero-kmeans-meta.proto       linr-model-param.proto       onehot-meta.proto     pipeline.proto             sir-meta.proto</span><br><span class="line"></span><br><span class="line">./variables:</span><br><span class="line">data  index</span><br><span class="line"></span><br><span class="line">./variables/data:</span><br><span class="line">pipeline</span><br><span class="line"></span><br><span class="line">./variables/data/pipeline:</span><br><span class="line">pipeline</span><br><span class="line"></span><br><span class="line">./variables/data/pipeline/pipeline:</span><br><span class="line">Pipeline</span><br><span class="line"></span><br><span class="line">./variables/index:</span><br></pre></td></tr></table></figure>
+<p>其中重要的内容为<br>define_meta.yaml 模型的元数据定义<br>如upload 为<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">describe: This is the model definition meta</span><br><span class="line">component_define:</span><br><span class="line">  pipeline:</span><br><span class="line">    module_name: Pipeline</span><br><span class="line">model_proto:</span><br><span class="line">  pipeline:</span><br><span class="line">    pipeline:</span><br><span class="line">      Pipeline: Pipeline</span><br></pre></td></tr></table></figure><br>lr的为<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">describe: This is the model definition meta</span><br><span class="line">component_define:</span><br><span class="line">  dataio_0:</span><br><span class="line">    module_name: DataIO</span><br><span class="line">  hetero_lr_0:</span><br><span class="line">    module_name: HeteroLR</span><br><span class="line">  pipeline:</span><br><span class="line">    module_name: Pipeline</span><br><span class="line">model_proto:</span><br><span class="line">  dataio_0:</span><br><span class="line">    dataio:</span><br><span class="line">      DataIOMeta: DataIOMeta</span><br><span class="line">      DataIOParam: DataIOParam</span><br><span class="line">    default:</span><br><span class="line">      DataIOMeta: DataIOMeta</span><br><span class="line">      DataIOParam: DataIOParam</span><br><span class="line">  hetero_lr_0:</span><br><span class="line">    hetero_lr:</span><br><span class="line">      HeteroLogisticRegressionMeta: LRModelMeta</span><br><span class="line">      HeteroLogisticRegressionParam: LRModelParam</span><br><span class="line">    default:</span><br><span class="line">      HeteroLogisticRegressionMeta: LRModelMeta</span><br><span class="line">      HeteroLogisticRegressionParam: LRModelParam</span><br><span class="line">  pipeline:</span><br><span class="line">    pipeline:</span><br><span class="line">      Pipeline: Pipeline</span><br></pre></td></tr></table></figure><br>/define/proto 目录下，为各个组件的Protobuf</p>
+<p>pipeline.pb 类似Run Time Conf，定义了各项参数<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;components&quot;: &#123;&quot;dataio_0&quot;: &#123;&quot;module&quot;: &quot;DataIO&quot;, &quot;input&quot;: &#123;&quot;model&quot;: [&quot;pipeline.dataio_0.dataio&quot;], &quot;data&quot;: &#123;&quot;data&quot;: [&quot;args.eval_data&quot;]&#125;&#125;, &quot;output&quot;: &#123;&quot;data&quot;: [&quot;train&quot;]&#125;, &quot;CodePath&quot;: &quot;federatedml/util/data_io.py/DataIO&quot;&#125;, &quot;intersection_0&quot;: &#123;&quot;module&quot;: &quot;Intersection&quot;, &quot;output&quot;: &#123;&quot;data&quot;: [&quot;train&quot;]&#125;, &quot;input&quot;: &#123;&quot;data&quot;: &#123;&quot;data&quot;: [&quot;dataio_0.train&quot;]&#125;&#125;, &quot;CodePath&quot;: &quot;federatedml/statistic/intersect/intersect_model.py/IntersectGuest&quot;&#125;, &quot;hetero_lr_0&quot;: &#123;&quot;module&quot;: &quot;HeteroLR&quot;, &quot;input&quot;: &#123;&quot;model&quot;: [&quot;pipeline.hetero_lr_0.hetero_lr&quot;], &quot;data&quot;: &#123;&quot;test_data&quot;: [&quot;intersection_0.train&quot;]&#125;&#125;, &quot;output&quot;: &#123;&quot;data&quot;: [&quot;train&quot;]&#125;, &quot;CodePath&quot;: &quot;federatedml/linear_model/logistic_regression/hetero_logistic_regression/hetero_lr_guest.py/HeteroLRGuest&quot;&#125;&#125;&#125;�&#123;&quot;components&quot;: &#123;&quot;dataio_0&quot;: &#123;&quot;module&quot;: &quot;DataIO&quot;, &quot;input&quot;: &#123;&quot;data&quot;: &#123;&quot;data&quot;: [&quot;args.train_data&quot;]&#125;&#125;, &quot;output&quot;: &#123;&quot;data&quot;: [&quot;train&quot;], &quot;model&quot;: [&quot;dataio&quot;]&#125;&#125;, &quot;intersection_0&quot;: &#123;&quot;module&quot;: &quot;Intersection&quot;, &quot;input&quot;: &#123;&quot;data&quot;: &#123;&quot;data&quot;: [&quot;dataio_0.train&quot;]&#125;&#125;, &quot;output&quot;: &#123;&quot;data&quot;: [&quot;train&quot;]&#125;&#125;, &quot;hetero_lr_0&quot;: &#123;&quot;module&quot;: &quot;HeteroLR&quot;, &quot;input&quot;: &#123;&quot;data&quot;: &#123;&quot;train_data&quot;: [&quot;intersection_0.train&quot;]&#125;&#125;, &quot;output&quot;: &#123;&quot;data&quot;: [&quot;train&quot;], &quot;model&quot;: [&quot;hetero_lr&quot;]&#125;&#125;&#125;&#125;�&#123;&quot;initiator&quot;: &#123;&quot;role&quot;: &quot;guest&quot;, &quot;party_id&quot;: 9989&#125;, &quot;job_parameters&quot;: &#123;&quot;job_type&quot;: &quot;train&quot;, &quot;work_mode&quot;: 1, &quot;backend&quot;: 0, &quot;computing_engine&quot;: &quot;EGGROLL&quot;, &quot;federation_engine&quot;: &quot;EGGROLL&quot;, &quot;storage_engine&quot;: &quot;EGGROLL&quot;, &quot;engines_address&quot;: &#123;&#125;, &quot;federated_mode&quot;: &quot;MULTIPLE&quot;, &quot;task_parallelism&quot;: 1, &quot;computing_partitions&quot;: 4, &quot;federated_status_collect_type&quot;: &quot;PULL&quot;, &quot;model_id&quot;: &quot;arbiter-10000#guest-9989#host-10000#model&quot;, &quot;model_version&quot;: &quot;20210907124033978481324&quot;, &quot;eggroll_run&quot;: &#123;&#125;, &quot;spark_run&quot;: &#123;&#125;, &quot;rabbitmq_run&quot;: &#123;&#125;, &quot;adaptation_parameters&quot;: &#123;&quot;task_nodes&quot;: 1, &quot;task_cores_per_node&quot;: 4, &quot;task_memory_per_node&quot;: 0, &quot;request_task_cores&quot;: 4, &quot;if_initiator_baseline&quot;: true&#125;&#125;, &quot;role&quot;: &#123;&quot;guest&quot;: [9989], &quot;host&quot;: [10000], &quot;arbiter&quot;: [10000]&#125;, &quot;role_parameters&quot;: &#123;&quot;guest&quot;: &#123;&quot;args&quot;: &#123;&quot;data&quot;: &#123;&quot;train_data&quot;: [&#123;&quot;name&quot;: &quot;agame11512_20210906&quot;, &quot;namespace&quot;: &quot;cl&quot;&#125;], &quot;eval_data&quot;: [&#123;&quot;name&quot;: &quot;agame11512_20210906&quot;, &quot;namespace&quot;: &quot;cl&quot;&#125;]&#125;&#125;, &quot;dataio_0&quot;: &#123;&quot;with_label&quot;: [true], &quot;label_name&quot;: [&quot;y&quot;], &quot;label_type&quot;: [&quot;int&quot;], &quot;output_format&quot;: [&quot;dense&quot;], &quot;missing_fill&quot;: [true], &quot;outlier_replace&quot;: [true]&#125;, &quot;evaluation_0&quot;: &#123;&quot;eval_type&quot;: [&quot;binary&quot;], &quot;pos_label&quot;: [1]&#125;&#125;, &quot;host&quot;: &#123;&quot;args&quot;: &#123;&quot;data&quot;: &#123;&quot;train_data&quot;: [&#123;&quot;name&quot;: &quot;20210906_test_cl_agame11512&quot;, &quot;namespace&quot;: &quot;experiment&quot;&#125;], &quot;eval_data&quot;: [&#123;&quot;name&quot;: &quot;20210906_test_cl_agame11512&quot;, &quot;namespace&quot;: &quot;experiment&quot;&#125;]&#125;&#125;, &quot;dataio_0&quot;: &#123;&quot;with_label&quot;: [false], &quot;output_format&quot;: [&quot;dense&quot;], &quot;outlier_replace&quot;: [true]&#125;, &quot;evaluation_0&quot;: &#123;&quot;need_run&quot;: [false]&#125;&#125;&#125;, &quot;algorithm_parameters&quot;: &#123;&quot;hetero_lr_0&quot;: &#123;&quot;penalty&quot;: &quot;L2&quot;, &quot;optimizer&quot;: &quot;nesterov_momentum_sgd&quot;, &quot;tol&quot;: 0.0001, &quot;alpha&quot;: 0.01, &quot;max_iter&quot;: 1, &quot;early_stop&quot;: &quot;weight_diff&quot;, &quot;batch_size&quot;: -1, &quot;learning_rate&quot;: 0.15, &quot;init_param&quot;: &#123;&quot;init_method&quot;: &quot;random_uniform&quot;&#125;, &quot;sqn_param&quot;: &#123;&quot;update_interval_L&quot;: 3, &quot;memory_M&quot;: 5, &quot;sample_size&quot;: 5000, &quot;random_seed&quot;: null&#125;, &quot;cv_param&quot;: &#123;&quot;n_splits&quot;: 1, &quot;shuffle&quot;: false, &quot;random_seed&quot;: 103, &quot;need_cv&quot;: false&#125;&#125;, &quot;intersect_0&quot;: &#123;&quot;intersect_method&quot;: &quot;rsa&quot;, &quot;sync_intersect_ids&quot;: true, &quot;only_output_key&quot;: false&#125;&#125;, &quot;config&quot;: &quot;/data/projects/fate/python/cl/fc/config/20210906/train_20210906_agame11512.json&quot;, &quot;dsl&quot;: &quot;/data/projects/fate/python/cl/fc/env/pattern/train_job_dsl.json&quot;, &quot;function&quot;: &quot;submit_job&quot;&#125;&quot;1.5.1*)arbiter-10000#guest-9989#host-10000#model2202109071240339784813248J6&#123;&quot;guest&quot;: [9989], &quot;host&quot;: [10000], &quot;arbiter&quot;: [10000]&#125;PZguest`�Nj�&#123;&quot;initiator&quot;: &#123;&quot;role&quot;: &quot;guest&quot;, &quot;party_id&quot;: 9989&#125;, &quot;job_parameters&quot;: &#123;&quot;job_type&quot;: &quot;train&quot;, &quot;work_mode&quot;: 1, &quot;backend&quot;: 0, &quot;computing_engine&quot;: &quot;EGGROLL&quot;, &quot;federation_engine&quot;: &quot;EGGROLL&quot;, &quot;storage_engine&quot;: &quot;EGGROLL&quot;, &quot;engines_address&quot;: &#123;&quot;computing&quot;: &#123;&quot;cores_per_node&quot;: 20, &quot;nodes&quot;: 1&#125;, &quot;federation&quot;: &#123;&quot;host&quot;: &quot;rollsite&quot;, &quot;port&quot;: 9370&#125;, &quot;storage&quot;: &#123;&quot;cores_per_node&quot;: 20, &quot;nodes&quot;: 1&#125;&#125;, &quot;federated_mode&quot;: &quot;MULTIPLE&quot;, &quot;task_parallelism&quot;: 1, &quot;computing_partitions&quot;: 4, &quot;federated_status_collect_type&quot;: &quot;PULL&quot;, &quot;model_id&quot;: &quot;arbiter-10000#guest-9989#host-10000#model&quot;, &quot;model_version&quot;: &quot;20210907124033978481324&quot;, &quot;eggroll_run&quot;: &#123;&quot;eggroll.session.processors.per.node&quot;: 4&#125;, &quot;spark_run&quot;: &#123;&#125;, &quot;rabbitmq_run&quot;: &#123;&#125;, &quot;adaptation_parameters&quot;: &#123;&quot;task_nodes&quot;: 1, &quot;task_cores_per_node&quot;: 4, &quot;task_memory_per_node&quot;: 0, &quot;request_task_cores&quot;: 4, &quot;if_initiator_baseline&quot;: false&#125;&#125;, &quot;role&quot;: &#123;&quot;guest&quot;: [9989], &quot;host&quot;: [10000], &quot;arbiter&quot;: [10000]&#125;, &quot;role_parameters&quot;: &#123;&quot;guest&quot;: &#123;&quot;args&quot;: &#123;&quot;data&quot;: &#123;&quot;train_data&quot;: [&#123;&quot;name&quot;: &quot;agame11512_20210906&quot;, &quot;namespace&quot;: &quot;cl&quot;&#125;], &quot;eval_data&quot;: [&#123;&quot;name&quot;: &quot;agame11512_20210906&quot;, &quot;namespace&quot;: &quot;cl&quot;&#125;]&#125;&#125;, &quot;dataio_0&quot;: &#123;&quot;with_label&quot;: [true], &quot;label_name&quot;: [&quot;y&quot;], &quot;label_type&quot;: [&quot;int&quot;], &quot;output_format&quot;: [&quot;dense&quot;], &quot;missing_fill&quot;: [true], &quot;outlier_replace&quot;: [true]&#125;, &quot;evaluation_0&quot;: &#123;&quot;eval_type&quot;: [&quot;binary&quot;], &quot;pos_label&quot;: [1]&#125;&#125;, &quot;host&quot;: &#123;&quot;args&quot;: &#123;&quot;data&quot;: &#123;&quot;train_data&quot;: [&#123;&quot;name&quot;: &quot;20210906_test_cl_agame11512&quot;, &quot;namespace&quot;: &quot;experiment&quot;&#125;], &quot;eval_data&quot;: [&#123;&quot;name&quot;: &quot;20210906_test_cl_agame11512&quot;, &quot;namespace&quot;: &quot;experiment&quot;&#125;]&#125;&#125;, &quot;dataio_0&quot;: &#123;&quot;with_label&quot;: [false], &quot;output_format&quot;: [&quot;dense&quot;], &quot;outlier_replace&quot;: [true]&#125;, &quot;evaluation_0&quot;: &#123;&quot;need_run&quot;: [false]&#125;&#125;&#125;, &quot;algorithm_parameters&quot;: &#123;&quot;hetero_lr_0&quot;: &#123;&quot;penalty&quot;: &quot;L2&quot;, &quot;optimizer&quot;: &quot;nesterov_momentum_sgd&quot;, &quot;tol&quot;: 0.0001, &quot;alpha&quot;: 0.01, &quot;max_iter&quot;: 1, &quot;early_stop&quot;: &quot;weight_diff&quot;, &quot;batch_size&quot;: -1, &quot;learning_rate&quot;: 0.15, &quot;init_param&quot;: &#123;&quot;init_method&quot;: &quot;random_uniform&quot;&#125;, &quot;sqn_param&quot;: &#123;&quot;update_interval_L&quot;: 3, &quot;memory_M&quot;: 5, &quot;sample_size&quot;: 5000, &quot;random_seed&quot;: null&#125;, &quot;cv_param&quot;: &#123;&quot;n_splits&quot;: 1, &quot;shuffle&quot;: false, &quot;random_seed&quot;: 103, &quot;need_cv&quot;: false&#125;&#125;, &quot;intersect_0&quot;: &#123;&quot;intersect_method&quot;: &quot;rsa&quot;, &quot;sync_intersect_ids&quot;: true, &quot;only_output_key&quot;: false&#125;&#125;, &quot;config&quot;: &quot;/data/projects/fate/python/cl/fc/config/20210906/train_20210906_agame11512.json&quot;, &quot;dsl&quot;: &quot;/data/projects/fate/python/cl/fc/env/pattern/train_job_dsl.json&quot;, &quot;function&quot;: &quot;submit_job&quot;&#125;r&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>/variables/data<br>记录当前part 的模型的参数</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FATE/" rel="tag"># FATE</a>
+              <a href="/tags/FedAI/" rel="tag"># FedAI</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-data-3-lmdb/" rel="prev" title="FATE学习：运行过程中产生的数据（三） lmdb部分">
+      <i class="fa fa-chevron-left"></i> FATE学习：运行过程中产生的数据（三） lmdb部分
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%BC%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%85%E5%AE%B9"><span class="nav-number">2.</span> <span class="nav-text">内容</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">喵十八</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2fbc96c0bbe149b498b5',
+      clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+      repo        : 'Yao544303.github.io',
+      owner       : 'Yao544303',
+      admin       : ['Yao544303'],
+      id          : 'ec2ed8f18e02d7a0a9682b7231f418c7',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

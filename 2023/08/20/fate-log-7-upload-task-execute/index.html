@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0-rc2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="综述前文对upload task 进行schedule 之后，最终调用 task_executor 进行执行，进入具体的执行部分。每个task的具体日志会打在${job_log_dir}&#x2F; $ {role}&#x2F; ${party} 中（为便于记录，这里简记为 ${task_log_dir}这里就按照 ${task_log_dir}&#x2F;DEBUG.log看 会比较清晰一点 执行细节  执行命令1&#x2F;opt&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FATE学习：跟着日志读源码（七）upload任务task excute阶段">
+<meta property="og:url" content="http://yoursite.com/2023/08/20/fate-log-7-upload-task-execute/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="综述前文对upload task 进行schedule 之后，最终调用 task_executor 进行执行，进入具体的执行部分。每个task的具体日志会打在${job_log_dir}&#x2F; $ {role}&#x2F; ${party} 中（为便于记录，这里简记为 ${task_log_dir}这里就按照 ${task_log_dir}&#x2F;DEBUG.log看 会比较清晰一点 执行细节  执行命令1&#x2F;opt&#x2F;">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/image/fate/c1ec280a31b64fc6bc0c81c8bece859e.png">
+<meta property="og:image" content="http://yoursite.com/image/fate/02d76fd6588e43c39d28b9b6bd8484e2.png">
+<meta property="og:image" content="http://yoursite.com/image/fate/15bb01d3c0854489a5f209ec5736ac4b.png">
+<meta property="article:published_time" content="2023-08-20T04:12:47.000Z">
+<meta property="article:modified_time" content="2023-08-20T05:36:55.874Z">
+<meta property="article:author" content="喵十八">
+<meta property="article:tag" content="FATE">
+<meta property="article:tag" content="FedAI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/image/fate/c1ec280a31b64fc6bc0c81c8bece859e.png">
+
+<link rel="canonical" href="http://yoursite.com/2023/08/20/fate-log-7-upload-task-execute/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>FATE学习：跟着日志读源码（七）upload任务task excute阶段 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">喵十八の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fate-log-7-upload-task-execute/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FATE学习：跟着日志读源码（七）upload任务task excute阶段
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-08-20 12:12:47 / Modified: 13:36:55" itemprop="dateCreated datePublished" datetime="2023-08-20T12:12:47+08:00">2023-08-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FATE/" itemprop="url" rel="index"><span itemprop="name">FATE</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>前文对upload task 进行schedule 之后，最终调用 task_executor 进行执行，进入具体的执行部分。<br>每个task的具体日志会打在${job_log_dir}/ $ {role}/ ${party} 中（为便于记录，这里简记为 ${task_log_dir}<br>这里就按照 ${task_log_dir}/DEBUG.log看 会比较清晰一点</p>
+<h1 id="执行细节"><a href="#执行细节" class="headerlink" title="执行细节"></a>执行细节</h1><p><img src="/image/fate/c1ec280a31b64fc6bc0c81c8bece859e.png" alt="在这里插入图片描述"></p>
+<ol>
+<li>执行命令<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/opt/app-root/bin/python /data/projects/fate/python/fate_flow/operation/task_executor.py -j 202107260820309976351 -n upload_0 -t 202107260820309976351_upload_0 -v 0 -r local -p 0 -c /data/projects/fate/jobs/202107260820309976351/local/0/upload_0/202107260820309976351_upload_0/0/task_parameters.json --run_ip 10.200.96.235 --job_server 10.200.96.235:9380</span><br></pre></td></tr></table></figure></li>
+<li><p>task_executor.py：执行run_task<br>先解析各参数。<br>在${job_log_dir}/fate_flow_schedule.log 输出日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:33,391] [90:139687957583680] - task_executor.py[line:56]: enter task process</span><br><span class="line">[INFO] [2021-07-26 08:20:33,391] [90:139687957583680] - task_executor.py[line:57]: Namespace(component_name=&#x27;upload_0&#x27;, config=&#x27;/data/projects/fate/jobs/202107260820309976351/local/0/upload_0/202107260820309976351_upload_0/0/task_parameters.json&#x27;, job_id=&#x27;202107260820309976351&#x27;, job_server=&#x27;10.200.96.235:9380&#x27;, party_id=0, role=&#x27;local&#x27;, run_ip=&#x27;10.200.96.235&#x27;, task_id=&#x27;202107260820309976351_upload_0&#x27;, task_version=0)</span><br></pre></td></tr></table></figure>
+<p>根据参数解析的结果，调用 schedule_utils.get_job_dsl_parser() 生成dsl_parser，并配置各项参数。<br>设置job_log_dir 和 task_log_dir。<br><strong>注：设置完目录后，task产生的所有日志，都是输出到task_log_dir 下了，和外层的fate_flow_schedule.log 分离了</strong></p>
+</li>
+<li><p>task_executor.py：初始化Tracker 和 TrackerClient，获取run_class_paths、run_class_package、run_class_name，调用 report_task_update_to_driver(task_info=task_info)</p>
+</li>
+<li><p>task_executor.py：执行report_task_update_to_driver()<br>先在 ${task_log_dir}/fate_flow_schedule.log 输出日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:33,395] [90:139687957583680] - task_executor.py[line:318]: report task 202107260820309976351_upload_0 0 local 0 to driver</span><br></pre></td></tr></table></figure>
+<p>然后调用ControllerClient.report_task</p>
+</li>
+<li>control_client.py：执行report_task<br>先在${job_log_dir}/${role}/${party}/DEBUG.log 中打日志<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:33,396] [90:139687957583680] - control_client.py[line:42]: request update job 202107260820309976351 task 202107260820309976351_upload_0 0 on local 0</span><br></pre></td></tr></table></figure>
+然后发起http请求，endpoint是report。<br>流转流程同前文，调用链为 ControllerClient.report_task -&gt; fate_flow_server 通过flask -&gt; party_app.report_task() -&gt;   TaskController.update_task(task_info=task_info) -&gt; TaskController.update_task_status(task_info=task_info)</li>
+</ol>
+<p>在${job_log_dir}/fate_flow_audit.log 中的日志为<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:33,396] [90:139687957583680] - api_utils.py[line:122]: remote http api request: http://10.200.96.235:9380/v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/report</span><br><span class="line">[INFO] [2021-07-26 08:20:33,452] [90:139687957583680] - api_utils.py[line:129]: &#123;&quot;retcode&quot;:103,&quot;retmsg&quot;:&quot;update task status failed&quot;&#125;</span><br><span class="line"></span><br><span class="line">[INFO] [2021-07-26 08:20:33,452] [90:139687957583680] - api_utils.py[line:131]: remote http api response: /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/report &#123;&#x27;retcode&#x27;: 103, &#x27;retmsg&#x27;: &#x27;update task status failed&#x27;&#125;</span><br></pre></td></tr></table></figure><br>因为status一致，无法update，故failed.(同五中所述)</p>
+<p>在${job_log_dir}/fate_flow_schedule.log 中输出日志<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:33,404] [1:140259119585024] - job_saver.py[line:81]: try to update job 202107260820309976351 task 202107260820309976351_upload_0 0</span><br><span class="line">[INFO] [2021-07-26 08:20:33,422] [1:140259119585024] - job_saver.py[line:84]: job 202107260820309976351 task 202107260820309976351_upload_0 0 update successfully</span><br><span class="line">[INFO] [2021-07-26 08:20:33,429] [1:140259119585024] - job_saver.py[line:71]: try to update job 202107260820309976351 task 202107260820309976351_upload_0 0 status</span><br><span class="line">[INFO] [2021-07-26 08:20:33,438] [1:140259119585024] - job_saver.py[line:76]: update job 202107260820309976351 task 202107260820309976351_upload_0 0 status update does not take effect: &#123;&#x27;job_id&#x27;: &#x27;202107260820309976351&#x27;, &#x27;component_name&#x27;: &#x27;upload_0&#x27;, &#x27;task_id&#x27;: &#x27;202107260820309976351_upload_0&#x27;, &#x27;task_version&#x27;: &#x27;0&#x27;, &#x27;role&#x27;: &#x27;local&#x27;, &#x27;party_id&#x27;: &#x27;0&#x27;, &#x27;run_ip&#x27;: &#x27;10.200.96.235&#x27;, &#x27;run_pid&#x27;: 90, &#x27;party_status&#x27;: &#x27;running&#x27;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在${job_log_dir}/peewee.log中输出日志为<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:33,409] [1:140259119585024] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_job_id`, `t1`.`f_component_name`, `t1`.`f_task_id`, `t1`.`f_task_version`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_federated_mode`, `t1`.`f_federated_status_collect_type`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_run_on_this_party`, `t1`.`f_run_ip`, `t1`.`f_run_pid`, `t1`.`f_party_status`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_task` AS `t1` WHERE (((((`t1`.`f_job_id` = %s) AND (`t1`.`f_task_id` = %s)) AND (`t1`.`f_task_version` = %s)) AND (`t1`.`f_role` = %s)) AND (`t1`.`f_party_id` = %s))&#x27;, [&#x27;202107260820309976351&#x27;, &#x27;202107260820309976351_upload_0&#x27;, 0, &#x27;local&#x27;, &#x27;0&#x27;])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:33,416] [1:140259119585024] - peewee.py[line:2863]: (&#x27;UPDATE `t_task` SET `f_component_name` = %s, `f_run_ip` = %s, `f_run_pid` = %s WHERE (((((`t_task`.`f_job_id` = %s) AND (`t_task`.`f_task_id` = %s)) AND (`t_task`.`f_task_version` = %s)) AND (`t_task`.`f_role` = %s)) AND (`t_task`.`f_party_id` = %s))&#x27;, [&#x27;upload_0&#x27;, &#x27;10.200.96.235&#x27;, 90, &#x27;202107260820309976351&#x27;, &#x27;202107260820309976351_upload_0&#x27;, 0, &#x27;local&#x27;, &#x27;0&#x27;])</span><br><span class="line"></span><br><span class="line">[DEBUG] [2021-07-26 08:20:33,425] [1:140259119585024] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_job_id`, `t1`.`f_component_name`, `t1`.`f_task_id`, `t1`.`f_task_version`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_federated_mode`, `t1`.`f_federated_status_collect_type`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_run_on_this_party`, `t1`.`f_run_ip`, `t1`.`f_run_pid`, `t1`.`f_party_status`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_task` AS `t1` WHERE ((((`t1`.`f_task_id` = %s) AND (`t1`.`f_task_version` = %s)) AND (`t1`.`f_role` = %s)) AND (`t1`.`f_party_id` = %s))&#x27;, [&#x27;202107260820309976351_upload_0&#x27;, 0, &#x27;local&#x27;, &#x27;0&#x27;])</span><br><span class="line"></span><br><span class="line">[DEBUG] [2021-07-26 08:20:33,433] [1:140259119585024] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_job_id`, `t1`.`f_component_name`, `t1`.`f_task_id`, `t1`.`f_task_version`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_federated_mode`, `t1`.`f_federated_status_collect_type`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_run_on_this_party`, `t1`.`f_run_ip`, `t1`.`f_run_pid`, `t1`.`f_party_status`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_task` AS `t1` WHERE (((((`t1`.`f_job_id` = %s) AND (`t1`.`f_task_id` = %s)) AND (`t1`.`f_task_version` = %s)) AND (`t1`.`f_role` = %s)) AND (`t1`.`f_party_id` = %s))&#x27;, [&#x27;202107260820309976351&#x27;, &#x27;202107260820309976351_upload_0&#x27;, 0, &#x27;local&#x27;, &#x27;0&#x27;])</span><br><span class="line"></span><br><span class="line">[DEBUG] [2021-07-26 08:20:33,441] [1:140259119585024] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_job_id`, `t1`.`f_component_name`, `t1`.`f_task_id`, `t1`.`f_task_version`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_federated_mode`, `t1`.`f_federated_status_collect_type`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_run_on_this_party`, `t1`.`f_run_ip`, `t1`.`f_run_pid`, `t1`.`f_party_status`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_task` AS `t1` WHERE ((((`t1`.`f_task_id` = %s) AND (`t1`.`f_task_version` = %s)) AND (`t1`.`f_role` = %s)) AND (`t1`.`f_party_id` = %s))&#x27;, [&#x27;202107260820309976351_upload_0&#x27;, 0, &#x27;local&#x27;, &#x27;0&#x27;])</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li><p>task<em>executor.py：初始化环境变量，设置session<br>sess.init<em>federation 会调用federation/eggroll/_federation.py 的 __init</em></em>，调用如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:39,837] [90:139687957583680] - _federation.py[line:35]: [federation.eggroll]init federation: rp_session_id=202107260820309976351_upload_0_0_local_0, rs_session_id=202107260820309976351_upload_0_0, party=Party(role=local, party_id=0), proxy_endpoint=rollsite:9370</span><br><span class="line">[DEBUG] [2021-07-26 08:20:39,837] [90:139687957583680] - _federation.py[line:45]: [federation.eggroll]init federation context done</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>task_executor.py：开始run task<br>先在${job_log_dir}/${role}/${party}/DEBUG.log 打出日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:39,837] [90:139687957583680] - task_executor.py[line:156]: Run 202107260820309976351 upload_0 202107260820309976351_upload_0 local 0 task</span><br><span class="line">[INFO] [2021-07-26 08:20:39,838] [90:139687957583680] - task_executor.py[line:157]: Component parameters on party &#123;&#x27;UploadParam&#x27;: &#123;&#x27;file&#x27;: &#x27;/data/projects/fate/jobs/202107260820309976351/fate_upload_tmp/breast_hetero_guest.csv&#x27;, &#x27;head&#x27;: 1, &#x27;id_delimiter&#x27;: &#x27;,&#x27;, &#x27;partition&#x27;: 1, &#x27;namespace&#x27;: &#x27;cl&#x27;, &#x27;name&#x27;: &#x27;hetero_guest&#x27;, &#x27;storage_engine&#x27;: &#x27;&#x27;, &#x27;storage_address&#x27;: None, &#x27;destroy&#x27;: False&#125;, &#x27;initiator&#x27;: &#123;&#x27;role&#x27;: &#x27;local&#x27;, &#x27;party_id&#x27;: 0&#125;, &#x27;job_parameters&#x27;: &#123;&#x27;job_type&#x27;: &#x27;train&#x27;, &#x27;work_mode&#x27;: 1, &#x27;backend&#x27;: 0, &#x27;computing_engine&#x27;: &#x27;EGGROLL&#x27;, &#x27;federation_engine&#x27;: &#x27;EGGROLL&#x27;, &#x27;storage_engine&#x27;: &#x27;EGGROLL&#x27;, &#x27;engines_address&#x27;: &#123;&#x27;computing&#x27;: &#123;&#x27;cores_per_node&#x27;: 20, &#x27;nodes&#x27;: 1&#125;, &#x27;federation&#x27;: &#123;&#x27;host&#x27;: &#x27;rollsite&#x27;, &#x27;port&#x27;: 9370&#125;, &#x27;storage&#x27;: &#123;&#x27;cores_per_node&#x27;: 20, &#x27;nodes&#x27;: 1&#125;&#125;, &#x27;federated_mode&#x27;: &#x27;MULTIPLE&#x27;, &#x27;task_parallelism&#x27;: 1, &#x27;computing_partitions&#x27;: 4, &#x27;federated_status_collect_type&#x27;: &#x27;PULL&#x27;, &#x27;model_id&#x27;: &#x27;local-0#model&#x27;, &#x27;model_version&#x27;: &#x27;202107260820309976351&#x27;, &#x27;eggroll_run&#x27;: &#123;&#x27;eggroll.session.processors.per.node&#x27;: 4&#125;, &#x27;spark_run&#x27;: &#123;&#125;, &#x27;rabbitmq_run&#x27;: &#123;&#125;, &#x27;adaptation_parameters&#x27;: &#123;&#x27;task_nodes&#x27;: 1, &#x27;task_cores_per_node&#x27;: 4, &#x27;task_memory_per_node&#x27;: 0, &#x27;request_task_cores&#x27;: 4, &#x27;if_initiator_baseline&#x27;: False&#125;&#125;, &#x27;role&#x27;: &#123;&#x27;local&#x27;: [0]&#125;, &#x27;component_parameters&#x27;: &#123;&#x27;role&#x27;: &#123;&#x27;local&#x27;: &#123;&#x27;0&#x27;: &#123;&#x27;upload_0&#x27;: &#123;&#x27;name&#x27;: &#x27;hetero_guest&#x27;, &#x27;head&#x27;: 1, &#x27;file&#x27;: &#x27;/data/projects/fate/jobs/202107260820309976351/fate_upload_tmp/breast_hetero_guest.csv&#x27;, &#x27;partition&#x27;: 1, &#x27;namespace&#x27;: &#x27;cl&#x27;, &#x27;destroy&#x27;: False&#125;&#125;&#125;&#125;&#125;, &#x27;dsl_version&#x27;: 2, &#x27;local&#x27;: &#123;&#x27;role&#x27;: &#x27;local&#x27;, &#x27;party_id&#x27;: 0&#125;, &#x27;CodePath&#x27;: &#x27;fate_flow/components/upload.py/Upload&#x27;, &#x27;module&#x27;: &#x27;Upload&#x27;, &#x27;output_data_name&#x27;: None&#125;</span><br><span class="line">[INFO] [2021-07-26 08:20:39,838] [90:139687957583680] - task_executor.py[line:158]: Task input dsl &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>然后获取 task_run_args，配置run_object，后执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">profile.profile_start()</span><br><span class="line">run_object.run(component_parameters_on_party, task_run_args)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>这里的run_object 是 Upload，run_object.run 即调用Upload.run()</p>
+<ol>
+<li>upload.py：执行run<br>根据 component_parameters 获取参数。<br>在${job_log_dir}/${role}/${party}/DEBUG.log 打出日志<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:39,883] [90:139687957583680] - upload.py[line:41]: &#123;&#x27;file&#x27;: &#x27;/data/projects/fate/jobs/202107260820309976351/fate_upload_tmp/breast_hetero_guest.csv&#x27;, &#x27;head&#x27;: 1, &#x27;id_delimiter&#x27;: &#x27;,&#x27;, &#x27;partition&#x27;: 1, &#x27;namespace&#x27;: &#x27;cl&#x27;, &#x27;name&#x27;: &#x27;hetero_guest&#x27;, &#x27;storage_engine&#x27;: &#x27;&#x27;, &#x27;storage_address&#x27;: None, &#x27;destroy&#x27;: False&#125;</span><br><span class="line">[INFO] [2021-07-26 08:20:39,883] [90:139687957583680] - upload.py[line:42]: &#123;&#x27;job_parameters&#x27;: &lt;fate_flow.entity.types.RunParameters object at 0x7f0b81a98b38&gt;&#125;</span><br></pre></td></tr></table></figure>
+根据参数，设置各变量。</li>
+</ol>
+<p>build session<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:39,883] [90:139687957583680] - pool.py[line:129]: No connection available in pool.</span><br><span class="line">[DEBUG] [2021-07-26 08:20:39,889] [90:139687957583680] - pool.py[line:158]: Created new connection 139687331472832.</span><br><span class="line">[DEBUG] [2021-07-26 08:20:39,891] [90:139687957583680] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_date`, `t1`.`f_update_date`, `t1`.`f_name`, `t1`.`f_namespace`, `t1`.`f_address`, `t1`.`f_engine`, `t1`.`f_type`, `t1`.`f_options`, `t1`.`f_partitions`, `t1`.`f_id_delimiter`, `t1`.`f_in_serialized`, `t1`.`f_have_head`, `t1`.`f_schema`, `t1`.`f_count`, `t1`.`f_part_of_data`, `t1`.`f_description`, `t1`.`f_create_time`, `t1`.`f_update_time` FROM `t_storage_table_meta` AS `t1` WHERE ((`t1`.`f_name` = %s) AND (`t1`.`f_namespace` = %s))&#x27;, [&#x27;hetero_guest&#x27;, &#x27;cl&#x27;])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:39,894] [90:139687957583680] - pool.py[line:185]: Returning 139687331472832 to pool.</span><br><span class="line">[DEBUG] [2021-07-26 08:20:39,966] [90:139687957583680] - peewee.py[line:2863]: (&#x27;INSERT INTO `t_session_record` (`f_session_id`, `f_create_date`, `f_update_time`, `f_update_date`, `f_engine_name`, `f_engine_type`, `f_engine_address`, `f_create_time`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)&#x27;, [&#x27;202107260820309976351_upload_0_0_local_0_storage_5cbb3a88edea11ebbccccaf5cc2d708a&#x27;, datetime.datetime(2021, 7, 26, 8, 20, 39), 1627287639962, datetime.datetime(2021, 7, 26, 8, 20, 39), &#x27;STANDALONE&#x27;, &#x27;storage&#x27;, &#x27;&#123;&#125;&#x27;, 1627287639962])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:39,973] [90:139687957583680] - _session.py[line:144]: save session 202107260820309976351_upload_0_0_local_0_storage_5cbb3a88edea11ebbccccaf5cc2d708a record</span><br><span class="line">[DEBUG] [2021-07-26 08:20:39,974] [90:139687957583680] - pool.py[line:185]: Returning 139687331472832 to pool.</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:39,975] [90:139687957583680] - peewee.py[line:2863]: (&#x27;DELETE FROM `t_session_record` WHERE (`t_session_record`.`f_session_id` = %s)&#x27;, [&#x27;202107260820309976351_upload_0_0_local_0_storage_5cbb3a88edea11ebbccccaf5cc2d708a&#x27;])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:39,981] [90:139687957583680] - _session.py[line:153]: delete session 202107260820309976351_upload_0_0_local_0_storage_5cbb3a88edea11ebbccccaf5cc2d708a record</span><br><span class="line">[DEBUG] [2021-07-26 08:20:39,981] [90:139687957583680] - pool.py[line:185]: Returning 139687331472832 to pool.</span><br><span class="line">[DEBUG] [2021-07-26 08:20:39,985] [90:139687957583680] - peewee.py[line:2863]: (&#x27;INSERT INTO `t_session_record` (`f_session_id`, `f_create_date`, `f_update_time`, `f_update_date`, `f_engine_name`, `f_engine_type`, `f_engine_address`, `f_create_time`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)&#x27;, [&#x27;202107260820309976351_upload_0_0_local_0_storage_5cca2ef8edea11ebbccccaf5cc2d708a&#x27;, datetime.datetime(2021, 7, 26, 8, 20, 39), 1627287639985, datetime.datetime(2021, 7, 26, 8, 20, 39), &#x27;EGGROLL&#x27;, &#x27;storage&#x27;, &#x27;&#123;&#125;&#x27;, 1627287639985])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:39,989] [90:139687957583680] - _session.py[line:144]: save session 202107260820309976351_upload_0_0_local_0_storage_5cca2ef8edea11ebbccccaf5cc2d708a record</span><br><span class="line">[DEBUG] [2021-07-26 08:20:39,989] [90:139687957583680] - pool.py[line:185]: Returning 139687331472832 to pool.</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if table:</span><br><span class="line">    LOGGER.info(f&quot;destroy table name: &#123;name&#125; namespace: &#123;namespace&#125; engine: &#123;table.get_engine()&#125;&quot;)</span><br><span class="line">    table.destroy()</span><br><span class="line">else:</span><br><span class="line">    LOGGER.info(f&quot;can not found table name: &#123;name&#125; namespace: &#123;namespace&#125;, pass destroy&quot;)</span><br></pre></td></tr></table></figure>
+<p><strong>注：如果有destroy 参数，会调用table.destroy</strong><br>更新upload的address,在${job_log_dir}/${role}/${party}/DEBUG.log 打出日志<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:41,836] [90:139687957583680] - upload.py[line:95]: upload to EGGROLL storage, address: &#123;&#x27;cores_per_node&#x27;: 20, &#x27;nodes&#x27;: 1, &#x27;name&#x27;: &#x27;hetero_guest&#x27;, &#x27;namespace&#x27;: &#x27;cl&#x27;, &#x27;storage_type&#x27;: &#x27;LMDB&#x27;&#125;</span><br></pre></td></tr></table></figure><br>这个address 就是LMDB 的存储位置<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">address = storage.StorageTableMeta.create_address(storage_engine=storage_engine, address_dict=address_dict)</span><br><span class="line">self.parameters[&quot;partitions&quot;] = partitions</span><br><span class="line">self.parameters[&quot;name&quot;] = name</span><br><span class="line">self.table = storage_session.create_table(address=address, **self.parameters)</span><br><span class="line">data_table_count = self.save_data_table(job_id, name, namespace, head)</span><br><span class="line">self.table.get_meta().update_metas(in_serialized=True)</span><br></pre></td></tr></table></figure><br>如果是使用local 模式调试，在项目目录下会生成data目录。<br><img src="/image/fate/02d76fd6588e43c39d28b9b6bd8484e2.png" alt="在这里插入图片描述"></p>
+<p>如果是kubeFATE 部署，该数据位于 nodemanager 的 /data/projects/fate/eggroll/data/LMDB 目录下<br><img src="/image/fate/15bb01d3c0854489a5f209ec5736ac4b.png" alt="在这里插入图片描述"></p>
+<p>依次为创建元数据，建表，保存数据，更新元数据</p>
+<ol>
+<li>upload.py：执行save_data_table ，<br>获取文件schma。<br>按最大文件块读取（    lines = fin.readlines(self.MAX_BYTES)），保存至LMDB<br>进度计算如下：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">save_progress = lines_count/input_feature_count*100//1</span><br></pre></td></tr></table></figure>
+故而这里的进度和MAX_BYTES 有关。</li>
+</ol>
+<ol>
+<li>upload.py： 调用ControllerClient.update_job(job_info=job_info) 更新task 状态（主要是进度），control_client.update_job<br>流转流程同前文，调用链为 ControllerClient.update_job -&gt; fate_flow_server 通过flask -&gt; party_app.update_task() -&gt;   TaskController.update_task(task_info=task_info) </li>
+</ol>
+<p>输出日志</p>
+<p>${job_log_dir}/${role}/${party}/DEBUG.log<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:41,942] [90:139687957583680] - control_client.py[line:26]: request update job 202107260820309976351 on local 0</span><br></pre></td></tr></table></figure></p>
+<p>在${job_log_dir}/fate_flow_audit.log 中的日志为<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:41,942] [90:139687957583680] - api_utils.py[line:122]: remote http api request: http://10.200.96.235:9380/v1/party/202107260820309976351/local/0/update</span><br><span class="line">[INFO] [2021-07-26 08:20:41,966] [90:139687957583680] - api_utils.py[line:129]: &#123;&quot;retcode&quot;:0,&quot;retmsg&quot;:&quot;success&quot;&#125;</span><br><span class="line"></span><br><span class="line">[INFO] [2021-07-26 08:20:41,966] [90:139687957583680] - api_utils.py[line:131]: remote http api response: /v1/party/202107260820309976351/local/0/update &#123;&#x27;retcode&#x27;: 0, &#x27;retmsg&#x27;: &#x27;success&#x27;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在${job_log_dir}/fate_flow_schedule.log 中输出日志<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:41,950] [1:140259119585024] - job_saver.py[line:61]: try to update job 202107260820309976351</span><br><span class="line">[INFO] [2021-07-26 08:20:41,963] [1:140259119585024] - job_saver.py[line:64]: job 202107260820309976351 update successfully: &#123;&#x27;progress&#x27;: 100.0, &#x27;job_id&#x27;: &#x27;202107260820309976351&#x27;, &#x27;role&#x27;: &#x27;local&#x27;, &#x27;party_id&#x27;: &#x27;0&#x27;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在${job_log_dir}/peewee.log中输出日志为<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:41,954] [1:140259119585024] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_time`, `t1`.`f_create_date`, `t1`.`f_update_time`, `t1`.`f_update_date`, `t1`.`f_user_id`, `t1`.`f_job_id`, `t1`.`f_name`, `t1`.`f_description`, `t1`.`f_tag`, `t1`.`f_dsl`, `t1`.`f_runtime_conf`, `t1`.`f_runtime_conf_on_party`, `t1`.`f_train_runtime_conf`, `t1`.`f_roles`, `t1`.`f_work_mode`, `t1`.`f_initiator_role`, `t1`.`f_initiator_party_id`, `t1`.`f_status`, `t1`.`f_status_code`, `t1`.`f_role`, `t1`.`f_party_id`, `t1`.`f_is_initiator`, `t1`.`f_progress`, `t1`.`f_ready_signal`, `t1`.`f_ready_time`, `t1`.`f_cancel_signal`, `t1`.`f_cancel_time`, `t1`.`f_rerun_signal`, `t1`.`f_end_scheduling_updates`, `t1`.`f_engine_name`, `t1`.`f_engine_type`, `t1`.`f_cores`, `t1`.`f_memory`, `t1`.`f_remaining_cores`, `t1`.`f_remaining_memory`, `t1`.`f_resource_in_use`, `t1`.`f_apply_resource_time`, `t1`.`f_return_resource_time`, `t1`.`f_start_time`, `t1`.`f_start_date`, `t1`.`f_end_time`, `t1`.`f_end_date`, `t1`.`f_elapsed` FROM `t_job` AS `t1` WHERE (((`t1`.`f_job_id` = %s) AND (`t1`.`f_role` = %s)) AND (`t1`.`f_party_id` = %s))&#x27;, [&#x27;202107260820309976351&#x27;, &#x27;local&#x27;, &#x27;0&#x27;])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:41,960] [1:140259119585024] - peewee.py[line:2863]: (&#x27;UPDATE `t_job` SET `f_progress` = %s WHERE ((((`t_job`.`f_job_id` = %s) AND (`t_job`.`f_role` = %s)) AND (`t_job`.`f_party_id` = %s)) AND (`t_job`.`f_progress` &lt;= %s))&#x27;, [100, &#x27;202107260820309976351&#x27;, &#x27;local&#x27;, &#x27;0&#x27;, 100])</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>upload.py： 回到9，继续保存文件，将data存入LMDB。当所有文件都存入完毕，更新metadata，更新tracker<br>在task_executor.py 中是<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run_object.set_tracker(tracker=tracker_client)</span><br></pre></td></tr></table></figure>
+故而这里self.tracker 调用的是TrackerClient<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">self.tracker.log_output_data_info(data_name=&#x27;upload&#x27;,</span><br><span class="line">                                  table_namespace=dst_table_namespace,</span><br><span class="line">                                  table_name=dst_table_name)</span><br><span class="line"></span><br><span class="line">self.tracker.log_metric_data(metric_namespace=&quot;upload&quot;,</span><br><span class="line">                             metric_name=&quot;data_access&quot;,</span><br><span class="line">                             metrics=[Metric(&quot;count&quot;, table_count)])</span><br><span class="line">self.tracker.set_metric_meta(metric_namespace=&quot;upload&quot;,</span><br><span class="line">                             metric_name=&quot;data_access&quot;,</span><br><span class="line">                             metric_meta=MetricMeta(name=&#x27;upload&#x27;, metric_type=&#x27;UPLOAD&#x27;))</span><br></pre></td></tr></table></figure>
+对应的分别是log_output_data_DEBUG.log_metric_data，set_metric_meta三个方法<br>输出日志${job_log_dir}/${role}/${party}/DEBUG.log <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:42,704] [90:139687957583680] - tracker_client.py[line:127]: Request save job 202107260820309976351 task 202107260820309976351_upload_0 0 on local 0 data upload info</span><br><span class="line">[INFO] [2021-07-26 08:20:43,044] [1:140259119585024] - job_tracker.py[line:97]: save job 202107260820309976351 component upload_0 on local 0 upload data_access metric meta</span><br><span class="line">[INFO] [2021-07-26 08:20:44,838] [90:139687957583680] - job_tracker.py[line:159]: task id 202107260820309976351_upload_0 output data table is none</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+发起http请求，对应的${job_log_dir}/fate_flow_audit.log 中的日志为<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:42,704] [90:139687957583680] - api_utils.py[line:122]: remote http api request: http://10.200.96.235:9380/v1/tracker/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/output_data_info/save</span><br><span class="line">[INFO] [2021-07-26 08:20:43,009] [90:139687957583680] - api_utils.py[line:129]: &#123;&quot;retcode&quot;:0,&quot;retmsg&quot;:&quot;success&quot;&#125;</span><br><span class="line"></span><br><span class="line">[INFO] [2021-07-26 08:20:43,010] [90:139687957583680] - api_utils.py[line:131]: remote http api response: /v1/tracker/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/output_data_info/save &#123;&#x27;retcode&#x27;: 0, &#x27;retmsg&#x27;: &#x27;success&#x27;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[INFO] [2021-07-26 08:20:43,011] [90:139687957583680] - api_utils.py[line:122]: remote http api request: http://10.200.96.235:9380/v1/tracker/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/metric_data/save</span><br><span class="line">[INFO] [2021-07-26 08:20:43,036] [90:139687957583680] - api_utils.py[line:129]: &#123;&quot;retcode&quot;:0,&quot;retmsg&quot;:&quot;success&quot;&#125;</span><br><span class="line"></span><br><span class="line">[INFO] [2021-07-26 08:20:43,036] [90:139687957583680] - api_utils.py[line:131]: remote http api response: /v1/tracker/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/metric_data/save &#123;&#x27;retcode&#x27;: 0, &#x27;retmsg&#x27;: &#x27;success&#x27;&#125;</span><br><span class="line"></span><br><span class="line">[INFO] [2021-07-26 08:20:43,037] [90:139687957583680] - api_utils.py[line:122]: remote http api request: http://10.200.96.235:9380/v1/tracker/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/metric_meta/save</span><br><span class="line">[INFO] [2021-07-26 08:20:43,056] [90:139687957583680] - api_utils.py[line:129]: &#123;&quot;retcode&quot;:0,&quot;retmsg&quot;:&quot;success&quot;&#125;</span><br><span class="line"></span><br><span class="line">[INFO] [2021-07-26 08:20:43,056] [90:139687957583680] - api_utils.py[line:131]: remote http api response: /v1/tracker/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/metric_meta/save &#123;&#x27;retcode&#x27;: 0, &#x27;retmsg&#x27;: &#x27;success&#x27;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>对应的调用链是 TrackerClient.log_output_data_info() -&gt; fate_flow_server -&gt; tracker_app -&gt; job_tracker<br>在${job_log_dir}/fate_flow_schedule.log 中输出日志<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:43,018] [1:140259119585024] - job_tracker.py[line:74]: save job 202107260820309976351 component upload_0 on local 0 upload data_access metric data</span><br><span class="line">[INFO] [2021-07-26 08:20:43,044] [1:140259119585024] - job_tracker.py[line:97]: save job 202107260820309976351 component upload_0 on local 0 upload data_access metric meta</span><br><span class="line">[INFO] [2021-07-26 08:20:44,838] [90:139687957583680] - job_tracker.py[line:159]: task id 202107260820309976351_upload_0 output data table is none</span><br><span class="line"></span><br></pre></td></tr></table></figure><br>save完毕，返回table_count。</p>
+<ol>
+<li>upload.py： 打印完成日志，并清理临时文件，输出统计信息<br>${job_log_dir}/${role}/${party}/DEBUG.log <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:44,822] [90:139687957583680] - upload.py[line:102]: ------------load data finish!-----------------</span><br><span class="line">[INFO] [2021-07-26 08:20:44,822] [90:139687957583680] - upload.py[line:106]: remove tmp upload file</span><br><span class="line">[INFO] [2021-07-26 08:20:44,823] [90:139687957583680] - upload.py[line:107]: /data/projects/fate/jobs/202107260820309976351/fate_upload_tmp</span><br><span class="line">[INFO] [2021-07-26 08:20:44,823] [90:139687957583680] - upload.py[line:111]: file: /data/projects/fate/jobs/202107260820309976351/fate_upload_tmp/breast_hetero_guest.csv</span><br><span class="line">[INFO] [2021-07-26 08:20:44,824] [90:139687957583680] - upload.py[line:112]: total data_count: 569</span><br><span class="line">[INFO] [2021-07-26 08:20:44,824] [90:139687957583680] - upload.py[line:113]: table name: hetero_guest, table namespace: cl</span><br></pre></td></tr></table></figure></li>
+<li><p>upload.py：回到8 ，执行profile.profile_ends()<br>profile.profile_ends() 会打出${task_log_dir}/PROFILING.log中的日志（分别收集到INFO，DEBUG中）<br>${job_log_dir}/${role}/${party}/DEBUG.log </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:44,837] [90:139687957583680] - profile.py[line:249]: </span><br><span class="line">Computing:</span><br><span class="line">+----------+------------------------------------------+</span><br><span class="line">| function |                                          |</span><br><span class="line">+----------+------------------------------------------+</span><br><span class="line">|  total   | n=0, sum=0.0000, mean=0.0000, max=0.0000 |</span><br><span class="line">+----------+------------------------------------------+</span><br><span class="line"></span><br><span class="line">Federation:</span><br><span class="line">+--------+------------------------------------------+</span><br><span class="line">|  get   |                                         |</span><br><span class="line">+--------+------------------------------------------+</span><br><span class="line">| remote |                                          |</span><br><span class="line">+--------+------------------------------------------+</span><br><span class="line">| total  | n=0, sum=0.0000, mean=0.0000, max=0.0000 |</span><br><span class="line">+--------+------------------------------------------+</span><br><span class="line"></span><br><span class="line">[DEBUG] [2021-07-26 08:20:44,838] [90:139687957583680] - profile.py[line:250]: </span><br><span class="line">Detailed Computing:</span><br><span class="line">+-------+------------------------------------------+</span><br><span class="line">| stack |                                          |</span><br><span class="line">+-------+------------------------------------------+</span><br><span class="line">| total | n=0, sum=0.0000, mean=0.0000, max=0.0000 |</span><br><span class="line">+-------+------------------------------------------+</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>task_executor.py：执行完毕之后，再save_data ，save_out_model，然后调用report_task_update_to_driver。同4、5。再输出统计信息<br>${job_log_dir}/${role}/${party}/DEBUG.log </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:44,838] [90:139687957583680] - task_executor.py[line:318]: report task 202107260820309976351_upload_0 0 local 0 to driver</span><br><span class="line">[INFO] [2021-07-26 08:20:44,838] [90:139687957583680] - control_client.py[line:42]: request update job 202107260820309976351 task 202107260820309976351_upload_0 0 on local 0</span><br><span class="line">[INFO] [2021-07-26 08:20:44,938] [90:139687957583680] - task_executor.py[line:207]: task 202107260820309976351_upload_0 local 0 start time: 2021-07-26 08:20:33</span><br><span class="line">[INFO] [2021-07-26 08:20:44,939] [90:139687957583680] - task_executor.py[line:209]: task 202107260820309976351_upload_0 local 0 end time: 2021-07-26 08:20:44</span><br><span class="line">[INFO] [2021-07-26 08:20:44,939] [90:139687957583680] - task_executor.py[line:211]: task 202107260820309976351_upload_0 local 0 takes 11.447s</span><br><span class="line">[INFO] [2021-07-26 08:20:44,939] [90:139687957583680] - task_executor.py[line:214]: Finish 202107260820309976351 upload_0 202107260820309976351_upload_0 0 local 0 task success</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>对应${job_log_dir}/fate_flow_schedule.log 中输出日志<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:44,844] [1:140259119585024] - job_saver.py[line:81]: try to update job 202107260820309976351 task 202107260820309976351_upload_0 0</span><br><span class="line">[INFO] [2021-07-26 08:20:44,864] [1:140259119585024] - job_saver.py[line:84]: job 202107260820309976351 task 202107260820309976351_upload_0 0 update successfully</span><br><span class="line">[INFO] [2021-07-26 08:20:44,873] [1:140259119585024] - job_saver.py[line:71]: try to update job 202107260820309976351 task 202107260820309976351_upload_0 0 status</span><br><span class="line">[INFO] [2021-07-26 08:20:44,908] [1:140259119585024] - job_saver.py[line:74]: update job 202107260820309976351 task 202107260820309976351_upload_0 0 status successfully: &#123;&#x27;job_id&#x27;: &#x27;202107260820309976351&#x27;, &#x27;component_name&#x27;: &#x27;upload_0&#x27;, &#x27;task_id&#x27;: &#x27;202107260820309976351_upload_0&#x27;, &#x27;task_version&#x27;: &#x27;0&#x27;, &#x27;role&#x27;: &#x27;local&#x27;, &#x27;party_id&#x27;: &#x27;0&#x27;, &#x27;run_ip&#x27;: &#x27;10.200.96.235&#x27;, &#x27;run_pid&#x27;: 90, &#x27;party_status&#x27;: &#x27;success&#x27;, &#x27;end_time&#x27;: 1627287644838, &#x27;elapsed&#x27;: 11447&#125;</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>task_executor.py：TaskExecutor.run_task()执行完毕，执行 TaskExecutor.report_task_update_to_driver(task_info=task_info)<br>${job_log_dir}/${role}/${party}/DEBUG.log <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:44,940] [90:139687957583680] - task_executor.py[line:318]: report task 202107260820309976351_upload_0 0 local 0 to driver</span><br><span class="line">[INFO] [2021-07-26 08:20:44,940] [90:139687957583680] - control_client.py[line:42]: request update job 202107260820309976351 task 202107260820309976351_upload_0 0 on local 0</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>对应${job_log_dir}/fate_flow_schedule.log 中输出日志<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:44,947] [1:140259119585024] - job_saver.py[line:81]: try to update job 202107260820309976351 task 202107260820309976351_upload_0 0</span><br><span class="line">[WARNING] [2021-07-26 08:20:44,972] [1:140259119585024] - job_saver.py[line:86]: job 202107260820309976351 task 202107260820309976351_upload_0 0 update does not take effect</span><br><span class="line">[INFO] [2021-07-26 08:20:44,996] [1:140259119585024] - job_saver.py[line:71]: try to update job 202107260820309976351 task 202107260820309976351_upload_0 0 status</span><br><span class="line">[INFO] [2021-07-26 08:20:45,015] [1:140259119585024] - job_saver.py[line:76]: update job 202107260820309976351 task 202107260820309976351_upload_0 0 status update does not take effect: &#123;&#x27;job_id&#x27;: &#x27;202107260820309976351&#x27;, &#x27;component_name&#x27;: &#x27;upload_0&#x27;, &#x27;task_id&#x27;: &#x27;202107260820309976351_upload_0&#x27;, &#x27;task_version&#x27;: &#x27;0&#x27;, &#x27;role&#x27;: &#x27;local&#x27;, &#x27;party_id&#x27;: &#x27;0&#x27;, &#x27;run_ip&#x27;: &#x27;10.200.96.235&#x27;, &#x27;run_pid&#x27;: 90, &#x27;party_status&#x27;: &#x27;success&#x27;, &#x27;end_time&#x27;: 1627287644838, &#x27;elapsed&#x27;: 11447&#125;</span><br></pre></td></tr></table></figure><br>注：这里的日志会和dag_scheduler 轮询的日志混在一起。区别就是 这个部分有run_pid。</p>
+<ol>
+<li>返回执行结果，对应1<br>至此，整个task 执行完毕。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FATE/" rel="tag"># FATE</a>
+              <a href="/tags/FedAI/" rel="tag"># FedAI</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-log-6-upload-job-schedule/" rel="prev" title="FATE学习：跟着日志读源码（六）upload任务task schedule阶段">
+      <i class="fa fa-chevron-left"></i> FATE学习：跟着日志读源码（六）upload任务task schedule阶段
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-log-8-upload-task-finish/" rel="next" title="FATE学习：跟着日志读源码（八）upload任务task finsih阶段">
+      FATE学习：跟着日志读源码（八）upload任务task finsih阶段 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%BC%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E7%BB%86%E8%8A%82"><span class="nav-number">2.</span> <span class="nav-text">执行细节</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">喵十八</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2fbc96c0bbe149b498b5',
+      clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+      repo        : 'Yao544303.github.io',
+      owner       : 'Yao544303',
+      admin       : ['Yao544303'],
+      id          : '256d976777f4652de9d02f4c9f0913fe',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

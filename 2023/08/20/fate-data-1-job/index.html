@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0-rc2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="综述在创建job 、task 和 执行task的过程中，将相关配置信息、pid信息等落盘。目录位于 &#x2F;data&#x2F;projects&#x2F;fate&#x2F;jobs&#x2F;${jobid} 下主要包括3类：  pid：用于记录执行各个task的进程号的文件。 配置文件：针对输入的DSL 文件，和Run Time Conf文件，结合当前FATE部署时的配置参数，会生成任务运行时最终使用的配置文件。 日志目录结构12345">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FATE学习：运行过程中产生的数据（一） job部分">
+<meta property="og:url" content="http://yoursite.com/2023/08/20/fate-data-1-job/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="综述在创建job 、task 和 执行task的过程中，将相关配置信息、pid信息等落盘。目录位于 &#x2F;data&#x2F;projects&#x2F;fate&#x2F;jobs&#x2F;${jobid} 下主要包括3类：  pid：用于记录执行各个task的进程号的文件。 配置文件：针对输入的DSL 文件，和Run Time Conf文件，结合当前FATE部署时的配置参数，会生成任务运行时最终使用的配置文件。 日志目录结构12345">
+<meta property="og:locale">
+<meta property="article:published_time" content="2023-08-20T05:43:54.000Z">
+<meta property="article:modified_time" content="2023-08-20T05:47:31.354Z">
+<meta property="article:author" content="喵十八">
+<meta property="article:tag" content="FATE">
+<meta property="article:tag" content="FedAI">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2023/08/20/fate-data-1-job/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>FATE学习：运行过程中产生的数据（一） job部分 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">喵十八の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fate-data-1-job/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FATE学习：运行过程中产生的数据（一） job部分
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-08-20 13:43:54 / Modified: 13:47:31" itemprop="dateCreated datePublished" datetime="2023-08-20T13:43:54+08:00">2023-08-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FATE/" itemprop="url" rel="index"><span itemprop="name">FATE</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>在创建job 、task 和 执行task的过程中，将相关配置信息、pid信息等落盘。<br>目录位于 /data/projects/fate/jobs/${jobid} 下<br>主要包括3类：</p>
+<ul>
+<li>pid：用于记录执行各个task的进程号的文件。</li>
+<li>配置文件：针对输入的DSL 文件，和Run Time Conf文件，结合当前FATE部署时的配置参数，会生成任务运行时最终使用的配置文件。</li>
+<li>日志<h1 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">|-- job_dsl.json： 结合输入的DSL 文件 和 默认配置参数生成。</span><br><span class="line">|-- job_runtime_conf.json：结合输入的 Run Time Conf 和默认配置参数生成。</span><br><span class="line">|-- pipeline_dsl.json：在启用pipeline 的情况下，会有值，否则为空。</span><br><span class="line">|-- train_runtime_conf.json：在predict 时会有值，即已经训练好的模型，否则为空。</span><br><span class="line">|-- $&#123;role&#125;</span><br><span class="line">|   |-- job_runtime_on_party_conf.json：当前paryty 上的配置文件。</span><br><span class="line">|   |--  $&#123;party&#125;</span><br><span class="line">|       |-- $&#123;conpoment&#125; </span><br><span class="line">|           |-- $&#123;session_stop&#125;</span><br><span class="line">|               |-- pid：记录结束task的进程的进程号</span><br><span class="line">|               |-- std.log：相关日志</span><br><span class="line">|           |-- $&#123;taskid&#125;</span><br><span class="line">|               |-- $&#123;partty&#125;</span><br><span class="line">|                   |-- pid： 记录执行当前task的进程的进程号</span><br><span class="line">|                   |-- task_parameters.json：记录当前task 的参数。</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="upload-任务为例"><a href="#upload-任务为例" class="headerlink" title="upload 任务为例"></a>upload 任务为例</h2><h3 id="job-dsl-json"><a href="#job-dsl-json" class="headerlink" title="job_dsl.json"></a>job_dsl.json</h3><p>upload 无输入的dsl，因而job_dsl.json 就只有默认的几个配置参数<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;components&quot;: &#123;</span><br><span class="line">        &quot;upload_0&quot;: &#123;</span><br><span class="line">            &quot;module&quot;: &quot;Upload&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="job-runtime-conf-json"><a href="#job-runtime-conf-json" class="headerlink" title="job_runtime_conf.json"></a>job_runtime_conf.json</h3><p>输入<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;file&quot;: &quot;/data/projects/fate/python/cl/fc/data/predict_data/20210902/bgame4455_20210902_part.csv&quot;, </span><br><span class="line">    &quot;head&quot;: 1, </span><br><span class="line">    &quot;partition&quot;: 1, </span><br><span class="line">    &quot;work_mode&quot;: 1, </span><br><span class="line">    &quot;table_name&quot;: &quot;bgame4455_20210902_part&quot;, </span><br><span class="line">    &quot;namespace&quot;: &quot;cl&quot;, </span><br><span class="line">    &quot;count&quot;: 1035833</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>job_runtime_conf.json<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;initiator&quot;: &#123;</span><br><span class="line">        &quot;role&quot;: &quot;local&quot;,</span><br><span class="line">        &quot;party_id&quot;: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;job_parameters&quot;: &#123;</span><br><span class="line">        &quot;common&quot;: &#123;</span><br><span class="line">            &quot;job_type&quot;: &quot;train&quot;,</span><br><span class="line">            &quot;work_mode&quot;: 1,</span><br><span class="line">            &quot;backend&quot;: 0,</span><br><span class="line">            &quot;computing_engine&quot;: &quot;EGGROLL&quot;,</span><br><span class="line">            &quot;federation_engine&quot;: &quot;EGGROLL&quot;,</span><br><span class="line">            &quot;storage_engine&quot;: &quot;EGGROLL&quot;,</span><br><span class="line">            &quot;engines_address&quot;: &#123;&#125;,</span><br><span class="line">            &quot;federated_mode&quot;: &quot;MULTIPLE&quot;,</span><br><span class="line">            &quot;task_parallelism&quot;: 1,</span><br><span class="line">            &quot;computing_partitions&quot;: 4,</span><br><span class="line">            &quot;federated_status_collect_type&quot;: &quot;PULL&quot;,</span><br><span class="line">            &quot;model_id&quot;: &quot;local-0#model&quot;,</span><br><span class="line">            &quot;model_version&quot;: &quot;202109030845027808051&quot;,</span><br><span class="line">            &quot;eggroll_run&quot;: &#123;&#125;,</span><br><span class="line">            &quot;spark_run&quot;: &#123;&#125;,</span><br><span class="line">            &quot;rabbitmq_run&quot;: &#123;&#125;,</span><br><span class="line">            &quot;adaptation_parameters&quot;: &#123;</span><br><span class="line">                &quot;task_nodes&quot;: 1,</span><br><span class="line">                &quot;task_cores_per_node&quot;: 4,</span><br><span class="line">                &quot;task_memory_per_node&quot;: 0,</span><br><span class="line">                &quot;request_task_cores&quot;: 4,</span><br><span class="line">                &quot;if_initiator_baseline&quot;: true</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;role&quot;: &#123;</span><br><span class="line">        &quot;local&quot;: [</span><br><span class="line">            0</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;component_parameters&quot;: &#123;</span><br><span class="line">        &quot;role&quot;: &#123;</span><br><span class="line">            &quot;local&quot;: &#123;</span><br><span class="line">                &quot;0&quot;: &#123;</span><br><span class="line">                    &quot;upload_0&quot;: &#123;</span><br><span class="line">                        &quot;name&quot;: &quot;bgame4455_20210902_part&quot;,</span><br><span class="line">                        &quot;partition&quot;: 1,</span><br><span class="line">                        &quot;namespace&quot;: &quot;cl&quot;,</span><br><span class="line">                        &quot;destroy&quot;: true,</span><br><span class="line">                        &quot;head&quot;: 1,</span><br><span class="line">                        &quot;file&quot;: &quot;/data/projects/fate/jobs/202109030845027808051/fate_upload_tmp/bgame4455_20210902_part.csv&quot;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;dsl_version&quot;: 2</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>如上，是输入的Run Time Conf，在最终生成的结果中，会补全initiator，job_parameters，role，dsl_version等一级key，并且将输入的Run Time Conf 整合到component_parameters中。各个key的含义参见<a href=""></a><br>这里会在job目录下，新建一个fate_upload_tmp目录，将需要上传的文件cp过来。</p>
+<h3 id="pipeline-dsl-json"><a href="#pipeline-dsl-json" class="headerlink" title="pipeline_dsl.json"></a>pipeline_dsl.json</h3><p>这里未启用，是空</p>
+<h3 id="train-runtime-conf-json"><a href="#train-runtime-conf-json" class="headerlink" title="train_runtime_conf.json"></a>train_runtime_conf.json</h3><p>非predict 任务，是空。</p>
+<h3 id="job-runtime-on-party-conf-json"><a href="#job-runtime-on-party-conf-json" class="headerlink" title="job_runtime_on_party_conf.json"></a>job_runtime_on_party_conf.json</h3><p>当前party上的配置文件，相比job_runtime_conf.json ，少了一个common关键词（都是本party，不需要common） ，但基本复制自job_runtime_conf.json 中的common。 engines_address 和 eggroll_run 是当前party的配置。</p>
+<h3 id="task-parameters-json"><a href="#task-parameters-json" class="headerlink" title="task_parameters.json"></a>task_parameters.json</h3><p>task 的具体参数，是job_runtime_on_party_conf.json 中的 job_parameters 部分</p>
+<h1 id="train-job"><a href="#train-job" class="headerlink" title="train job"></a>train job</h1><p>job_dsl.json 和输入dsl一致<br>job_runtime_conf.json 的调整，同upload相比 也是新增了如下参数<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;config&quot;: &quot;/data/projects/fate/python/cl/fc/config/20210902/train_20210902_bgame4334_part.json&quot;,</span><br><span class="line">&quot;dsl&quot;: &quot;/data/projects/fate/python/cl/fc/env/pattern/train_job_dsl.json&quot;,</span><br><span class="line">&quot;function&quot;: &quot;submit_job&quot;</span><br></pre></td></tr></table></figure><br>此外，hetero_lr 的train过程，相比upload 只使用了upload 一个组件，共有dataio，hetero_lr,  intersection 三个组件，故会有三个${conpoment} 目录<br>其余和 upload 类似</p>
+<h1 id="predict-job"><a href="#predict-job" class="headerlink" title="predict job"></a>predict job</h1><p>改动有如下两个点<br>job_dsl.json增加了如下参数<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;CodePath&quot;: &quot;federatedml/util/data_io.py/DataIO&quot;</span><br></pre></td></tr></table></figure><br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;components&quot;: &#123;</span><br><span class="line">        &quot;dataio_0&quot;: &#123;</span><br><span class="line">            &quot;module&quot;: &quot;DataIO&quot;,</span><br><span class="line">            &quot;input&quot;: &#123;</span><br><span class="line">                &quot;model&quot;: [</span><br><span class="line">                    &quot;pipeline.dataio_0.dataio&quot;</span><br><span class="line">                ],</span><br><span class="line">                &quot;data&quot;: &#123;</span><br><span class="line">                    &quot;data&quot;: [</span><br><span class="line">                        &quot;args.eval_data&quot;</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;output&quot;: &#123;</span><br><span class="line">                &quot;data&quot;: [</span><br><span class="line">                    &quot;train&quot;</span><br><span class="line">                ]</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;CodePath&quot;: &quot;federatedml/util/data_io.py/DataIO&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;intersection_0&quot;: &#123;</span><br><span class="line">            &quot;module&quot;: &quot;Intersection&quot;,</span><br><span class="line">            &quot;output&quot;: &#123;</span><br><span class="line">                &quot;data&quot;: [</span><br><span class="line">                    &quot;train&quot;</span><br><span class="line">                ]</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;input&quot;: &#123;</span><br><span class="line">                &quot;data&quot;: &#123;</span><br><span class="line">                    &quot;data&quot;: [</span><br><span class="line">                        &quot;dataio_0.train&quot;</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;CodePath&quot;: &quot;federatedml/statistic/intersect/intersect_model.py/IntersectGuest&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;hetero_lr_0&quot;: &#123;</span><br><span class="line">            &quot;module&quot;: &quot;HeteroLR&quot;,</span><br><span class="line">            &quot;input&quot;: &#123;</span><br><span class="line">                &quot;model&quot;: [</span><br><span class="line">                    &quot;pipeline.hetero_lr_0.hetero_lr&quot;</span><br><span class="line">                ],</span><br><span class="line">                &quot;data&quot;: &#123;</span><br><span class="line">                    &quot;test_data&quot;: [</span><br><span class="line">                        &quot;intersection_0.train&quot;</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;output&quot;: &#123;</span><br><span class="line">                &quot;data&quot;: [</span><br><span class="line">                    &quot;train&quot;</span><br><span class="line">                ]</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;CodePath&quot;: &quot;federatedml/linear_model/logistic_regression/hetero_logistic_regression/hetero_lr_guest.py/HeteroLRGuest&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>train_runtime_conf.json 是对应已经训练好的模型的配置。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FATE/" rel="tag"># FATE</a>
+              <a href="/tags/FedAI/" rel="tag"># FedAI</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-data-0-overview/" rel="prev" title="FATE学习：运行过程中产生的数据 概览">
+      <i class="fa fa-chevron-left"></i> FATE学习：运行过程中产生的数据 概览
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-data-2-db/" rel="next" title="FATE学习：运行过程中产生的数据（二） db部分">
+      FATE学习：运行过程中产生的数据（二） db部分 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%BC%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">目录结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#upload-%E4%BB%BB%E5%8A%A1%E4%B8%BA%E4%BE%8B"><span class="nav-number">2.1.</span> <span class="nav-text">upload 任务为例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#job-dsl-json"><span class="nav-number">2.1.1.</span> <span class="nav-text">job_dsl.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#job-runtime-conf-json"><span class="nav-number">2.1.2.</span> <span class="nav-text">job_runtime_conf.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pipeline-dsl-json"><span class="nav-number">2.1.3.</span> <span class="nav-text">pipeline_dsl.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#train-runtime-conf-json"><span class="nav-number">2.1.4.</span> <span class="nav-text">train_runtime_conf.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#job-runtime-on-party-conf-json"><span class="nav-number">2.1.5.</span> <span class="nav-text">job_runtime_on_party_conf.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#task-parameters-json"><span class="nav-number">2.1.6.</span> <span class="nav-text">task_parameters.json</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#train-job"><span class="nav-number">3.</span> <span class="nav-text">train job</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#predict-job"><span class="nav-number">4.</span> <span class="nav-text">predict job</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">喵十八</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2fbc96c0bbe149b498b5',
+      clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+      repo        : 'Yao544303.github.io',
+      owner       : 'Yao544303',
+      admin       : ['Yao544303'],
+      id          : 'da724fb85eede81ecad37e3e6b7d7834',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

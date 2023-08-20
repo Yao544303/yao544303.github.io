@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0-rc2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="综述从联邦建模的角度去理解整个job的生命周期，就是一系列功能模块组成的DAG，可以参照fate官方的文档，其中，各个功能模块就具体实现而言，就是fate中的各个算法或数据组件。 不过结合源码，从日志的角度来看，可以将整个job的生命周期，按照不同阶段所做的操作，进行划分。具体如下图：  submit：提交 job  create：创建job 和该job下对应的 tasks（相当于元数据） ，这里">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FATE学习：跟着日志读源码（三）一般任务生命周期">
+<meta property="og:url" content="http://yoursite.com/2023/08/20/fate-log-3-lifecycle/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="综述从联邦建模的角度去理解整个job的生命周期，就是一系列功能模块组成的DAG，可以参照fate官方的文档，其中，各个功能模块就具体实现而言，就是fate中的各个算法或数据组件。 不过结合源码，从日志的角度来看，可以将整个job的生命周期，按照不同阶段所做的操作，进行划分。具体如下图：  submit：提交 job  create：创建job 和该job下对应的 tasks（相当于元数据） ，这里">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/image/fate/3cd642864c473c272b55c0efde5026e8.png">
+<meta property="og:image" content="http://yoursite.com/image/fate/084bab7a7de64bce9decdcf09c29e14d.png">
+<meta property="article:published_time" content="2023-08-20T04:10:55.000Z">
+<meta property="article:modified_time" content="2023-08-20T05:30:33.314Z">
+<meta property="article:author" content="喵十八">
+<meta property="article:tag" content="FATE">
+<meta property="article:tag" content="FedAI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/image/fate/3cd642864c473c272b55c0efde5026e8.png">
+
+<link rel="canonical" href="http://yoursite.com/2023/08/20/fate-log-3-lifecycle/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>FATE学习：跟着日志读源码（三）一般任务生命周期 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">喵十八の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fate-log-3-lifecycle/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FATE学习：跟着日志读源码（三）一般任务生命周期
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-08-20 12:10:55 / Modified: 13:30:33" itemprop="dateCreated datePublished" datetime="2023-08-20T12:10:55+08:00">2023-08-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FATE/" itemprop="url" rel="index"><span itemprop="name">FATE</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>从联邦建模的角度去理解整个job的生命周期，就是一系列功能模块组成的DAG，可以参照fate官方的文档，<img src="/image/fate/3cd642864c473c272b55c0efde5026e8.png" alt="image"><br>其中，各个功能模块就具体实现而言，就是fate中的各个算法或数据组件。</p>
+<p>不过结合源码，从日志的角度来看，可以将整个job的生命周期，按照不同阶段所做的操作，进行划分。具体如下图：<br><img src="/image/fate/084bab7a7de64bce9decdcf09c29e14d.png" alt="job life cycle"></p>
+<ol>
+<li>submit：提交 job </li>
+<li>create：创建job 和该job下对应的 tasks（相当于元数据） ，这里创建好之后，所有状态都是waiting</li>
+<li>job schedule：对于job，按照FIFO的顺序，轮询到waiting状态的job，为其申请资源并将状态置为running。</li>
+<li>task scheduler：轮询到running状态的job，对其涉及的tasks，按照依赖关系依次调度</li>
+<li>execute： 执行4中置为running状态的task</li>
+<li>task finish：task 运行完毕，进行资源回收和环境清理</li>
+<li>job finish：job 运行完毕，进行资源回收和环境清理</li>
+<li>cancel：中止正在执行的job，cancel并不算一般的生命周期中的操作，可以发生在create之后的任何阶段，接受到cancel后，在polling下一次轮询时生效</li>
+</ol>
+<p>此外还有非生命周期中阶段polling： 是fate_flow_server上的轮询机制，探测到各种状态的job和task分别予以相对应的操作，严格而言，并不算是job的生命周期，只是一个轮询的角色。</p>
+<h1 id="样例"><a href="#样例" class="headerlink" title="样例"></a>样例</h1><p>先从最简单的upload 开始，因为upload只是一个单方的job，在job schedule 至 job finish 阶段，不涉及多方的协作，日志都在单机上，分析较为简单。参照文档，在CLI 提交如下命令<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python fate_flow_client.py -f upload -c upload_guest.json</span><br></pre></td></tr></table></figure></p>
+<h1 id="日志位置"><a href="#日志位置" class="headerlink" title="日志位置"></a>日志位置</h1><p>任务提交成功后，主要产生三部分日志：</p>
+<h2 id="Console-日志"><a href="#Console-日志" class="headerlink" title="Console 日志"></a>Console 日志</h2><p>提交任务完成之后，打印在屏幕上的日志<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;data&quot;: &#123;</span><br><span class="line">        &quot;board_url&quot;: &quot;http://fateboard:8080/index.html#/dashboard?job_id=202107260820309976351&amp;role=local&amp;party_id=0&quot;,</span><br><span class="line">        &quot;job_dsl_path&quot;: &quot;/data/projects/fate/jobs/202107260820309976351/job_dsl.json&quot;,</span><br><span class="line">        &quot;job_id&quot;: &quot;202107260820309976351&quot;,</span><br><span class="line">        &quot;job_runtime_conf_on_party_path&quot;: &quot;/data/projects/fate/jobs/202107260820309976351/local/job_runtime_on_party_conf.json&quot;,</span><br><span class="line">        &quot;job_runtime_conf_path&quot;: &quot;/data/projects/fate/jobs/202107260820309976351/job_runtime_conf.json&quot;,</span><br><span class="line">        &quot;logs_directory&quot;: &quot;/data/projects/fate/logs/202107260820309976351&quot;,</span><br><span class="line">        &quot;model_info&quot;: &#123;</span><br><span class="line">            &quot;model_id&quot;: &quot;local-0#model&quot;,</span><br><span class="line">            &quot;model_version&quot;: &quot;202107260820309976351&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;namespace&quot;: &quot;cl&quot;,</span><br><span class="line">        &quot;pipeline_dsl_path&quot;: &quot;/data/projects/fate/jobs/202107260820309976351/pipeline_dsl.json&quot;,</span><br><span class="line">        &quot;table_name&quot;: &quot;hetero_guest&quot;,</span><br><span class="line">        &quot;train_runtime_conf_path&quot;: &quot;/data/projects/fate/jobs/202107260820309976351/train_runtime_conf.json&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;jobId&quot;: &quot;202107260820309976351&quot;,</span><br><span class="line">    &quot;retcode&quot;: 0,</span><br><span class="line">    &quot;retmsg&quot;: &quot;success&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="容器日志"><a href="#容器日志" class="headerlink" title="容器日志"></a>容器日志</h2><p>KubeFATE部署的话，查看名为python 的容器的日志，主要是POST请求和结果的日志。<br>其中和submit job 相关部分截取如下：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">1. 10.200.96.235 - - [26/Jul/2021 08:20:31] &quot;POST /v1/party/202107260820309976351/local/0/create HTTP/1.1&quot; 200 -</span><br><span class="line">2. 10.200.96.235 - - [26/Jul/2021 08:20:31] &quot;POST /v1/data/upload?%7B%22file%22:%20%22/data/projects/fate/examples/data/breast_hetero_guest.csv%22,%20%22head%22:%201,%20%22partition%22:%201,%20%22work_mode%22:%201,%20%22table_name%22:%20%22hetero_guest%22,%20%22namespace%22:%20%22cl%22,%20%22config%22:%20%22/data/projects/fate/cl/upload_guest.json%22,%20%22function%22:%20%22upload%22%7D HTTP/1.1&quot; 200 -</span><br><span class="line">3. 10.200.96.235 - - [26/Jul/2021 08:20:32] &quot;POST /v1/party/202107260820309976351/local/0/resource/apply HTTP/1.1&quot; 200 -</span><br><span class="line">4. 10.200.96.235 - - [26/Jul/2021 08:20:32] &quot;POST /v1/party/202107260820309976351/local/0/start HTTP/1.1&quot; 200 -</span><br><span class="line">5. 10.200.96.235 - - [26/Jul/2021 08:20:32] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/status/running HTTP/1.1&quot; 200 -</span><br><span class="line">6. 10.200.96.235 - - [26/Jul/2021 08:20:32] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/start HTTP/1.1&quot; 200 -</span><br><span class="line">7. 10.200.96.235 - - [26/Jul/2021 08:20:33] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/report HTTP/1.1&quot; 200 -</span><br><span class="line">8. 10.200.96.235 - - [26/Jul/2021 08:20:34] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/collect HTTP/1.1&quot; 200 -</span><br><span class="line">9. 10.200.96.235 - - [26/Jul/2021 08:20:36] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/collect HTTP/1.1&quot; 200 -</span><br><span class="line">10. 10.200.96.235 - - [26/Jul/2021 08:20:38] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/collect HTTP/1.1&quot; 200 -</span><br><span class="line">11. 10.200.96.235 - - [26/Jul/2021 08:20:40] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/collect HTTP/1.1&quot; 200 -</span><br><span class="line">12. 10.200.96.235 - - [26/Jul/2021 08:20:41] &quot;POST /v1/party/202107260820309976351/local/0/update HTTP/1.1&quot; 200 -</span><br><span class="line">13. 10.200.96.235 - - [26/Jul/2021 08:20:42] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/collect HTTP/1.1&quot; 200 -</span><br><span class="line">14. 10.200.96.235 - - [26/Jul/2021 08:20:43] &quot;POST /v1/tracker/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/output_data_info/save HTTP/1.1&quot; 200 -</span><br><span class="line">15. 10.200.96.235 - - [26/Jul/2021 08:20:43] &quot;POST /v1/tracker/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/metric_data/save HTTP/1.1&quot; 200 -</span><br><span class="line">16. 10.200.96.235 - - [26/Jul/2021 08:20:43] &quot;POST /v1/tracker/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/metric_meta/save HTTP/1.1&quot; 200 -</span><br><span class="line">17. 10.200.96.235 - - [26/Jul/2021 08:20:44] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/report HTTP/1.1&quot; 200 -</span><br><span class="line">18. 10.200.96.235 - - [26/Jul/2021 08:20:45] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/collect HTTP/1.1&quot; 200 -</span><br><span class="line">19. 10.200.96.235 - - [26/Jul/2021 08:20:45] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/report HTTP/1.1&quot; 200 -</span><br><span class="line">static conf path: /data/projects/fate/eggroll/conf/eggroll.properties</span><br><span class="line">20. 10.200.96.235 - - [26/Jul/2021 08:20:47] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/status/success HTTP/1.1&quot; 200 -</span><br><span class="line">21. 10.200.96.235 - - [26/Jul/2021 08:20:47] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/stop/success HTTP/1.1&quot; 200 -</span><br><span class="line">22. 10.200.96.235 - - [26/Jul/2021 08:20:47] &quot;POST /v1/party/202107260820309976351/local/0/model HTTP/1.1&quot; 200 -</span><br><span class="line">23. 10.200.96.235 - - [26/Jul/2021 08:20:47] &quot;POST /v1/party/202107260820309976351/local/0/status/success HTTP/1.1&quot; 200 -</span><br><span class="line">24. 10.200.96.235 - - [26/Jul/2021 08:20:47] &quot;POST /v1/party/202107260820309976351/local/0/stop/success HTTP/1.1&quot; 200 -</span><br><span class="line">25. 10.200.96.235 - - [26/Jul/2021 08:20:48] &quot;POST /v1/party/202107260820309976351/local/0/clean HTTP/1.1&quot; 200 -</span><br><span class="line">26. 10.200.96.235 - - [26/Jul/2021 08:20:48] &quot;POST /v1/party/202107260820309976351/local/0/stop/success HTTP/1.1&quot; 200 -</span><br><span class="line">27. 10.200.96.235 - - [26/Jul/2021 08:20:48] &quot;POST /v1/party/202107260820309976351/local/0/clean HTTP/1.1&quot; 200 -</span><br></pre></td></tr></table></figure><br>该生命周期中，各个阶段的情况，在这里都有体现。</p>
+<h2 id="FATE-Flow-日志"><a href="#FATE-Flow-日志" class="headerlink" title="FATE Flow 日志"></a>FATE Flow 日志</h2><p>日志会生成在fate_flow 和 jobid 两个目录下，为了便于区分，分别会用fate_flow/xxx.log 和 $ {job_log_dir}/xxx.log 进行区分。<br>此外${job_log_dir}下还可进一步细分为如下几个目录：</p>
+<ul>
+<li>${job_log_dir}</li>
+<li>$ {job_log_dir}/$ {role}/${party}</li>
+<li>$ {job_log_dir}/$ {role}/$ {party}/${taskid} = ${task_log_dir}<h3 id="fate-flow-server-日志，位于-data-projects-fate-logs-fate-flow-目录下，说明见前文："><a href="#fate-flow-server-日志，位于-data-projects-fate-logs-fate-flow-目录下，说明见前文：" class="headerlink" title="fate_flow_server 日志，位于/data/projects/fate/logs/fate_flow 目录下，说明见前文："></a>fate_flow_server 日志，位于/data/projects/fate/logs/fate_flow 目录下，说明见前文：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- fate_flow_audit.log</span><br><span class="line">- fate_flow_detect.log</span><br><span class="line">- fate_flow_stat.log</span><br><span class="line">- fate_flow_schedule.log</span><br><span class="line">- peewee.log</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="job日志"><a href="#job日志" class="headerlink" title="job日志"></a>job日志</h3><p>位于/data/projects/fate/logs/${jobid} 下（此目录后文称之为job_log_dir），量级过大，这里只列下目录，每个日志的说明，见前文。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- fate_flow_audit.log：</span><br><span class="line">- fate_flow_schedule.log  </span><br><span class="line">- fate_flow_sql.log  </span><br><span class="line">+ $&#123;role&#125;</span><br><span class="line">    + $&#123;party&#125;</span><br><span class="line">        - DEBUG.log  </span><br><span class="line">        - INFO.log  </span><br><span class="line">        + $&#123;taskid&#125;</span><br><span class="line">            - DEBUG.log  </span><br><span class="line">            - fate_flow_schedule.log  </span><br><span class="line">            - INFO.log  </span><br><span class="line">            - peewee.log  </span><br><span class="line">            - PROFILING.log  </span><br><span class="line">            - stat.log  </span><br><span class="line">            - std.log</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FATE/" rel="tag"># FATE</a>
+              <a href="/tags/FedAI/" rel="tag"># FedAI</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-log-2-start-fateflow/" rel="prev" title="FATE学习：跟着日志读源码（二）fate_flow server 启动">
+      <i class="fa fa-chevron-left"></i> FATE学习：跟着日志读源码（二）fate_flow server 启动
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-log-4-upload-submit/" rel="next" title="FATE学习：跟着日志读源码（四）upload任务submit&create阶段">
+      FATE学习：跟着日志读源码（四）upload任务submit&create阶段 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%BC%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%B7%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">样例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E4%BD%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">日志位置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Console-%E6%97%A5%E5%BF%97"><span class="nav-number">3.1.</span> <span class="nav-text">Console 日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E6%97%A5%E5%BF%97"><span class="nav-number">3.2.</span> <span class="nav-text">容器日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FATE-Flow-%E6%97%A5%E5%BF%97"><span class="nav-number">3.3.</span> <span class="nav-text">FATE Flow 日志</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#fate-flow-server-%E6%97%A5%E5%BF%97%EF%BC%8C%E4%BD%8D%E4%BA%8E-data-projects-fate-logs-fate-flow-%E7%9B%AE%E5%BD%95%E4%B8%8B%EF%BC%8C%E8%AF%B4%E6%98%8E%E8%A7%81%E5%89%8D%E6%96%87%EF%BC%9A"><span class="nav-number">3.3.1.</span> <span class="nav-text">fate_flow_server 日志，位于&#x2F;data&#x2F;projects&#x2F;fate&#x2F;logs&#x2F;fate_flow 目录下，说明见前文：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#job%E6%97%A5%E5%BF%97"><span class="nav-number">3.3.2.</span> <span class="nav-text">job日志</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">喵十八</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2fbc96c0bbe149b498b5',
+      clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+      repo        : 'Yao544303.github.io',
+      owner       : 'Yao544303',
+      admin       : ['Yao544303'],
+      id          : 'fe4d1bdb59d4b0eae001cd264f63fd13',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

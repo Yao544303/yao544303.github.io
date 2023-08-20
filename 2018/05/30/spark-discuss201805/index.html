@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0-rc2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="说明以下内容来自群中出现的问题，大家讨论的结果 Q群：432600958 微信群：加微信w3aboutyun,附上about云铁粉 部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。五月一直在加班，整理的东西有限 如何从小白快速蜕变为大佬时间2018.05.03 内容这是一些经验，主要有两点1、 培养自己的阅读习惯2、 提高对新技术的敏感力文章末附了很多公众">
+<meta property="og:type" content="article">
+<meta property="og:title" content="群内2018_5月讨论整理">
+<meta property="og:url" content="http://yoursite.com/2018/05/30/spark-discuss201805/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="说明以下内容来自群中出现的问题，大家讨论的结果 Q群：432600958 微信群：加微信w3aboutyun,附上about云铁粉 部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。五月一直在加班，整理的东西有限 如何从小白快速蜕变为大佬时间2018.05.03 内容这是一些经验，主要有两点1、 培养自己的阅读习惯2、 提高对新技术的敏感力文章末附了很多公众">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-05-30T15:02:09.000Z">
+<meta property="article:modified_time" content="2018-05-30T15:27:38.000Z">
+<meta property="article:author" content="喵十八">
+<meta property="article:tag" content="工作感悟">
+<meta property="article:tag" content="机器学习算法优化">
+<meta property="article:tag" content="资源分享">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2018/05/30/spark-discuss201805/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>群内2018_5月讨论整理 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">喵十八の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/30/spark-discuss201805/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          群内2018_5月讨论整理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2018-05-30 23:02:09 / Modified: 23:27:38" itemprop="dateCreated datePublished" datetime="2018-05-30T23:02:09+08:00">2018-05-30</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/bigdata/" itemprop="url" rel="index"><span itemprop="name">bigdata</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>以下内容来自群中出现的问题，大家讨论的结果</p>
+<p>Q群：432600958</p>
+<p>微信群：加微信w3aboutyun,附上about云铁粉</p>
+<p>部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。<br><del>五月一直在加班，整理的东西有限</del></p>
+<h1 id="如何从小白快速蜕变为大佬"><a href="#如何从小白快速蜕变为大佬" class="headerlink" title="如何从小白快速蜕变为大佬"></a>如何从小白快速蜕变为大佬</h1><h2 id="时间"><a href="#时间" class="headerlink" title="时间"></a>时间</h2><p>2018.05.03</p>
+<h2 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h2><p>这是一些经验，主要有两点<br>1、 培养自己的阅读习惯<br>2、 提高对新技术的敏感力<br>文章末附了很多公众号</p>
+<p><a href="https://mp.weixin.qq.com/s/glPjf3S7j7uCX2_zgDr2jg">ref</a></p>
+<h1 id="Spark-读取本地文件"><a href="#Spark-读取本地文件" class="headerlink" title="Spark 读取本地文件"></a>Spark 读取本地文件</h1><h2 id="时间-1"><a href="#时间-1" class="headerlink" title="时间"></a>时间</h2><p>2018.05.03</p>
+<h2 id="讨论内容"><a href="#讨论内容" class="headerlink" title="讨论内容"></a>讨论内容</h2><p>Spark 作为一个分布式系统，如果读取本地文件，则要求该文件在所有节点都存在，并且目录都要求一致。</p>
+<ul>
+<li>解决方法1：分发到所有节点（麻烦）</li>
+<li>解决方法2：将文件传到hdfs，读取hdfs路径</li>
+<li>解决方法3：使用addfile方法<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><a href="https://www.iteblog.com/archives/1704.html">Spark中函数addFile 和 addJar函数介绍</a></li>
+</ul>
+<h1 id="机器学习优化算法讨论-—-by-木东居士-ref"><a href="#机器学习优化算法讨论-—-by-木东居士-ref" class="headerlink" title="机器学习优化算法讨论  — by 木东居士 ref"></a>机器学习优化算法讨论  — by 木东居士 <a href="https://wx.zsxq.com/mweb/views/topicdetail/topicdetail.html?topic_id=15454141825552&amp;user_id=48512221855458">ref</a></h1><h2 id="时间-2"><a href="#时间-2" class="headerlink" title="时间"></a>时间</h2><p>2018.05.03</p>
+<h2 id="讨论内容-1"><a href="#讨论内容-1" class="headerlink" title="讨论内容"></a>讨论内容</h2><p>机器学习的算法其实比运筹算法要简单，更偏重应用场景，更多的时间在做特征工程</p>
+<p>机器学习算法里基本都有用到二阶特性（牛顿法要求hessian矩阵），都是一阶的（如梯度下降）</p>
+<p>大规模学习来说，障碍往往在于算法的计算能力不足，而不是数据不够，所以也可以说传统额统计学习方法都不适合大规模数据处理</p>
+<p>在样本量比较多的时候，线性分类方法的劣势小很多，例如可以通过手工拆分/离散化特征来模拟非线性关系。而且有个经验是，在数据量大的时候，一些看起来粗暴无脑的方法反而有令人惊奇的效果。</p>
+<p>SVM 计算复杂度O(n^2)，存在两个超参数，只能通过穷举实验来求，计算时间要高于不少非线性分类器<br>随机森林 计算复杂度O(nlogn)</p>
+<h1 id="资源分享"><a href="#资源分享" class="headerlink" title="资源分享"></a>资源分享</h1><h2 id="时间-3"><a href="#时间-3" class="headerlink" title="时间"></a>时间</h2><p>2018.05.08</p>
+<h2 id="内容-1"><a href="#内容-1" class="headerlink" title="内容"></a>内容</h2><p><a href="https://pan.baidu.com/s/11TeYq09tY9JRz2R1pILx9g">经典算法大全</a> 密码 ce85</p>
+<p><a href="https://pan.baidu.com/share/init?surl=sjI1HVJ">算法导论中文版.pdf</a> 密码 2ygr</p>
+<p><a href="https://pan.baidu.com/s/1LztUJ56WU9JjqZWNejvaoQ">python资源分享</a>  密码：ll7q</p>
+<p>内容包括：《Python 2.7 Tutorial 中文版》《Python3程序开发指南(第二版)》《Python高级编程》《python核心笔记》《python核心编程第二版笔记》《Python技术手册（第2版）》《Python源码剖析》《quantsp研究计划书》《笨办法学Python》<br>by 小青年 </p>
+<h1 id="工作感悟"><a href="#工作感悟" class="headerlink" title="工作感悟"></a>工作感悟</h1><h2 id="时间-4"><a href="#时间-4" class="headerlink" title="时间"></a>时间</h2><p>2018.05.12</p>
+<h2 id="内容-2"><a href="#内容-2" class="headerlink" title="内容"></a>内容</h2><h3 id="工作的意义"><a href="#工作的意义" class="headerlink" title="工作的意义"></a>工作的意义</h3><p>最近在思考一个问题，工作的意义，一份工作最终目的究竟不该是一份简单的工资，而是这个公司能赋予你的资源，另一个是这份资源的成果转换对于市场的冲击力，对人，对社会的贡献度，人终究是需要处理社会活动的。</p>
+<p>职业背景和职业活动的限制，换句话说，工作本身是用来解决社会问题的，个人可能觉得只是天天码代码，做工作量，但它的成效简直太小了，一眼可以看到他的发展和未来。但如果说直面社会问题，去为解决问题而去选择走向，我个人理解人是会不去换不同的工作和行业，最终形成一套解决方案的，另一个角度，如果是为了盈利，这个解决方案的出发点一开始就是针对购买力的问题，你做的是服务和解决方案的路子。触手伸的越广，收益越大。</p>
+<p>即使是办企业也一样，仔细去看每个企业的基本描述类似，但核心针对点不一样，不管是个人也好，企业也罢，需要求同存异，找出自己的突破点，这个时代不是靠努力，而是靠挖掘力，执行力。</p>
+<p> by 道友 枫柚master </p>
+<h1 id="Spark-persist-DISK-ONLY-产生的问题"><a href="#Spark-persist-DISK-ONLY-产生的问题" class="headerlink" title="Spark persist(DISK_ONLY)产生的问题"></a>Spark persist(DISK_ONLY)产生的问题</h1><h2 id="时间-5"><a href="#时间-5" class="headerlink" title="时间"></a>时间</h2><p>2018.05.30</p>
+<h2 id="内容-3"><a href="#内容-3" class="headerlink" title="内容"></a>内容</h2><p>在Spark 的代码中增加persist(DISK_ONLY) 之后，会出现多个task failed,错误原因为container memoryOverhead</p>
+<p>去掉persist(DISK_ONLY) 就不再报这个错误，没有task failed, 并且运行速度提升。<br>此外，对比每个stage的IO,发现DISK_ONLY的有部分stage的IO是去掉persist的两倍。</p>
+<p><strong>猜想原因</strong></p>
+<p>DISK_ONLY 是将不做序列化的对象直接存入DISK,这部分产生大量IO,会占用内存。</p>
+<p><a href="https://blog.csdn.net/qq_20641565/article/details/76216417">Spark中cache和persist的作用以及存储级别</a></p>
+<h1 id="Spark-代码优化"><a href="#Spark-代码优化" class="headerlink" title="Spark 代码优化"></a>Spark 代码优化</h1><ul>
+<li>使用更高效的数据结构  BitSet、OpenHashSet、OpenHashMap</li>
+<li>inline</li>
+<li>一些汉字字符串，做维表映射之后，变成数字编号</li>
+</ul>
+<p><a href="https://www.jianshu.com/p/de8bb509b6f5">Spark 高效数据结构</a></p>
+<h1 id="人工智能主要三块-大数据、NLP、CV"><a href="#人工智能主要三块-大数据、NLP、CV" class="headerlink" title="人工智能主要三块  大数据、NLP、CV"></a>人工智能主要三块  大数据、NLP、CV</h1><h1 id="分布式发号器选择方案"><a href="#分布式发号器选择方案" class="headerlink" title="分布式发号器选择方案"></a>分布式发号器选择方案</h1><ul>
+<li>UUID</li>
+<li>DB</li>
+<li>SnowFlake</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%84%9F%E6%82%9F/" rel="tag"># 工作感悟</a>
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95%E4%BC%98%E5%8C%96/" rel="tag"># 机器学习算法优化</a>
+              <a href="/tags/%E8%B5%84%E6%BA%90%E5%88%86%E4%BA%AB/" rel="tag"># 资源分享</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/05/01/spark-discuss20180402/" rel="prev" title="群内2018_４月讨论整理2">
+      <i class="fa fa-chevron-left"></i> 群内2018_４月讨论整理2
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/05/30/ml-online/" rel="next" title="机器学习业务与工程的区别以及模型上线方案学习">
+      机器学习业务与工程的区别以及模型上线方案学习 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BB%8E%E5%B0%8F%E7%99%BD%E5%BF%AB%E9%80%9F%E8%9C%95%E5%8F%98%E4%B8%BA%E5%A4%A7%E4%BD%AC"><span class="nav-number">2.</span> <span class="nav-text">如何从小白快速蜕变为大佬</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4"><span class="nav-number">2.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9"><span class="nav-number">2.2.</span> <span class="nav-text">内容</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spark-%E8%AF%BB%E5%8F%96%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">Spark 读取本地文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4-1"><span class="nav-number">3.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A8%E8%AE%BA%E5%86%85%E5%AE%B9"><span class="nav-number">3.2.</span> <span class="nav-text">讨论内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95"><span class="nav-number">3.3.</span> <span class="nav-text">扩展</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95%E8%AE%A8%E8%AE%BA-%E2%80%94-by-%E6%9C%A8%E4%B8%9C%E5%B1%85%E5%A3%AB-ref"><span class="nav-number">4.</span> <span class="nav-text">机器学习优化算法讨论  — by 木东居士 ref</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4-2"><span class="nav-number">4.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A8%E8%AE%BA%E5%86%85%E5%AE%B9-1"><span class="nav-number">4.2.</span> <span class="nav-text">讨论内容</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E5%88%86%E4%BA%AB"><span class="nav-number">5.</span> <span class="nav-text">资源分享</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4-3"><span class="nav-number">5.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9-1"><span class="nav-number">5.2.</span> <span class="nav-text">内容</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%84%9F%E6%82%9F"><span class="nav-number">6.</span> <span class="nav-text">工作感悟</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4-4"><span class="nav-number">6.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9-2"><span class="nav-number">6.2.</span> <span class="nav-text">内容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E7%9A%84%E6%84%8F%E4%B9%89"><span class="nav-number">6.2.1.</span> <span class="nav-text">工作的意义</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spark-persist-DISK-ONLY-%E4%BA%A7%E7%94%9F%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">7.</span> <span class="nav-text">Spark persist(DISK_ONLY)产生的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4-5"><span class="nav-number">7.1.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9-3"><span class="nav-number">7.2.</span> <span class="nav-text">内容</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spark-%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96"><span class="nav-number">8.</span> <span class="nav-text">Spark 代码优化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E4%B8%BB%E8%A6%81%E4%B8%89%E5%9D%97-%E5%A4%A7%E6%95%B0%E6%8D%AE%E3%80%81NLP%E3%80%81CV"><span class="nav-number">9.</span> <span class="nav-text">人工智能主要三块  大数据、NLP、CV</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E5%8F%91%E5%8F%B7%E5%99%A8%E9%80%89%E6%8B%A9%E6%96%B9%E6%A1%88"><span class="nav-number">10.</span> <span class="nav-text">分布式发号器选择方案</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">喵十八</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2fbc96c0bbe149b498b5',
+      clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+      repo        : 'Yao544303.github.io',
+      owner       : 'Yao544303',
+      admin       : ['Yao544303'],
+      id          : '7f1ad0af8135f1b87306eb5d1ca4d608',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

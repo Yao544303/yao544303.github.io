@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0-rc2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="综述本篇以upload任务的sumbit 和 create 阶段为例，结合产生的日志，说明该生命阶段代码的运行情况。 执行步骤 为便于说明，画了下uml 时序图，结合图说下各步操作  在CLI 用户执行命令 python fate_flow_client.py -f upload -c upload_guest.json fate_flow_client.py:调用 call_fun()函数，向本">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FATE学习：跟着日志读源码（四）upload任务submit&amp;create阶段">
+<meta property="og:url" content="http://yoursite.com/2023/08/20/fate-log-4-upload-submit/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="综述本篇以upload任务的sumbit 和 create 阶段为例，结合产生的日志，说明该生命阶段代码的运行情况。 执行步骤 为便于说明，画了下uml 时序图，结合图说下各步操作  在CLI 用户执行命令 python fate_flow_client.py -f upload -c upload_guest.json fate_flow_client.py:调用 call_fun()函数，向本">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/image/fate/e3a8da03871b4ca5a7d5d35d09b2f1d2.png">
+<meta property="article:published_time" content="2023-08-20T04:11:20.000Z">
+<meta property="article:modified_time" content="2023-08-20T05:37:05.524Z">
+<meta property="article:author" content="喵十八">
+<meta property="article:tag" content="FATE">
+<meta property="article:tag" content="FedAI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/image/fate/e3a8da03871b4ca5a7d5d35d09b2f1d2.png">
+
+<link rel="canonical" href="http://yoursite.com/2023/08/20/fate-log-4-upload-submit/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>FATE学习：跟着日志读源码（四）upload任务submit&create阶段 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">喵十八の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fate-log-4-upload-submit/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FATE学习：跟着日志读源码（四）upload任务submit&create阶段
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-08-20 12:11:20 / Modified: 13:37:05" itemprop="dateCreated datePublished" datetime="2023-08-20T12:11:20+08:00">2023-08-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FATE/" itemprop="url" rel="index"><span itemprop="name">FATE</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>本篇以upload任务的sumbit 和 create 阶段为例，结合产生的日志，说明该生命阶段代码的运行情况。</p>
+<h1 id="执行步骤"><a href="#执行步骤" class="headerlink" title="执行步骤"></a>执行步骤</h1><p><img src="/image/fate/e3a8da03871b4ca5a7d5d35d09b2f1d2.png" alt="在这里插入图片描述"></p>
+<p>为便于说明，画了下uml 时序图，结合图说下各步操作</p>
+<ol>
+<li>在CLI 用户执行命令 python fate_flow_client.py -f upload -c upload_guest.json</li>
+<li><p>fate_flow_client.py:调用 call_fun()函数，向本地server 发起post请求</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">response = requests.post(&quot;/&quot;.join([server_url, &quot;data&quot;, func.replace(&#x27;_&#x27;, &#x27;/&#x27;)]), data=data,params=json.dumps(config_data),headers=&#123;&#x27;Content-Type&#x27;: data.content_type&#125;)</span><br></pre></td></tr></table></figure>
+<p>这里会在容器日志中体现post请求日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:31] &quot;POST /v1/data/upload?%7B%22file%22:%20%22/data/projects/fate/examples/data/breast_hetero_guest.csv%22,%20%22head%22:%201,%20%22partition%22:%201,%20%22work_mode%22:%201,%20%22table_name%22:%20%22hetero_guest%22,%20%22namespace%22:%20%22cl%22,%20%22config%22:%20%22/data/projects/fate/cl/upload_guest.json%22,%20%22function%22:%20%22upload%22%7D HTTP/1.1&quot; 200 -</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>fate_flow_server.py: 接受请求，Flask的调度，跳转至data_access_app.py</p>
+</li>
+<li>data_access_app.py: 执行download_upload() 函数，判断job_id 是否为空，若为空则调用job_utils.generate_job_id()</li>
+<li>job_utils.py: 执行generate_job_id() 并返回ID</li>
+<li>data_access_app.py: 根据request 中的相关参数，生成job_config</li>
+<li>data_access_app.py: 调用detect_utils.check_config() 校验参数</li>
+<li>detect_utils.py: 执行check_config() 如有异常抛出</li>
+<li>data_access_app.py: 根据job_config，生成各项兼容性参数，如table_name,backnd 等</li>
+<li>data_access_app.py: 初始化 StroageTableMeta并给data_table_meta赋值</li>
+<li><em>table.py: 调用build 返回Meta，这里打出fate<em>flow/peewee.log 的第3行日志<br>这里在初始化 StorageTableMeta 的时候，会调用__new</em></em>() -&gt; query_table_meta() 从而在peewee 留下日志。<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:31,008] [1:140259119585024] - peewee.py[line:2863]: (&#x27;SELECT `t1`.`f_create_date`, `t1`.`f_update_date`, `t1`.`f_name`, `t1`.`f_namespace`, `t1`.`f_address`, `t1`.`f_engine`, `t1`.`f_type`, `t1`.`f_options`, `t1`.`f_partitions`, `t1`.`f_id_delimiter`, `t1`.`f_in_serialized`, `t1`.`f_have_head`, `t1`.`f_schema`, `t1`.`f_count`, `t1`.`f_part_of_data`, `t1`.`f_description`, `t1`.`f_create_time`, `t1`.`f_update_time` FROM `t_storage_table_meta` AS `t1` WHERE ((`t1`.`f_name` = %s) AND (`t1`.`f_namespace` = %s))&#x27;, [&#x27;hetero_guest&#x27;, &#x27;cl&#x27;])</span><br></pre></td></tr></table></figure></li>
+<li>data_access_app.py: 校验tabel 不存在，或存在且drop 参数为1，调用gen_data_access_job_conf(job_config,access_module) 生成 job_dsl 和 job_runtime_conf</li>
+<li>data_access_app.py: 调用DAGScheduler.submit({‘job_dsl’: job_dsl, job_runtime_conf’: job_runtime_conf}, job_id) 提交任务</li>
+<li>dag_scheduler.py: 判断jobid 是否为空，空则重新生成</li>
+<li><p>dag_scheduler.py: 打印出${job_log_dir}/fate_flow_schedule.log的第一行日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:31,014] [1:140259119585024] - dag_scheduler.py[line:40]: submit job, job_id 202107260820309976351, body &#123;&#x27;job_dsl&#x27;: &#123;&#x27;components&#x27;: &#123;&#x27;upload_0&#x27;: &#123;&#x27;module&#x27;: &#x27;Upload&#x27;&#125;&#125;&#125;, &#x27;job_runtime_conf&#x27;: &#123;&#x27;initiator&#x27;: &#123;&#x27;role&#x27;: &#x27;local&#x27;, &#x27;party_id&#x27;: 0&#125;, &#x27;job_parameters&#x27;: &#123;&#x27;common&#x27;: &#123;&#x27;backend&#x27;: 0, &#x27;work_mode&#x27;: 1&#125;&#125;, &#x27;role&#x27;: &#123;&#x27;local&#x27;: [0]&#125;, &#x27;component_parameters&#x27;: &#123;&#x27;role&#x27;: &#123;&#x27;local&#x27;: &#123;&#x27;0&#x27;: &#123;&#x27;upload_0&#x27;: &#123;&#x27;name&#x27;: &#x27;hetero_guest&#x27;, &#x27;head&#x27;: 1, &#x27;file&#x27;: &#x27;/data/projects/fate/jobs/202107260820309976351/fate_upload_tmp/breast_hetero_guest.csv&#x27;, &#x27;partition&#x27;: 1, &#x27;namespace&#x27;: &#x27;cl&#x27;, &#x27;destroy&#x27;: False&#125;&#125;&#125;&#125;&#125;, &#x27;dsl_version&#x27;: 2&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>其中json部分是入参job_data，可以看到，整个body，包含两部分job_dsl 和 job_runtime_conf。job_dsl 定义了所使用的components,这里只有一个upload。<br>job_runtime_conf定义了整个job的相关参数，包括：     </p>
+<ul>
+<li>initiator: 调度者（或联邦任务的发起者）</li>
+<li>job_parameters:job参数，主要是work_mode：是否为集群模式和 backend 计算引擎</li>
+<li>role: 本次任务的参与角色</li>
+<li>component_parameters: 位于各个role上的component 的参数，这里就是upload_0 的各项参数</li>
+</ul>
+</li>
+<li><p>dag_scheduler.py: 从job_data中获取job_dsl 和 job_runtime_conf</p>
+</li>
+<li>dag_scheduler.py: 调用job_utils.check_job_config() 进行参数校验</li>
+<li>job_utils.py: 确认各项必要参数都具备，且将party_id都强制转为int。如有异常，则raise。</li>
+<li>dag_scheduler.py: 调用 authentication_utils.check_constraint() 校验约束</li>
+<li>authentication_utils.py: 调用 check_component_constraint()，校验约束:不允许仅有arbiter 和guest，同在一个party_id, 除非host 也在该party_id</li>
+<li>dag_scheduler.py: 配置initiator 和 conf_adapter</li>
+<li>dag_scheduler.py: 根据job类型，配置train_runtime_conf</li>
+<li>dag_scheduler.py: 新建job对象，并给对应参数赋值</li>
+<li>dag_scheduler.py: 调用job_utils.save_job_conf() 生成job_dsl, job_runtime_conf,job_runtime_conf_on_party,train_runtime_conf,pipeline_dsl 各项的保存目录，并将相关参数以json格式落盘。</li>
+<li>job_utils.py: 返回24中各项的目录</li>
+<li>dag_scheduler.py: 校验initiator 在job_runtime_conf 列表里</li>
+<li>dag_scheduler.py: 调用JobController.backend_compatibility() 设置计算引擎和是否集群模式</li>
+<li>dag_scheduler.py: 调用JobController.adapt_job_parameters() 适配common_job_parameters</li>
+<li>dag_scheduler.py: 使用28中的common_job_parameters 更新job.f_runtime_conf(job 为23 新建对象)</li>
+<li>dag_scheduler.py: 调用schedule_utils.get_job_dsl_parser 解析参数</li>
+<li>scheduler_utils.py: 根据配置选择dsl 版本（v1 或v2)</li>
+<li>scheduler_utils.py: 调用dsl_parser.run() 解析参数</li>
+<li>dsl_parser.py: 解析完毕</li>
+<li>scheduler_utils.py: 返回dsl_parser 对象</li>
+<li>dag_scheduler.py: 若为cluster  模式，且role 和 partyid 不为initiator（if role == job.f_initiator_role and party_id == job.f_initiator_party_id: continue），调用 JobController.initialize_tasks，故而后面36-41都不会执行</li>
+<li>job_controller.py: 基于common_job_parameters, dsl_parser ,调用TaskController.create_task()，生成除initiator 外各个role &amp; party_id 上的task</li>
+<li>task_controller.py: 设置task_info 的各项信息</li>
+<li>task_controller.py:  调用job_utils.generate_task_id()</li>
+<li>job_utils.py: 返回task_id</li>
+<li>task_controller.py: 调用JobSaver.create_task()</li>
+<li>job_saver.py: 调用create_job_family_entity将相关task信息入DB</li>
+<li>dag_scheduler.py: 调用FederatedScheduler.create_job()</li>
+<li>federated_scheduler.py: 调用job_command() </li>
+<li>federated_scheduler.py: 调用api_utils.federated_api() 发起post请求。</li>
+<li>api_utils.py: 由于upload 是在本地执行的，调用依次调用local_api()-&gt;federated_coordination_on_http(),${job_log_dir}/fate_flow_audit.log 的第一条日志从这里产生<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:31,028] [1:140259119585024] - api_utils.py[line:122]: remote http api request: http://10.200.96.235:9380/v1/party/202107260820309976351/local/0/create</span><br></pre></td></tr></table></figure></li>
+<li>fate_flow_server.py: sever 端接受到如上请求，通过Flask，跳转至party_app.py</li>
+<li>party_app.py: 调用create_job() </li>
+<li>party_app.py: 调用JobController.create_job()</li>
+<li>job_controller.py: 调用schedule_utils.get_job_dsl_parser 解析参数</li>
+<li>scheduler_utils.py: 根据配置选择dsl 版本（v1 或v2)</li>
+<li>scheduler_utils.py: 调用dsl_parser.run() 解析参数</li>
+<li>dsl_parser.py: 解析完毕</li>
+<li>job_controller.py: 打印出${job_log_dir}/fate_flow_schedule.log的第二行日志<br>schedule_logger(job_id).info(‘job parameters:{}’.format(job_parameters))<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:31,043] [1:140259111192320] - job_controller.py[line:51]: job parameters:&#123;&#x27;job_type&#x27;: &#x27;train&#x27;, &#x27;work_mode&#x27;: 1, &#x27;backend&#x27;: 0, &#x27;computing_engine&#x27;: &#x27;EGGROLL&#x27;, &#x27;federation_engine&#x27;: &#x27;EGGROLL&#x27;, &#x27;storage_engine&#x27;: &#x27;EGGROLL&#x27;, &#x27;engines_address&#x27;: &#123;&#125;, &#x27;federated_mode&#x27;: &#x27;MULTIPLE&#x27;, &#x27;task_parallelism&#x27;: 1, &#x27;computing_partitions&#x27;: 4, &#x27;federated_status_collect_type&#x27;: &#x27;PULL&#x27;, &#x27;model_id&#x27;: &#x27;local-0#model&#x27;, &#x27;model_version&#x27;: &#x27;202107260820309976351&#x27;, &#x27;eggroll_run&#x27;: &#123;&#125;, &#x27;spark_run&#x27;: &#123;&#125;, &#x27;rabbitmq_run&#x27;: &#123;&#125;, &#x27;adaptation_parameters&#x27;: &#123;&#x27;task_nodes&#x27;: 1, &#x27;task_cores_per_node&#x27;: 4, &#x27;task_memory_per_node&#x27;: 0, &#x27;request_task_cores&#x27;: 4, &#x27;if_initiator_baseline&#x27;: True&#125;&#125;</span><br></pre></td></tr></table></figure></li>
+<li>job_controller.py: 更新job 参数信息，并进行参数校验</li>
+<li>job_controller.py: 调用job_utils.save_job_conf() 生成job_dsl, job_runtime_conf,<br>job_runtime_conf_on_party,train_runtime_conf,pipeline_dsl 各项的保存目录，<br>并将相关参数以json格式落盘。这里和24 的操作一致，会入两次盘。</li>
+<li>job_controller.py: 调用initialize_task, 初始化task。</li>
+<li>job_controller.py: 基于common_job_parameters, dsl_parser ,调用TaskController.create_task()生成各个role &amp; party_id 上的task</li>
+<li>task_controller.py: 设置task_info 的各项信息</li>
+<li>task_controller.py: 调用JobSaver.create_task()</li>
+<li><p>job_saver.py: 调用create_job_family_entity将相关task信息入DB<br>这里在fate_flow/peewee.log 中打出了日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:31,079] [1:140259111192320] - peewee.py[line:2863]: (&#x27;INSERT INTO `t_task` (`f_create_time`, `f_create_date`, `f_update_time`, `f_update_date`, `f_job_id`, `f_component_name`, `f_task_id`, `f_task_version`, `f_initiator_role`, `f_initiator_party_id`, `f_federated_mode`, `f_federated_status_collect_type`, `f_status`, `f_role`, `f_party_id`, `f_run_on_this_party`, `f_party_status`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)&#x27;, [1627287631077, datetime.datetime(2021, 7, 26, 8, 20, 31), 1627287631078, datetime.datetime(2021, 7, 26, 8, 20, 31), &#x27;202107260820309976351&#x27;, &#x27;upload_0&#x27;, &#x27;202107260820309976351_upload_0&#x27;, 0, &#x27;local&#x27;, &#x27;0&#x27;, &#x27;MULTIPLE&#x27;, &#x27;PULL&#x27;, &#x27;waiting&#x27;, &#x27;local&#x27;, &#x27;0&#x27;, True, &#x27;waiting&#x27;])</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>job_controller.py: 调用initialize_job_tracker，初始化tracker。</p>
+</li>
+<li>job_controller.py: 初始化 tracker,并调用tracker.log_job_view </li>
+<li>job_tracker.py: 调用log_job_view 将相关信息写db，并在peewee.log 打日志<br>调用源码位于 python/fate_flow/operation/job_tracker.py 312行<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@DB.connection_context()</span><br><span class="line">def bulk_insert_into_db(self, model, data_source):</span><br><span class="line">    try:</span><br><span class="line">        try:</span><br><span class="line">            DB.create_tables([model])</span><br><span class="line">        except Exception as e:</span><br><span class="line">            schedule_logger(self.job_id).exception(e)</span><br><span class="line">        batch_size = 50 if RuntimeConfig.USE_LOCAL_DATABASE else 1000</span><br><span class="line">        for i in range(0, len(data_source), batch_size):</span><br><span class="line">            with DB.atomic():</span><br><span class="line">                model.insert_many(data_source[i:i+batch_size]).execute()</span><br><span class="line">        return len(data_source)</span><br><span class="line">    except Exception as e:</span><br><span class="line">        schedule_logger(self.job_id).exception(e)</span><br><span class="line">        return 0</span><br></pre></td></tr></table></figure>
+这里在fate_flow/peewee.log 中打出了日志如下：</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:31,122] [1:140259111192320] - peewee.py[line:2863]: (&#x27;SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE() AND table_type != %s ORDER BY table_name&#x27;, (&#x27;VIEW&#x27;,))</span><br><span class="line">[DEBUG] [2021-07-26 08:20:31,132] [1:140259111192320] - peewee.py[line:2863]: (&#x27;CREATE TABLE IF NOT EXISTS `t_tracking_metric_20210726` (`f_id` BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY, `f_create_time` BIGINT, `f_create_date` DATETIME, `f_update_time` BIGINT, `f_update_date` DATETIME, `f_job_id` VARCHAR(25) NOT NULL, `f_component_name` TEXT NOT NULL, `f_task_id` VARCHAR(100), `f_task_version` BIGINT, `f_role` VARCHAR(50) NOT NULL, `f_party_id` VARCHAR(10) NOT NULL, `f_metric_namespace` VARCHAR(180) NOT NULL, `f_metric_name` VARCHAR(180) NOT NULL, `f_key` VARCHAR(200) NOT NULL, `f_value` LONGTEXT NOT NULL, `f_type` INTEGER NOT NULL)&#x27;, [])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:31,163] [1:140259111192320] - peewee.py[line:2863]: (&#x27;CREATE INDEX `trackingmetric_20210726_f_job_id` ON `t_tracking_metric_20210726` (`f_job_id`)&#x27;, [])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:31,184] [1:140259111192320] - peewee.py[line:2863]: (&#x27;CREATE INDEX `trackingmetric_20210726_f_task_id` ON `t_tracking_metric_20210726` (`f_task_id`)&#x27;, [])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:31,220] [1:140259111192320] - peewee.py[line:2863]: (&#x27;CREATE INDEX `trackingmetric_20210726_f_task_version` ON `t_tracking_metric_20210726` (`f_task_version`)&#x27;, [])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:31,250] [1:140259111192320] - peewee.py[line:2863]: (&#x27;CREATE INDEX `trackingmetric_20210726_f_role` ON `t_tracking_metric_20210726` (`f_role`)&#x27;, [])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:31,265] [1:140259111192320] - peewee.py[line:2863]: (&#x27;CREATE INDEX `trackingmetric_20210726_f_party_id` ON `t_tracking_metric_20210726` (`f_party_id`)&#x27;, [])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:31,283] [1:140259111192320] - peewee.py[line:2863]: (&#x27;CREATE INDEX `trackingmetric_20210726_f_metric_namespace` ON `t_tracking_metric_20210726` (`f_metric_namespace`)&#x27;, [])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:31,310] [1:140259111192320] - peewee.py[line:2863]: (&#x27;CREATE INDEX `trackingmetric_20210726_f_metric_name` ON `t_tracking_metric_20210726` (`f_metric_name`)&#x27;, [])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:31,333] [1:140259111192320] - peewee.py[line:2863]: (&#x27;CREATE INDEX `trackingmetric_20210726_f_type` ON `t_tracking_metric_20210726` (`f_type`)&#x27;, [])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:31,377] [1:140259111192320] - peewee.py[line:2863]: (&#x27;INSERT INTO `t_tracking_metric_20210726` (`f_create_time`, `f_job_id`, `f_component_name`, `f_task_id`, `f_task_version`, `f_role`, `f_party_id`, `f_metric_namespace`, `f_metric_name`, `f_key`, `f_value`, `f_type`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)&#x27;, [1627287631122, &#x27;202107260820309976351&#x27;, &#x27;pipeline&#x27;, None, None, &#x27;local&#x27;, &#x27;0&#x27;, &#x27;job&#x27;, &#x27;job_view&#x27;, &#x27;gANYBwAAAHBhcnRuZXJxAC4=&#x27;, &#x27;gAN9cQAu&#x27;, 2, 1627287631122, &#x27;202107260820309976351&#x27;, &#x27;pipeline&#x27;, None, None, &#x27;local&#x27;, &#x27;0&#x27;, &#x27;job&#x27;, &#x27;job_view&#x27;, &#x27;gANYBwAAAGRhdGFzZXRxAC4=&#x27;, &#x27;gAN9cQBYBQAAAGxvY2FscQF9cQJLAH1xA3NzLg==&#x27;, 2, 1627287631122, &#x27;202107260820309976351&#x27;, &#x27;pipeline&#x27;, None, None, &#x27;local&#x27;, &#x27;0&#x27;, &#x27;job&#x27;, &#x27;job_view&#x27;, &#x27;gANYBQAAAHJvbGVzcQAu&#x27;, &#x27;gAN9cQBYBQAAAGxvY2FscQFdcQJLAGFzLg==&#x27;, 2])</span><br><span class="line">[DEBUG] [2021-07-26 08:20:31,381] [1:140259111192320] - pool.py[line:185]: Returning 140259386365264 to pool.</span><br></pre></td></tr></table></figure>
+<ol>
+<li>job_controller.py: 调用JobSaver.create_job() </li>
+<li><p>job_saver.py: 调用create_job_family_entity将相关job信息 写db  fate_flow/peewee.log</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 08:20:31,385] [1:140259111192320] - peewee.py[line:2863]: (&#x27;INSERT INTO `t_job` (`f_create_time`, `f_create_date`, `f_update_time`, `f_update_date`, `f_job_id`, `f_name`, `f_description`, `f_tag`, `f_dsl`, `f_runtime_conf`, `f_runtime_conf_on_party`, `f_train_runtime_conf`, `f_roles`, `f_work_mode`, `f_initiator_role`, `f_initiator_party_id`, `f_status`, `f_role`, `f_party_id`, `f_is_initiator`, `f_progress`, `f_ready_signal`, `f_cancel_signal`, `f_rerun_signal`, `f_end_scheduling_updates`, `f_cores`, `f_memory`, `f_remaining_cores`, `f_remaining_memory`, `f_resource_in_use`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)&#x27;, [1627287631382, datetime.datetime(2021, 7, 26, 8, 20, 31), 1627287631382, datetime.datetime(2021, 7, 26, 8, 20, 31), &#x27;202107260820309976351&#x27;, &#x27;&#x27;, &#x27;&#x27;, &#x27;&#x27;, &#x27;&#123;&quot;components&quot;: &#123;&quot;upload_0&quot;: &#123;&quot;module&quot;: &quot;Upload&quot;&#125;&#125;&#125;&#x27;, &#x27;&#123;&quot;initiator&quot;: &#123;&quot;role&quot;: &quot;local&quot;, &quot;party_id&quot;: 0&#125;, &quot;job_parameters&quot;: &#123;&quot;common&quot;: &#123;&quot;job_type&quot;: &quot;train&quot;, &quot;work_mode&quot;: 1, &quot;backend&quot;: 0, &quot;computing_engine&quot;: &quot;EGGROLL&quot;, &quot;federation_engine&quot;: &quot;EGGROLL&quot;, &quot;storage_engine&quot;: &quot;EGGROLL&quot;, &quot;engines_address&quot;: &#123;&#125;, &quot;federated_mode&quot;: &quot;MULTIPLE&quot;, &quot;task_parallelism&quot;: 1, &quot;computing_partitions&quot;: 4, &quot;federated_status_collect_type&quot;: &quot;PULL&quot;, &quot;model_id&quot;: &quot;local-0#model&quot;, &quot;model_version&quot;: &quot;202107260820309976351&quot;, &quot;eggroll_run&quot;: &#123;&#125;, &quot;spark_run&quot;: &#123;&#125;, &quot;rabbitmq_run&quot;: &#123;&#125;, &quot;adaptation_parameters&quot;: &#123;&quot;task_nodes&quot;: 1, &quot;task_cores_per_node&quot;: 4, &quot;task_memory_per_node&quot;: 0, &quot;request_task_cores&quot;: 4, &quot;if_initiator_baseline&quot;: true&#125;&#125;&#125;, &quot;role&quot;: &#123;&quot;local&quot;: [0]&#125;, &quot;component_parameters&quot;: &#123;&quot;role&quot;: &#123;&quot;local&quot;: &#123;&quot;0&quot;: &#123;&quot;upload_0&quot;: &#123;&quot;name&quot;: &quot;hetero_guest&quot;, &quot;head&quot;: 1, &quot;file&quot;: &quot;/data/projects/fate/jobs/202107260820309976351/fate_upload_tmp/breast_hetero_guest.csv&quot;, &quot;partition&quot;: 1, &quot;namespace&quot;: &quot;cl&quot;, &quot;destroy&quot;: false&#125;&#125;&#125;&#125;&#125;, &quot;dsl_version&quot;: 2&#125;&#x27;, &#x27;&#123;&quot;initiator&quot;: &#123;&quot;role&quot;: &quot;local&quot;, &quot;party_id&quot;: 0&#125;, &quot;job_parameters&quot;: &#123;&quot;job_type&quot;: &quot;train&quot;, &quot;work_mode&quot;: 1, &quot;backend&quot;: 0, &quot;computing_engine&quot;: &quot;EGGROLL&quot;, &quot;federation_engine&quot;: &quot;EGGROLL&quot;, &quot;storage_engine&quot;: &quot;EGGROLL&quot;, &quot;engines_address&quot;: &#123;&quot;computing&quot;: &#123;&quot;cores_per_node&quot;: 20, &quot;nodes&quot;: 1&#125;, &quot;federation&quot;: &#123;&quot;host&quot;: &quot;rollsite&quot;, &quot;port&quot;: 9370&#125;, &quot;storage&quot;: &#123;&quot;cores_per_node&quot;: 20, &quot;nodes&quot;: 1&#125;&#125;, &quot;federated_mode&quot;: &quot;MULTIPLE&quot;, &quot;task_parallelism&quot;: 1, &quot;computing_partitions&quot;: 4, &quot;federated_status_collect_type&quot;: &quot;PULL&quot;, &quot;model_id&quot;: &quot;local-0#model&quot;, &quot;model_version&quot;: &quot;202107260820309976351&quot;, &quot;eggroll_run&quot;: &#123;&quot;eggroll.session.processors.per.node&quot;: 4&#125;, &quot;spark_run&quot;: &#123;&#125;, &quot;rabbitmq_run&quot;: &#123;&#125;, &quot;adaptation_parameters&quot;: &#123;&quot;task_nodes&quot;: 1, &quot;task_cores_per_node&quot;: 4, &quot;task_memory_per_node&quot;: 0, &quot;request_task_cores&quot;: 4, &quot;if_initiator_baseline&quot;: false&#125;&#125;, &quot;role&quot;: &#123;&quot;local&quot;: [0]&#125;, &quot;component_parameters&quot;: &#123;&quot;role&quot;: &#123;&quot;local&quot;: &#123;&quot;0&quot;: &#123;&quot;upload_0&quot;: &#123;&quot;name&quot;: &quot;hetero_guest&quot;, &quot;head&quot;: 1, &quot;file&quot;: &quot;/data/projects/fate/jobs/202107260820309976351/fate_upload_tmp/breast_hetero_guest.csv&quot;, &quot;partition&quot;: 1, &quot;namespace&quot;: &quot;cl&quot;, &quot;destroy&quot;: false&#125;&#125;&#125;&#125;&#125;, &quot;dsl_version&quot;: 2&#125;&#x27;, &#x27;&#123;&#125;&#x27;, &#x27;&#123;&quot;local&quot;: [0]&#125;&#x27;, 1, &#x27;local&#x27;, &#x27;0&#x27;, &#x27;waiting&#x27;, &#x27;local&#x27;, &#x27;0&#x27;, True, 0, False, False, False, 0, 0, 0, 0, 0, False])</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>party_app.py: 对应48，若以上步骤都未 raise 异常，则调用get_json_result, 生成返回信息 success 给。 否则抛出异常</p>
+</li>
+<li>party_app.py: 返回信息给server端，对应46</li>
+<li>fate_flow_server.py: 返回response 给api_utils.py，对应45</li>
+<li>api_utils.py: 返回response 给 federated_scheduler.py，对应44</li>
+<li>federated_scheduler.py: 根据response生成federated_response </li>
+<li>federated_scheduler.py: 返回federated_response  给dag_scheduler.py，对应42</li>
+<li>dag_scheduler.py: 返回federated_response  给data_access_app.py，对应13</li>
+<li>data_access_app.py: 返回federated_response 给fate_flow_server.py，对应3</li>
+<li>fate_flow_server.py: 返回federated_response 给 fate_flow_client.py 对应2</li>
+<li>fate_flow_client.py: 调用prettify 在console 打印日志</li>
+</ol>
+<p>至此，任务提交成功</p>
+<h1 id="REF"><a href="#REF" class="headerlink" title="REF"></a>REF</h1><p><a href="">raise</a><br><a href="">peewee</a><br><a href="http://c.biancheng.net/view/5484.html">Python <strong>new</strong>()方法详解</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FATE/" rel="tag"># FATE</a>
+              <a href="/tags/FedAI/" rel="tag"># FedAI</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-log-3-lifecycle/" rel="prev" title="FATE学习：跟着日志读源码（三）一般任务生命周期">
+      <i class="fa fa-chevron-left"></i> FATE学习：跟着日志读源码（三）一般任务生命周期
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-log-5-upload-task-schedule/" rel="next" title="FATE学习：跟着日志读源码（五）upload任务job schedule阶段">
+      FATE学习：跟着日志读源码（五）upload任务job schedule阶段 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%BC%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">执行步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#REF"><span class="nav-number">3.</span> <span class="nav-text">REF</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">喵十八</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2fbc96c0bbe149b498b5',
+      clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+      repo        : 'Yao544303.github.io',
+      owner       : 'Yao544303',
+      admin       : ['Yao544303'],
+      id          : 'dba7871330b5dbe82831faa10e3697b2',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

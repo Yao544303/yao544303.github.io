@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0-rc2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="综述参考FATE 的flowchart，常规任务开始的第一个组件，就是dataio。同前文，在${job_log_dir}&#x2F;fate_flow_schedule.log 中输出如下命令后，开始通过task_executor 执行dataio。12345[INFO] [2021-06-04 14:42:02,995] [1:140456603948800] - job_utils.py[line:3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FATE学习：跟着日志读源码（十二）dataio task excute阶段">
+<meta property="og:url" content="http://yoursite.com/2023/08/20/fate-log-12-dataio/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="综述参考FATE 的flowchart，常规任务开始的第一个组件，就是dataio。同前文，在${job_log_dir}&#x2F;fate_flow_schedule.log 中输出如下命令后，开始通过task_executor 执行dataio。12345[INFO] [2021-06-04 14:42:02,995] [1:140456603948800] - job_utils.py[line:3">
+<meta property="og:locale">
+<meta property="article:published_time" content="2023-08-20T05:41:52.000Z">
+<meta property="article:modified_time" content="2023-08-20T05:46:33.434Z">
+<meta property="article:author" content="喵十八">
+<meta property="article:tag" content="FATE">
+<meta property="article:tag" content="FedAI">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2023/08/20/fate-log-12-dataio/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>FATE学习：跟着日志读源码（十二）dataio task excute阶段 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">喵十八の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fate-log-12-dataio/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FATE学习：跟着日志读源码（十二）dataio task excute阶段
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-08-20 13:41:52 / Modified: 13:46:33" itemprop="dateCreated datePublished" datetime="2023-08-20T13:41:52+08:00">2023-08-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FATE/" itemprop="url" rel="index"><span itemprop="name">FATE</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>参考FATE 的flowchart，常规任务开始的第一个组件，就是dataio。<br>同前文，在${job_log_dir}/fate_flow_schedule.log 中输出如下命令后，开始通过task_executor 执行dataio。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-06-04 14:42:02,995] [1:140456603948800] - job_utils.py[line:310]: start process command: /opt/app-root/bin/python /data/projects/fate/python/fate_flow/operation/task_executor.py -j 202106041441554669404 -n dataio_0 -t 202106041441554669404_dataio_0 -v 0 -r guest -p 9989 -c /data/projects/fate/jobs/202106041441554669404/guest/9989/dataio_0/202106041441554669404_dataio_0/0/task_parameters.json --run_ip 10.200.224.59 --job_server 10.200.224.59:9380</span><br><span class="line">[INFO] [2021-06-04 14:42:03,005] [1:140456603948800] - job_utils.py[line:333]: start process command: /opt/app-root/bin/python /data/projects/fate/python/fate_flow/operation/task_executor.py -j 202106041441554669404 -n dataio_0 -t 202106041441554669404_dataio_0 -v 0 -r guest -p 9989 -c /data/projects/fate/jobs/202106041441554669404/guest/9989/dataio_0/202106041441554669404_dataio_0/0/task_parameters.json --run_ip 10.200.224.59 --job_server 10.200.224.59:9380 successfully, pid is 1657</span><br><span class="line"></span><br><span class="line">[INFO] [2021-06-04 14:42:03,972] [1657:139893886592832] - task_executor.py[line:56]: enter task process</span><br><span class="line">[INFO] [2021-06-04 14:42:03,972] [1657:139893886592832] - task_executor.py[line:57]: Namespace(component_name=&#x27;dataio_0&#x27;, config=&#x27;/data/projects/fate/jobs/202106041441554669404/guest/9989/dataio_0/202106041441554669404_dataio_0/0/task_parameters.json&#x27;, job_id=&#x27;202106041441554669404&#x27;, job_server=&#x27;10.200.224.59:9380&#x27;, party_id=9989, role=&#x27;guest&#x27;, run_ip=&#x27;10.200.224.59&#x27;, task_id=&#x27;202106041441554669404_dataio_0&#x27;, task_version=0)</span><br></pre></td></tr></table></figure></p>
+<p>具体的执行日志，会输出在dataio_0/DEBUG.log中。</p>
+<h1 id="执行细节"><a href="#执行细节" class="headerlink" title="执行细节"></a>执行细节</h1><ol>
+<li>task_executor.py： 执行python命令，前期参数准备等类似upload，但在init federation部分，两者不同，upload是loacl的，data_io 是多方协同的<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">upload的</span><br><span class="line">[DEBUG] [2021-07-26 08:20:39,837] [90:139687957583680] - _federation.py[line:35]: [federation.eggroll]init federation: rp_session_id=202107260820309976351_upload_0_0_local_0, rs_session_id=202107260820309976351_upload_0_0, party=Party(role=local, party_id=0), proxy_endpoint=rollsite:9370</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">data_io的</span><br><span class="line">[DEBUG] [2021-08-20 10:01:15,929] [2673:140340420417344] - _federation.py[line:35]: [federation.eggroll]init federation: rp_session_id=202108201000594960226_dataio_0_0_guest_9989, rs_session_id=202108201000594960226_dataio_0_0, party=Party(role=guest, party_id=9989), proxy_endpoint=rollsite:9370</span><br></pre></td></tr></table></figure></li>
+<li><p>task_executor.py：准备好相关参数之后，通过run，开始具体的任务执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run_object.run(component_parameters_on_party, task_run_args)</span><br></pre></td></tr></table></figure>
+<p>这里需要注意的是，DataIO 类（源码：python/federatedml/util/data_io.py）没有重写run方法，故这里调用的是基类ModelBase的run方法（源码：python/federatedml/model_base.py）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">def run(self, component_parameters=None, args=None):</span><br><span class="line">    self._init_runtime_parameters(component_parameters)</span><br><span class="line">    self.component_properties.parse_dsl_args(args)</span><br><span class="line"></span><br><span class="line">    running_funcs = self.component_properties.extract_running_rules(args, self)</span><br><span class="line">    LOGGER.debug(f&quot;running_funcs: &#123;running_funcs.todo_func_list&#125;&quot;)</span><br><span class="line">    saved_result = []</span><br><span class="line">    for func, params, save_result, use_previews in running_funcs:</span><br><span class="line">        # for func, params in zip(todo_func_list, todo_func_params):</span><br><span class="line">        if use_previews:</span><br><span class="line">            if params:</span><br><span class="line">                real_param = [saved_result, params]</span><br><span class="line">            else:</span><br><span class="line">                real_param = saved_result</span><br><span class="line">            LOGGER.debug(&quot;func: &#123;&#125;&quot;.format(func))</span><br><span class="line">            this_data_output = func(*real_param)</span><br><span class="line">            saved_result = []</span><br><span class="line">        else:</span><br><span class="line">            this_data_output = func(*params)</span><br><span class="line"></span><br><span class="line">        if save_result:</span><br><span class="line">            saved_result.append(this_data_output)</span><br><span class="line"></span><br><span class="line">    if len(saved_result) == 1:</span><br><span class="line">        self.data_output = saved_result[0]</span><br><span class="line">        # LOGGER.debug(&quot;One data: &#123;&#125;&quot;.format(self.data_output.first()[1].features))</span><br><span class="line">    LOGGER.debug(&quot;saved_result is : &#123;&#125;, data_output: &#123;&#125;&quot;.format(saved_result, self.data_output))</span><br><span class="line">    # self.check_consistency()</span><br><span class="line">    self.save_summary()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>model_base.py：执行_init_runtime_parameters 初始化runtime_parameters，实际是调用component_properties.py的parse_component_param，输出如下日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-08-20 10:01:16,473] [2673:140340420417344] - component_properties.py[line:73]: &#123;&#x27;DataIOParam&#x27;: &#123;&#x27;input_format&#x27;: &#x27;dense&#x27;, &#x27;delimitor&#x27;: &#x27;,&#x27;, &#x27;data_type&#x27;: &#x27;float64&#x27;, &#x27;exclusive_data_type&#x27;: None, &#x27;tag_with_value&#x27;: False, &#x27;tag_value_delimitor&#x27;: &#x27;:&#x27;, &#x27;missing_fill&#x27;: True, &#x27;default_value&#x27;: 0, &#x27;missing_fill_method&#x27;: None, &#x27;missing_impute&#x27;: None, &#x27;outlier_replace&#x27;: True, &#x27;outlier_replace_method&#x27;: None, &#x27;outlier_impute&#x27;: None, &#x27;outlier_replace_value&#x27;: 0, &#x27;with_label&#x27;: True, &#x27;label_name&#x27;: &#x27;y&#x27;, &#x27;label_type&#x27;: &#x27;int&#x27;, &#x27;output_format&#x27;: &#x27;dense&#x27;, &#x27;need_run&#x27;: True&#125;, &#x27;initiator&#x27;: &#123;&#x27;role&#x27;: &#x27;guest&#x27;, &#x27;party_id&#x27;: 9989&#125;, &#x27;job_parameters&#x27;: &#123;&#x27;job_type&#x27;: &#x27;train&#x27;, &#x27;work_mode&#x27;: 1, &#x27;backend&#x27;: 0, &#x27;computing_engine&#x27;: &#x27;EGGROLL&#x27;, &#x27;federation_engine&#x27;: &#x27;EGGROLL&#x27;, &#x27;storage_engine&#x27;: &#x27;EGGROLL&#x27;, &#x27;engines_address&#x27;: &#123;&#x27;computing&#x27;: &#123;&#x27;cores_per_node&#x27;: 20, &#x27;nodes&#x27;: 1&#125;, &#x27;federation&#x27;: &#123;&#x27;host&#x27;: &#x27;rollsite&#x27;, &#x27;port&#x27;: 9370&#125;, &#x27;storage&#x27;: &#123;&#x27;cores_per_node&#x27;: 20, &#x27;nodes&#x27;: 1&#125;&#125;, &#x27;federated_mode&#x27;: &#x27;MULTIPLE&#x27;, &#x27;task_parallelism&#x27;: 1, &#x27;computing_partitions&#x27;: 4, &#x27;federated_status_collect_type&#x27;: &#x27;PULL&#x27;, &#x27;model_id&#x27;: &#x27;arbiter-10000#guest-9989#host-10000#model&#x27;, &#x27;model_version&#x27;: &#x27;202108201000594960226&#x27;, &#x27;eggroll_run&#x27;: &#123;&#x27;eggroll.session.processors.per.node&#x27;: 4&#125;, &#x27;spark_run&#x27;: &#123;&#125;, &#x27;rabbitmq_run&#x27;: &#123;&#125;, &#x27;adaptation_parameters&#x27;: &#123;&#x27;task_nodes&#x27;: 1, &#x27;task_cores_per_node&#x27;: 4, &#x27;task_memory_per_node&#x27;: 0, &#x27;request_task_cores&#x27;: 4, &#x27;if_initiator_baseline&#x27;: False&#125;&#125;, &#x27;role&#x27;: &#123;&#x27;guest&#x27;: [9989], &#x27;host&#x27;: [10000], &#x27;arbiter&#x27;: [10000]&#125;, &#x27;config&#x27;: &#x27;/data/projects/fate/python/cl/fc/config/20210819/train_20210819_cgame2122_part.json&#x27;, &#x27;dsl&#x27;: &#x27;/data/projects/fate/python/cl/fc/env/pattern/train_job_dsl.json&#x27;, &#x27;function&#x27;: &#x27;submit_job&#x27;, &#x27;local&#x27;: &#123;&#x27;role&#x27;: &#x27;guest&#x27;, &#x27;party_id&#x27;: 9989&#125;, &#x27;CodePath&#x27;: &#x27;federatedml/util/data_io.py/DataIO&#x27;, &#x27;module&#x27;: &#x27;DataIO&#x27;, &#x27;output_data_name&#x27;: [&#x27;train&#x27;]&#125;</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,474] [2673:140340420417344] - component_properties.py[line:80]: need_run: True, need_cv: False</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>model_base.py：component_properties.parse_dsl_args，调用component_properties.py的 parse_dsl_args解析dsl 参数。<br>4.1 先是判断是否有model或isometric_model参数，两者的说明，详见<a href="https://blog.csdn.net/yao544303963/article/details/120101744">FATE学习：配置文件解析及V1/V2版本对比</a><br>4.2 解析有哪些类型的datatype。（可选项有”train_data”, “eval_data”, “validate_data”, “test_data”四个）</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-08-20 10:01:16,474] [2673:140340420417344] - component_properties.py[line:102]: parse_dsl_args data_sets: &#123;&#x27;args&#x27;: &#123;&#x27;data&#x27;: [&lt;fate_arch.computing.eggroll._table.Table object at 0x7fa373fdb080&gt;]&#125;&#125;</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,474] [2673:140340420417344] - component_properties.py[line:112]: [Data Parser], has_train_data: False</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,474] [2673:140340420417344] - component_properties.py[line:112]: [Data Parser], has_eval_data: False</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,475] [2673:140340420417344] - component_properties.py[line:112]: [Data Parser], has_validate_data: False</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,475] [2673:140340420417344] - component_properties.py[line:112]: [Data Parser], has_test_data: False</span><br></pre></td></tr></table></figure>
+<p>只要 四种类型的data，有一种没有，has_normal_input_data 就为ture，打印如下日志<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-08-20 10:01:16,475] [2673:140340420417344] - component_properties.py[line:118]: [Data Parser], has_normal_data: True</span><br></pre></td></tr></table></figure></p>
+<p>这里需要注意，如过有eval_data，则必须有validate_data 或 test_data，否则抛出异常<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if self.has_eval_data:</span><br><span class="line">    if self.has_validate_data or self.has_test_data:</span><br><span class="line">        raise DSLConfigError(&quot;eval_data input should not be configured simultaneously&quot;</span><br><span class="line">                             &quot; with validate_data or test_data&quot;)</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>model_base.py：调用 ComponentProperties.extract_running_rules ，提取运行规则。</li>
+<li>component_properties.py：先调用extract_input_data，提取输入数据，输出如下日志<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-08-20 10:01:16,475] [2673:140340420417344] - component_properties.py[line:179]: Input data_sets: &#123;&#x27;args&#x27;: &#123;&#x27;data&#x27;: [&lt;fate_arch.computing.eggroll._table.Table object at 0x7fa373fdb080&gt;]&#125;&#125;</span><br><span class="line"></span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,475] [2673:140340420417344] - component_properties.py[line:189]: data_dict: &#123;&#x27;data&#x27;: [&lt;fate_arch.computing.eggroll._table.Table object at 0x7fa373fdb080&gt;]&#125;</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,475] [2673:140340420417344] - component_properties.py[line:192]: data_list: &lt;fate_arch.computing.eggroll._table.Table object at 0x7fa373fdb080&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>这里紧接着，是打出了如下日志<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-08-20 10:01:16,479] [2673:140340420417344] - profile.py[line:84]: [computing#41d092c3c4]function_stack: [component_properties.py:225]extract_input_data &lt;-[component_properties.py:238]extract_running_rules &lt;-[model_base.py:87]run</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,480] [2673:140340420417344] - profile.py[line:87]: [computing#41d092c3c4]start</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,493] [2673:140340420417344] - profile.py[line:93]: [computing#41d092c3c4]done, elapse: 0.013397216796875, function: count(self: Table(partition=4)) -&gt; int</span><br></pre></td></tr></table></figure><br>是由于<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.input_data_count = data_table.count()</span><br></pre></td></tr></table></figure><br>的count，经历了如下调用链 data_table.count() -&gt; fate_arch/computing/eggroll/_table.py.count() -&gt; fate_arch/common/profile.py.computing_profile() -&gt; _ComputingTimer()</p>
+<p>校验完毕，打出如下日志：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-08-20 10:01:16,493] [2673:140340420417344] - component_properties.py[line:231]: train_data: None, validate_data: None, test_data: None, data: &#123;&#x27;args.data&#x27;: &lt;fate_arch.computing.eggroll._table.Table object at 0x7fa373fdb080&gt;&#125;</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li><p>component_properties.py：确定需要执行的function，添加到running_funcs</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">running_funcs.add_func(model.extract_data, [data], save_result=True)</span><br><span class="line">running_funcs.add_func(model.set_flowid, [&#x27;transform&#x27;])</span><br><span class="line">running_funcs.add_func(model.transform, [], use_previews=True, save_result=True)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>model_base.py：ComponentProperties.extract_running_rules执行完毕，打印出7中添加的function</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-08-20 10:01:16,493] [2673:140340420417344] - model_base.py[line:88]: running_funcs: [&lt;function ModelBase.extract_data at 0x7fa374011488&gt;, &lt;bound method ModelBase.set_flowid of &lt;federatedml.util.data_io.DataIO object at 0x7fa37627c860&gt;&gt;, &lt;bound method DataIO.fit of &lt;federatedml.util.data_io.DataIO object at 0x7fa37627c860&gt;&gt;]</span><br></pre></td></tr></table></figure>
+<p>可以看到，一共有3个，model.extract_data，model.set_flowid，model.transform</p>
+</li>
+<li><p>model_base.py：遍历执行running_funcs中的function<br>9.1 先执行model.extract_data，use_previews=False 执行执行func ，也就是ModelBase.extract_data() 打印如下日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-08-20 10:01:16,493] [2673:140340420417344] - model_base.py[line:340]: In extract_data, data input: &#123;&#x27;args.data&#x27;: &lt;fate_arch.computing.eggroll._table.Table object at 0x7fa373fdb080&gt;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>9.2 执行model.set_flowid ，set flowid<br>9.3 执行model.transform 也就是 DataIO.fit<br>先打印日志，<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-08-20 10:01:16,493] [2673:140340420417344] - model_base.py[line:97]: func: &lt;bound method DataIO.fit of &lt;federatedml.util.data_io.DataIO object at 0x7fa37627c860&gt;&gt;</span><br></pre></td></tr></table></figure><br>然后调用DataIO.fit</p>
+<ol>
+<li>data_io.py：执行fit()<br>dataio 的成员变量reader 有三个可选类型。默认是DenseFeatureReader</li>
+</ol>
+<ul>
+<li>DenseFeatureReader：稠密数据。</li>
+<li>SparseFeatureReader： libsvm 格式数据。</li>
+<li>SparseTagReader：tag data 格式数据。<br>调用 DenseFeatureReader.read_data开始读取数据，</li>
+</ul>
+<ol>
+<li>data_io.py：DenseFeatureReader 执行read_data()<br>11.1 先打印日志<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-08-20 10:01:16,493] [2673:140340420417344] - data_io.py[line:118]: start to read dense data and change data to instance</span><br></pre></td></tr></table></figure>
+11.2 调用abnormal_detection.empty_table_detection，检验data_instance 不为空<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def empty_table_detection(data_instances):</span><br><span class="line">    num_data = data_instances.count()</span><br><span class="line">    if num_data == 0:</span><br><span class="line">        raise ValueError(f&quot;Count of data_instance is 0: &#123;data_instances&#125;&quot;)</span><br></pre></td></tr></table></figure>
+对应日志：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-08-20 10:01:16,494] [2673:140340420417344] - profile.py[line:84]: [computing#4a2ab9dfb5]function_stack: [abnormal_detection.py:27]empty_table_detection &lt;-[data_io.py:120]read_data &lt;-[data_io.py:885]fit &lt;-[model_base.py:98]run</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,494] [2673:140340420417344] - profile.py[line:87]: [computing#4a2ab9dfb5]start</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,512] [2673:140340420417344] - profile.py[line:93]: [computing#4a2ab9dfb5]done, elapse: 0.017865896224975586, function: count(self: Table(partition=4)) -&gt; int</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>如果是transform 模式，直接获取文件头。如果是fit模式，则会进行相关适配。</p>
+<p>11.3 调用 generate_header，生成头。<br>输出如下日志：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-08-20 10:01:16,512] [2673:140340420417344] - data_io.py[line:75]: header is x,y</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,512] [2673:140340420417344] - data_io.py[line:76]: sid_name is imei</span><br></pre></td></tr></table></figure></p>
+<p>11.4 idx不为空的情况下，获取shape，并执行mapValues<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">data_shape = data_overview.get_data_shape(input_data)</span><br><span class="line">input_data_features = input_data.mapValues</span><br><span class="line">input_data_labels = input_data.mapValues</span><br></pre></td></tr></table></figure><br>调用链为get_data_shape -&gt; python/fate_arch/computing/eggroll/_table.py对应方法（first，mapValues)，有注解 @computing_profile，产生如下日志<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-08-20 10:01:16,513] [2673:140340420417344] - profile.py[line:84]: [computing#19347ff993]function_stack: [data_overview.py:92]get_data_shape &lt;-[data_io.py:131]read_data &lt;-[data_io.py:885]fit &lt;-[model_base.py:98]run</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,513] [2673:140340420417344] - profile.py[line:87]: [computing#19347ff993]start</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,546] [2673:140340420417344] - profile.py[line:93]: [computing#19347ff993]done, elapse: 0.03276538848876953, function: first(self: Table(partition=4)) -&gt; tuple</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,547] [2673:140340420417344] - profile.py[line:84]: [computing#5ce83a9f4d]function_stack: [data_io.py:136]read_data &lt;-[data_io.py:885]fit &lt;-[model_base.py:98]run</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,547] [2673:140340420417344] - profile.py[line:87]: [computing#5ce83a9f4d]start</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,725] [2673:140340420417344] - profile.py[line:93]: [computing#5ce83a9f4d]done, elapse: 0.17815899848937988, function: mapValues(self: Table(partition=4), func: function) -&gt; Table(partition=4)</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,726] [2673:140340420417344] - profile.py[line:84]: [computing#68bd39b935]function_stack: [data_io.py:139]read_data &lt;-[data_io.py:885]fit &lt;-[model_base.py:98]run</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,726] [2673:140340420417344] - profile.py[line:87]: [computing#68bd39b935]start</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,770] [2673:140340420417344] - profile.py[line:93]: [computing#68bd39b935]done, elapse: 0.0438079833984375, function: mapValues(self: Table(partition=4), func: function) -&gt; Table(partition=4)</span><br></pre></td></tr></table></figure></p>
+<p>11.5 调用fit() 转换数据。<br>先调用get_schema<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">schema = make_schema(self.header, self.sid_name, self.label_name)</span><br></pre></td></tr></table></figure><br>输出如下日志<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,770] [2673:140340420417344] - abnormal_detection.py[line:81]: schema is &#123;&#x27;header&#x27;: [&#x27;x&#x27;], &#x27;sid_name&#x27;: &#x27;imei&#x27;, &#x27;label_name&#x27;: &#x27;y&#x27;&#125;</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,770] [2673:140340420417344] - abnormal_detection.py[line:85]: header is [&#x27;x&#x27;]</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,771] [2673:140340420417344] - abnormal_detection.py[line:95]: sid_name is imei</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,771] [2673:140340420417344] - abnormal_detection.py[line:100]: label_name is y</span><br></pre></td></tr></table></figure></p>
+<p>11.6 然后调用fill_missing_value 和 replace_outlier_value 进行缺失值和异常值处理。对应日志如下<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">[INFO] [2021-08-20 10:01:16,842] [2673:140340420417344] - imputer.py[line:159]: finish replace missing value with replace value 0, replace method is:None</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,844] [2673:140340420417344] - profile.py[line:84]: [computing#89322b8ead]function_stack: [data_overview.py:92]get_data_shape &lt;-[imputer.py:160]__fit_replace &lt;-[imputer.py:242]fit &lt;-[data_io.py:187]fill_missing_value &lt;-[data_io.py:158]fit &lt;-[data_io.py:146]read_data &lt;-[data_io.py:885]fit &lt;-[model_base.py:98]run</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,844] [2673:140340420417344] - profile.py[line:87]: [computing#89322b8ead]start</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,887] [2673:140340420417344] - profile.py[line:93]: [computing#89322b8ead]done, elapse: 0.04289054870605469, function: first(self: Table(partition=4)) -&gt; tuple</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,888] [2673:140340420417344] - profile.py[line:84]: [computing#74840b2b1e]function_stack: [imputer.py:207]__get_impute_rate_from_replace_data &lt;-[imputer.py:244]fit &lt;-[data_io.py:187]fill_missing_value &lt;-[data_io.py:158]fit &lt;-[data_io.py:146]read_data &lt;-[data_io.py:885]fit &lt;-[model_base.py:98]run</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,889] [2673:140340420417344] - profile.py[line:87]: [computing#74840b2b1e]start</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,937] [2673:140340420417344] - profile.py[line:93]: [computing#74840b2b1e]done, elapse: 0.04834342002868652, function: applyPartitions(self: Table(partition=4), func: function) -&gt; Table(partition=4)</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,939] [2673:140340420417344] - profile.py[line:87]: [computing#74840b2b1e]start</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,956] [2673:140340420417344] - profile.py[line:93]: [computing#74840b2b1e]done, elapse: 0.01778411865234375, function: reduce(self: Table(partition=4), func: function) -&gt; ndarray</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,958] [2673:140340420417344] - profile.py[line:84]: [computing#8129e5f4a8]function_stack: [imputer.py:245]fit &lt;-[data_io.py:187]fill_missing_value &lt;-[data_io.py:158]fit &lt;-[data_io.py:146]read_data &lt;-[data_io.py:885]fit &lt;-[model_base.py:98]run</span><br><span class="line">[DEBUG] [2021-08-20 10:01:16,958] [2673:140340420417344] - profile.py[line:87]: [computing#8129e5f4a8]start</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,001] [2673:140340420417344] - profile.py[line:93]: [computing#8129e5f4a8]done, elapse: 0.04316139221191406, function: mapValues(self: Table(partition=4), func: function) -&gt; Table(partition=4)</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,003] [2673:140340420417344] - profile.py[line:84]: [computing#f496b1cb7d]function_stack: [imputer.py:157]__fit_replace &lt;-[imputer.py:242]fit &lt;-[data_io.py:209]replace_outlier_value &lt;-[data_io.py:159]fit &lt;-[data_io.py:146]read_data &lt;-[data_io.py:885]fit &lt;-[model_base.py:98]run</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,003] [2673:140340420417344] - profile.py[line:87]: [computing#f496b1cb7d]start</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,048] [2673:140340420417344] - profile.py[line:93]: [computing#f496b1cb7d]done, elapse: 0.04530787467956543, function: mapValues(self: Table(partition=4), func: partial) -&gt; Table(partition=4)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[INFO] [2021-08-20 10:01:17,049] [2673:140340420417344] - imputer.py[line:159]: finish replace missing value with replace value 0, replace method is:None</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,051] [2673:140340420417344] - profile.py[line:84]: [computing#61b779c7fc]function_stack: [data_overview.py:92]get_data_shape &lt;-[imputer.py:160]__fit_replace &lt;-[imputer.py:242]fit &lt;-[data_io.py:209]replace_outlier_value &lt;-[data_io.py:159]fit &lt;-[data_io.py:146]read_data &lt;-[data_io.py:885]fit &lt;-[model_base.py:98]run</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,051] [2673:140340420417344] - profile.py[line:87]: [computing#61b779c7fc]start</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,093] [2673:140340420417344] - profile.py[line:93]: [computing#61b779c7fc]done, elapse: 0.04207563400268555, function: first(self: Table(partition=4)) -&gt; tuple</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,094] [2673:140340420417344] - profile.py[line:84]: [computing#cdc7da1b93]function_stack: [imputer.py:207]__get_impute_rate_from_replace_data &lt;-[imputer.py:244]fit &lt;-[data_io.py:209]replace_outlier_value &lt;-[data_io.py:159]fit &lt;-[data_io.py:146]read_data &lt;-[data_io.py:885]fit &lt;-[model_base.py:98]run</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,095] [2673:140340420417344] - profile.py[line:87]: [computing#cdc7da1b93]start</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,130] [2673:140340420417344] - profile.py[line:93]: [computing#cdc7da1b93]done, elapse: 0.0355229377746582, function: applyPartitions(self: Table(partition=4), func: function) -&gt; Table(partition=4)</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,132] [2673:140340420417344] - profile.py[line:87]: [computing#cdc7da1b93]start</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,149] [2673:140340420417344] - profile.py[line:93]: [computing#cdc7da1b93]done, elapse: 0.017266035079956055, function: reduce(self: Table(partition=4), func: function) -&gt; ndarray</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,151] [2673:140340420417344] - profile.py[line:84]: [computing#f50f12b817]function_stack: [imputer.py:245]fit &lt;-[data_io.py:209]replace_outlier_value &lt;-[data_io.py:159]fit &lt;-[data_io.py:146]read_data &lt;-[data_io.py:885]fit &lt;-[model_base.py:98]run</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,151] [2673:140340420417344] - profile.py[line:87]: [computing#f50f12b817]start</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,192] [2673:140340420417344] - profile.py[line:93]: [computing#f50f12b817]done, elapse: 0.04134106636047363, function: mapValues(self: Table(partition=4), func: function) -&gt; Table(partition=4)</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,193] [2673:140340420417344] - profile.py[line:84]: [computing#9e38a6d0d2]function_stack: [data_io.py:224]gen_data_instance &lt;-[data_io.py:161]fit &lt;-[data_io.py:146]read_data &lt;-[data_io.py:885]fit &lt;-[model_base.py:98]run</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,193] [2673:140340420417344] - profile.py[line:87]: [computing#9e38a6d0d2]start</span><br><span class="line">[DEBUG] [2021-08-20 10:01:17,238] [2673:140340420417344] - profile.py[line:93]: [computing#9e38a6d0d2]done, elapse: 0.04482388496398926, function: join(self: Table(partition=4), other: Table(partition=4), func: function) -&gt; Table(partition=4)</span><br></pre></td></tr></table></figure></p>
+<p>11.7 最终是调用gen_data_instance 生成对象实例返回。</p>
+<ol>
+<li>data_io.py：11的结果返回后，调用get_summary 获取统计值。</li>
+<li>model_base.py：running_funcs中的function遍历执行完毕，对应9，打印如下日志<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-08-20 10:01:17,239] [2673:140340420417344] - model_base.py[line:109]: saved_result is : [&lt;fate_arch.computing.eggroll._table.Table object at 0x7fa373f3b8d0&gt;], data_output: &lt;fate_arch.computing.eggroll._table.Table object at 0x7fa373f3b8d0&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>model_base.py： 调用save_summary() 保存任务摘要</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-08-20 10:01:17,239] [2673:140340420417344] - tracker_client.py[line:173]: Request save job 202108201000594960226 task 202108201000594960226_dataio_0 0 on guest 9989 component summary</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>task_executor.py： profile.profile_ends() 打印任务摘要</p>
+</li>
+<li>task_executor.py：保存模型，输出日志如下<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-08-20 10:01:17,597] [2673:140340420417344] - pipelined_model.py[line:73]: Save dataio_0 dataio DataIOMeta buffer</span><br><span class="line">[INFO] [2021-08-20 10:01:17,598] [2673:140340420417344] - pipelined_model.py[line:73]: Save dataio_0 dataio DataIOParam buffer</span><br><span class="line">[INFO] [2021-08-20 10:01:17,602] [2673:140340420417344] - pipelined_model.py[line:78]: Save dataio_0 dataio successfully</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FATE/" rel="tag"># FATE</a>
+              <a href="/tags/FedAI/" rel="tag"># FedAI</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-log-11-upload-requests/" rel="prev" title="FATE学习：跟着日志读源码（十一）upload 任务过程中产生的请求">
+      <i class="fa fa-chevron-left"></i> FATE学习：跟着日志读源码（十一）upload 任务过程中产生的请求
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/08/20/fate-data-0-overview/" rel="next" title="FATE学习：运行过程中产生的数据 概览">
+      FATE学习：运行过程中产生的数据 概览 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%BC%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E7%BB%86%E8%8A%82"><span class="nav-number">2.</span> <span class="nav-text">执行细节</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">喵十八</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2fbc96c0bbe149b498b5',
+      clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+      repo        : 'Yao544303.github.io',
+      owner       : 'Yao544303',
+      admin       : ['Yao544303'],
+      id          : 'b404febfd685955dfdd062ff805a293e',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
