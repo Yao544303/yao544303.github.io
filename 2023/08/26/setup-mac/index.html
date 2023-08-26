@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0-rc2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="概述上一篇搭建开发环境-WSL+Ubuntu 记录了WSL 和Ubuntu 下开发环境的搭建。这一篇就说下Mac开发环境的搭建。就像很多人误以为Mini 是专为女孩子设计的高颜值车，其实是一辆极其hardcore 的拉力车一样。很多人都被Mac 那高颜值蒙蔽了，其实这是一台生产力满满的生产工具。 那既然作为生产工具，我们自然也要好好的配置一下了。 Setep1. 安装常用软件 vscode ide">
+<meta property="og:type" content="article">
+<meta property="og:title" content="搭建开发环境-Mac">
+<meta property="og:url" content="http://yoursite.com/2023/08/26/setup-mac/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="概述上一篇搭建开发环境-WSL+Ubuntu 记录了WSL 和Ubuntu 下开发环境的搭建。这一篇就说下Mac开发环境的搭建。就像很多人误以为Mini 是专为女孩子设计的高颜值车，其实是一辆极其hardcore 的拉力车一样。很多人都被Mac 那高颜值蒙蔽了，其实这是一台生产力满满的生产工具。 那既然作为生产工具，我们自然也要好好的配置一下了。 Setep1. 安装常用软件 vscode ide">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/image/tools/mac_items_defaut.jpg">
+<meta property="article:published_time" content="2023-08-26T03:19:42.000Z">
+<meta property="article:modified_time" content="2023-08-26T04:21:45.073Z">
+<meta property="article:author" content="喵十八">
+<meta property="article:tag" content="Setup">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/image/tools/mac_items_defaut.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2023/08/26/setup-mac/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>搭建开发环境-Mac | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">喵十八の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/26/setup-mac/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          搭建开发环境-Mac
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-08-26 11:19:42 / Modified: 12:21:45" itemprop="dateCreated datePublished" datetime="2023-08-26T11:19:42+08:00">2023-08-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>上一篇<a href="https://yao544303.github.io/2023/08/21/setup-wsl-ubuntu/">搭建开发环境-WSL+Ubuntu</a> 记录了WSL 和Ubuntu 下开发环境的搭建。这一篇就说下Mac开发环境的搭建。<br>就像很多人误以为Mini 是专为女孩子设计的高颜值车，其实是一辆极其hardcore 的拉力车一样。<br>很多人都被Mac 那高颜值蒙蔽了，其实这是一台生产力满满的生产工具。</p>
+<p>那既然作为生产工具，我们自然也要好好的配置一下了。</p>
+<h1 id="Setep"><a href="#Setep" class="headerlink" title="Setep"></a>Setep</h1><h2 id="1-安装常用软件"><a href="#1-安装常用软件" class="headerlink" title="1. 安装常用软件"></a>1. 安装常用软件</h2><ul>
+<li><a href="https://code.visualstudio.com/">vscode</a></li>
+<li><a href="https://www.jetbrains.com/idea/download/other.html">idea</a></li>
+<li><a href="https://www.jetbrains.com/pycharm/download/other.html">pycharm</a></li>
+<li><a href="https://www.postman.com/downloads/">postMan</a></li>
+<li><a href="https://www.anaconda.com/download#downloads">anaconda</a></li>
+</ul>
+<h2 id="2-Homebrew"><a href="#2-Homebrew" class="headerlink" title="2. Homebrew"></a>2. Homebrew</h2><p>Linux 下有yum, apt-get 等， 对应到Mac， 就是Homebrew了。<br>说到这里，就不得不提那个著名的段子，Homebrew 的作者Max Howell 面试Google被拒了。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Max Howell 在 Google 面试，但 Google 拒绝了他，给出的答复是：“虽然我们 90%的工程师都用你写的软件，但抱歉我们不能聘用你，因为你无法在白板上写出翻转二叉树。” </span><br></pre></td></tr></table></figure></p>
+<p>一键安装脚本如下<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/bin/bash -c &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&quot;</span><br></pre></td></tr></table></figure></p>
+<p>连接在此<br><a href="https://brew.sh/">brew.sh</a></p>
+<p>国内换Giteee<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/bin/zsh -c &quot;$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;</span><br></pre></td></tr></table></figure></p>
+<p>常用命令<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">/// 安装</span><br><span class="line">brew install FORMULA|CASK...</span><br><span class="line"></span><br><span class="line">/// 搜索</span><br><span class="line">brew search TEXT|/REGEX/</span><br><span class="line"></span><br><span class="line">/// 卸载包</span><br><span class="line">brew uninstall FORMULA|CASK...</span><br><span class="line"></span><br><span class="line">/// 查看安装列表</span><br><span class="line">brew list [FORMULA|CASK...]</span><br><span class="line"></span><br><span class="line">/// 查看包信息</span><br><span class="line">brew info [FORMULA|CASK...]</span><br><span class="line"></span><br><span class="line">/// 查看哪些包可以更新</span><br><span class="line">brew outdated </span><br><span class="line"></span><br><span class="line">/// 更新指定包（安装新包，但旧包依旧保留）</span><br><span class="line">brew upgrade [FORMULA|CASK...]</span><br><span class="line"></span><br><span class="line">/// 更新Homebrew</span><br><span class="line">brew update                  </span><br><span class="line"></span><br><span class="line">/// 清理旧版本和缓存</span><br><span class="line">brew cleanup       					# 清理所有包的旧版本</span><br><span class="line">brew cleanup [FORMULA ...]  # 清理指定包的旧版本</span><br><span class="line">brew cleanup -n             # 查看可清理的旧版本包，不执行实际操作</span><br><span class="line"></span><br><span class="line">/// 锁定不想更新的包（因为update会一次更新所有的包的，当我们想忽略的时候可以使用这个命令）</span><br><span class="line">brew pin [FORMULA ...]      # 锁定某个包</span><br><span class="line">brew unpin [FORMULA ...]    # 取消锁定</span><br><span class="line"></span><br><span class="line">/// 软件服务管理</span><br><span class="line">brew services list  								# 查看使用brew安装的服务列表</span><br><span class="line">brew services run formula|--all  		# 启动服务（仅启动不注册）</span><br><span class="line">brew services start formula|--all  	# 启动服务，并注册</span><br><span class="line">brew services stop formula|--all   	# 停止服务，并取消注册</span><br><span class="line">brew services restart formula|--all # 重启服务，并注册</span><br></pre></td></tr></table></figure></p>
+<h2 id="2-安装iTerm2"><a href="#2-安装iTerm2" class="headerlink" title="2. 安装iTerm2"></a>2. 安装iTerm2</h2><p><a href="https://iterm2.com/">iterm2</a> 个人用的最顺手的Mac OS 上的终端工具。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install iTerm2</span><br></pre></td></tr></table></figure></p>
+<p>设置为默认终端工具<br><img src="/image/tools/mac_items_defaut.jpg" alt=""></p>
+<p>改个主题<a href="https://github.com/mbadolato/iTerm2-Color-Schemes">iTerm2-Color-Schemes</a><br>操作方法和主题预览详见以上github。个人还是喜欢默认的。</p>
+<p>一些小设置</p>
+<ul>
+<li>光标选择：iTerms2提供了三种光标可供选择：_、|、[]，打开iTerm2，打开Preferences配置界面，Profiles -&gt; text-&gt; cursor，选择自己想要的光标即可。</li>
+<li>窗口设置：打开Preferences配置界面，Profiles -&gt; Window，根据自己的需求设置窗口透明度、背景图片、行列数以及风格等。</li>
+<li>置终端历史行数: 打开Preferences配置界面，Profiles -&gt; Terminal，根须需求进行修改，如果想不限制行数可以勾选Unlimited scrollback</li>
+</ul>
+<h2 id="3-安装-oh-my-zsh"><a href="#3-安装-oh-my-zsh" class="headerlink" title="3. 安装 oh-my-zsh"></a>3. 安装 oh-my-zsh</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">sh -c &quot;$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&quot;</span><br><span class="line">chsh -s /bin/zsh </span><br><span class="line"></span><br><span class="line"># set oh my zsh theme</span><br><span class="line">##vi .zshrc</span><br><span class="line">##ZSH_THEME=&quot;afowler&quot;</span><br><span class="line">## 更多主题参见 https://github.com/ohmyzsh/ohmyzsh/wiki/Themes</span><br><span class="line"></span><br><span class="line">## plugins 自动补全和加亮</span><br><span class="line">git clone https://github.com/zsh-users/zsh-autosuggestions $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/plugins/zsh-autosuggestions</span><br><span class="line">git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/plugins/zsh-syntax-highlighting</span><br><span class="line">## 更多插件，查看 https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins</span><br><span class="line"></span><br><span class="line">## plugin 配置</span><br><span class="line">#vi .zshrc</span><br><span class="line">#plugins=(git</span><br><span class="line">#zsh-autosuggestions</span><br><span class="line">#zsh-syntax-highlighting</span><br><span class="line">#)</span><br></pre></td></tr></table></figure>
+<h2 id="4-autojump"><a href="#4-autojump" class="headerlink" title="4. autojump"></a>4. autojump</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">brew install autojump</span><br><span class="line"></span><br><span class="line">#编辑配置文件</span><br><span class="line">vim ~/.zshrc</span><br><span class="line"></span><br><span class="line">#在最后一行增加下面的代码</span><br><span class="line">[ -f /usr/local/etc/profile.d/autojump.sh ] &amp;&amp; . /usr/local/etc/profile.d/autojump.sh</span><br><span class="line"></span><br><span class="line">#退出编辑后执行使配置生效</span><br><span class="line">source ~/.zshrc </span><br></pre></td></tr></table></figure>
+<h2 id="5-触摸板小技巧"><a href="#5-触摸板小技巧" class="headerlink" title="5. 触摸板小技巧"></a>5. 触摸板小技巧</h2><p>Mac 最爱的就是这个触摸板了，丝滑顺畅，各种手势配合，那叫一个行云流水。<br>主要手法有：</p>
+<ul>
+<li>触控板查词功能：当我们在浏览网页或者文档的时候，如果遇到了生词，只要把光标移到这个生词，用力按下触控板，就会弹出词典。</li>
+<li>触控板滚动功能：双指在触控板上上下滑动为上下滚动，双指在触控板上左右滑动为左右滑动。</li>
+<li>触控板翻页功能：正浏览网页的时候，如果需要回到上一页，只需要用双指，在触控板上向右滑动，就可以回到上一页，向左滑动就可以翻到下一页。和上一步的区别，是上一步是直线，这里画弧线。</li>
+<li>触控板缩放功能：Mac上的缩放功能跟在手机上的操作方式一样的，以查看照片为例，我们只需要把光标移动到需要放大的部分，在触控板上用双指捏合，就可以实现缩放的功能。</li>
+<li>触控板旋转功能：如果你正在查看照片，想要旋转照片，该怎么操作呢？操作的方式跟在手机上一样，只需要用双指在触控板上旋转就可以了。</li>
+<li>三指拖移：最帅技巧，切屏全靠它。</li>
+<li>锁屏：一般设在右下角，和水果忍者一般，直接一滑。<br>其余可以参见 <a href="https://zhuanlan.zhihu.com/p/115016843">一口气了解Mac触控板的使用小技巧，是时候扔掉鼠标了！</a></li>
+</ul>
+<h2 id="6-Docker"><a href="#6-Docker" class="headerlink" title="6. Docker"></a>6. Docker</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo hdiutil attach Docker.dmg</span><br><span class="line">$ sudo /Volumes/Docker/Docker.app/Contents/MacOS/install</span><br><span class="line">$ sudo hdiutil detach /Volumes/Docker</span><br></pre></td></tr></table></figure>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>对我目前而言，配好iTerms，brew 和VSCode，基本就能用了。相比WSL 还是省事不少。</p>
+<h1 id="REF"><a href="#REF" class="headerlink" title="REF"></a>REF</h1><ul>
+<li><a href="https://zhuanlan.zhihu.com/p/114364577">Mac已到手？从零开始，八步打造一个高效舒适的开发环境</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Setup/" rel="tag"># Setup</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/21/setup-wsl-ubuntu/" rel="prev" title="搭建开发环境-WSL+Ubuntu">
+      <i class="fa fa-chevron-left"></i> 搭建开发环境-WSL+Ubuntu
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Setep"><span class="nav-number">2.</span> <span class="nav-text">Setep</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text">1. 安装常用软件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Homebrew"><span class="nav-number">2.2.</span> <span class="nav-text">2. Homebrew</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85iTerm2"><span class="nav-number">2.3.</span> <span class="nav-text">2. 安装iTerm2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%AE%89%E8%A3%85-oh-my-zsh"><span class="nav-number">2.4.</span> <span class="nav-text">3. 安装 oh-my-zsh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-autojump"><span class="nav-number">2.5.</span> <span class="nav-text">4. autojump</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E8%A7%A6%E6%91%B8%E6%9D%BF%E5%B0%8F%E6%8A%80%E5%B7%A7"><span class="nav-number">2.6.</span> <span class="nav-text">5. 触摸板小技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-Docker"><span class="nav-number">2.7.</span> <span class="nav-text">6. Docker</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#REF"><span class="nav-number">4.</span> <span class="nav-text">REF</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">喵十八</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">78</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '2fbc96c0bbe149b498b5',
+      clientSecret: 'f28baff71cec48b3d80bc5bc9e5da0c20e946b09',
+      repo        : 'Yao544303.github.io',
+      owner       : 'Yao544303',
+      admin       : ['Yao544303'],
+      id          : '8239540caac02e96e6eeaa840f1102b1',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

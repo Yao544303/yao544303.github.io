@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta property="og:type" content="website">
@@ -161,6 +161,133 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/02/discussWithDH/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/07/02/discussWithDH/" class="post-title-link" itemprop="url">和DH大神的交流记录</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-07-02 23:54:26" itemprop="dateCreated datePublished" datetime="2018-07-02T23:54:26+08:00">2018-07-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2018-07-03 00:00:39" itemprop="dateModified" datetime="2018-07-03T00:00:39+08:00">2018-07-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/bigdata/" itemprop="url" rel="index"><span itemprop="name">bigdata</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="交流目的及解答"><a href="#交流目的及解答" class="headerlink" title="交流目的及解答"></a>交流目的及解答</h1><h2 id="反馈现在遇到的问题"><a href="#反馈现在遇到的问题" class="headerlink" title="反馈现在遇到的问题"></a>反馈现在遇到的问题</h2><p>获得解答</p>
+<h2 id="确定后续的技术路线，借助DT的经验来确定选型是否合适"><a href="#确定后续的技术路线，借助DT的经验来确定选型是否合适" class="headerlink" title="确定后续的技术路线，借助DT的经验来确定选型是否合适"></a>确定后续的技术路线，借助DT的经验来确定选型是否合适</h2><p>之前定的方案是合适的，但是细节上需要进一步明确。</p>
+<h2 id="得出能够落实的方案（理论依据-实现可能）"><a href="#得出能够落实的方案（理论依据-实现可能）" class="headerlink" title="得出能够落实的方案（理论依据 + 实现可能）"></a>得出能够落实的方案（理论依据 + 实现可能）</h2><ul>
+<li>向业务请教现有有效规则经验，抽象化为特征</li>
+<li>积累数据</li>
+<li>模型迁移尝试</li>
+<li>构建稀疏特征，第一步尝试使用MLR等传统模型处理，第二步采用多层神经网络（是否激进一些，直接使用神经网络？？？）</li>
+</ul>
+<h1 id="交流内容点"><a href="#交流内容点" class="headerlink" title="交流内容点"></a>交流内容点</h1><h2 id="异常值处理"><a href="#异常值处理" class="headerlink" title="异常值处理"></a>异常值处理</h2><h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>是否进行异常值处理？</li>
+<li>使用哪些异常处理的方式会更为合适？</li>
+</ul>
+<h3 id="解答"><a href="#解答" class="headerlink" title="解答"></a>解答</h3><ul>
+<li>尽量使用尊重数据本身，不要做异常值处理</li>
+</ul>
+<h2 id="特征构建及选择"><a href="#特征构建及选择" class="headerlink" title="特征构建及选择"></a>特征构建及选择</h2><h3 id="问题-1"><a href="#问题-1" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>如何进行分段（离散化、分箱） ？</li>
+<li>是否做哑变量处理？</li>
+<li>如何进行选择(高度线性相关、近零方差、逐步迭代回归)？</li>
+<li>扩展维度编码（是否一起编码） 做成插件形式？</li>
+</ul>
+<h3 id="解答-1"><a href="#解答-1" class="headerlink" title="解答"></a>解答</h3><ul>
+<li>通过业务的先验知识，增加强相关的特征</li>
+<li>通过比较粗暴的方式，获取全量的特征（比如每个时间段的点击），然后通过多层神经网络（中间层加入特征选取的功能）进行筛选和预测</li>
+<li>通过高次特征组合的方式，来扩展特征</li>
+<li>尽量使用端到端的方式，进行特征选取</li>
+<li>case1 人 品牌 交互行为 时间 ，以这个四个张量维度，作为基础，分别计算各个维度可能扩展出来的特征，从而扩展出数百个强关联的特征。例如人的年龄、性别。 品牌的价位，点击情况等等。</li>
+<li>总结：尽可能多的选取特征，交给模型去筛选（注：为避免高阶特征可能出现的共线性问题，尽量选取抗共线性模型）</li>
+</ul>
+<h2 id="稀疏矩阵处理"><a href="#稀疏矩阵处理" class="headerlink" title="稀疏矩阵处理"></a>稀疏矩阵处理</h2><h3 id="问题-2"><a href="#问题-2" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>采用神经网络：技术选型 线下Keras 线上DL4J</li>
+<li>采用GBDT +  LR</li>
+<li>采用XGBoost</li>
+</ul>
+<h3 id="解答-2"><a href="#解答-2" class="headerlink" title="解答"></a>解答</h3><ul>
+<li>第一步可以使用MLR,GBM,XGBoost等</li>
+<li>后续，构建多层神经网络（层之间，增加不同的特征处理手段）</li>
+<li>采用流式学习的模型，可以考虑进行增量学习</li>
+<li>调优经验：一方面是根据已有的经验（树的深度，分叉等等）进行调参，另一方面是通过grid search 搜索</li>
+</ul>
+<h2 id="数据非平衡-amp-数据提纯问题"><a href="#数据非平衡-amp-数据提纯问题" class="headerlink" title="数据非平衡  &amp;  数据提纯问题"></a>数据非平衡  &amp;  数据提纯问题</h2><h3 id="解答-3"><a href="#解答-3" class="headerlink" title="解答"></a>解答</h3><ul>
+<li>尽量尊重样本本身，不要对样本做过多的处理</li>
+<li>case1 文本问题，4万样本，百万级别特征</li>
+<li>case2 图像问题，3万样本</li>
+<li>case3 CTR 问题，4亿样本，亿级别特征，正负样本1：80</li>
+</ul>
+<h2 id="关于推荐算法"><a href="#关于推荐算法" class="headerlink" title="关于推荐算法"></a>关于推荐算法</h2><h3 id="解答-4"><a href="#解答-4" class="headerlink" title="解答"></a>解答</h3><ul>
+<li>可以尝试</li>
+<li>无监督学习一般来说，难以超越有监督学习</li>
+</ul>
+<h2 id="关于模型迁移"><a href="#关于模型迁移" class="headerlink" title="关于模型迁移"></a>关于模型迁移</h2><p><strong>解答</strong></p>
+<ul>
+<li>相似类型业务的模型，可以迁移使用</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -1153,119 +1280,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/11/lookalike/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="喵十八">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="喵十八の小窝">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/04/11/lookalike/" class="post-title-link" itemprop="url">Lookalike 技术调研</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2018-04-11 22:20:08 / Modified: 23:28:33" itemprop="dateCreated datePublished" datetime="2018-04-11T22:20:08+08:00">2018-04-11</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/DM/" itemprop="url" rel="index"><span itemprop="name">DM</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="What"><a href="#What" class="headerlink" title="What"></a>What</h1><p>基本上所有的互联网公司都有其广告投放平台，这是给广告主投放广告的一个页面。广告主可以通过广告提交页面提交自己的广告需求，后台会给广告主圈定一部分潜在用户，这个就是我们称为Lookalike的模块。<br><strong>lookalike 不是某一种特定的算法，而是一类方法的统称，这类方法综合运用多种技术，最终达到目的。</strong></p>
-<h1 id="How"><a href="#How" class="headerlink" title="How"></a>How</h1><p><strong>第一种就是显性的定位，广告主根据用户的标签直接定位</strong><br>比如说通过年龄、性别、地域这样的标签来直接圈定一部分用户进行投放。这个时候我们的技术支持就是后台的用户画像的挖掘。</p>
-<p><strong>第二种做法，通过一个机器学习的模型，来定位广告主的潜在用户</strong><br>广告主提交一批客户名单，我们称之为种子用户，它作为机器学习的正样本。负样本我们会从非种子用户，或者是说平台会积累历史的一些相似的广告作为负样本，这个问题就转化为一个二分类的模型，正负样本组成学习的样本，训练模型之后，利用模型结构对活跃用户进行打分，最后得到广告主需要的目标人群。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3698622-811ff11444c330b7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="通过机器学习方法定位目标人群"></p>
-<h1 id="各大厂的做法"><a href="#各大厂的做法" class="headerlink" title="各大厂的做法"></a>各大厂的做法</h1><p>对于特征和模型算法，不同的公司各有差异：特征取决于公司有哪些数据；在模型算法上，Facebook 和Google对外公布的说法就是一个预测模型，Yahoo发表过几篇论文，详细介绍过它的算法，比如LR，Linear SVM，GBDT都有尝试，论文里面提到的是GBDT的效果比较好。下图列出了不同公司的做法，供大家参考</p>
-<p><strong><em>吐槽  google 和 非死不可的 predict model 怕不是用了深度学习？   私以为 两家公司 节操没这么高。</em></strong></p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3698622-b51da7acbcb0f90c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="各大厂做法"></p>
-<h1 id="需要哪些特征"><a href="#需要哪些特征" class="headerlink" title="需要哪些特征"></a>需要哪些特征</h1><ol>
-<li>行为结果数据<br>所谓行为结果数据是已经采取了具体行动的数据，例如购买数据，入资数据等。</li>
-<li>行为意向数据<br>所谓行为意向数据是倾向于采取某种行为的人群数据，最典型的是搜索引擎的数据，一般来说消费者在做最终的购买决策之前，往往会通过搜索引擎了解产品周边的一些相关信息，相关搜索关键字数据可以定位到一个有强购买倾向的人。这也是很多广告主投入较多预算在SEM上的原因。但这种数据一般很难从搜索引擎侧获取，购买关键字的成本也越来越高。一般来说，通过行为意向数据来寻找人群，转化率会比较高，因为行为意向人群往往已经达到了转化前的最后一步的关键时刻，此时对意向人群进行营销，效果往往很明显。但同时广告主也面临一定的风险，因为这时客户可能已被别的竞品在更早的环节进行了影响，转化成本也相应提高。</li>
-<li>行为偏好数据<br>对于大多数第三方DMP平台来说，主要还是通过这一类数据来帮助广告主找到潜在的人群，从业务逻辑来说，具有某种偏好或者属于某种类型的人群往往会更倾向于购买某款产品，对于这部分数据的学习也能促成最终的转化。而且行为偏好数据会保证广告主在潜在客群覆盖规模和精准度之间达到一个很好的平衡，因此也是广告主普遍选用的一种数据。</li>
-<li>行为模式数据<br>所谓行为模式是指通过分析消费者的行为与时间、空间的关系，以及一系列行为之间的时间和空间序列关系，总结出的具有一定一致性意义的行为表现，通过这些一致性模式预测相关行为。行为模式数据往往应用于场景营销，但是由于加工行为模式的数据计算复杂度较高，同时对分析的实时性要求也很高，因此目前还处在探索和优化阶段，实际的应用落地不多。</li>
-</ol>
-<h1 id="应用tips"><a href="#应用tips" class="headerlink" title="应用tips"></a>应用tips</h1><ol>
-<li>结合聚类算法一起使用<br>有时候客户提供过来的种子人群成分是非常复杂的，往往是参杂了大量子类人群的总和，如果直接拿这些种子人群进行lookaLike，则相当于把人群的特征进行了弱化，最终找出来的相似人群特征会变得不明显。例如某奢侈品牌，他们的一方种子人群中包含2类，一类是真正有钱的人群，平时开豪车住别墅的，另外一类是普通的城市小白领，他们往往攒好几个月的工资进行一次消费。这2种人群必须先通过聚类算法区分出来，然后再输入lookaLike算法去扩大。</li>
-<li>在什么媒体上用<br>LookaLike算法选出的人群最终是在媒体的流量人群中实现触达，因此媒体自身流量对最终lookaLike算法落地的效果影响非常大，例如我们做过的某次营销案例，选取某DSP做为精准营销的落地媒体，在整个4周的营销过程中，最终选取的精准人群只有2%曝光成功。（一方面由于该DSP媒体流量均为长尾流量，而我们选取的目标人群为金融类目标人群，该DSP对目标人群覆盖率低，另外由于低价策略，竞价成功率低也导致了最终触达的精准人群规模比较小。）最终我们分析了这2%成功曝光的人群，发现他们也是Lookalike算法相似度相对较低的，也就是说最相似的那部分目标人群在该媒体上并没有出现和竞得。<br>因此为了保证lookaLike算法落地的效果，选取与广告主自身产品相对匹配的目标媒体以及合适的出价都非常重要。</li>
-<li>根据效果数据优化lookaLike算法<br>一旦精准营销活动开始后，就可以回收消费者对营销的反馈数据做为正样本来对lookaLike算法进行优化。通过TalkingData对大量历史投放数据的分析，动态优化lookaike算法可以极大的提升算法的转化效果：在同样选取相似度TOP100w样本进行精准投放的情况下，每日优化样本库组相比较不优化组在一周的投放周期内，可提升激活率180％以上。样本库优化的周期可以根据效果数据回收的量级、媒体的技术支持能力、以及DMP平台自身的数据更新周期综合决定，建议每1-2日更新目标用户群。</li>
-</ol>
-<h1 id="一些实际例子"><a href="#一些实际例子" class="headerlink" title="一些实际例子"></a>一些实际例子</h1><h2 id="利用用户画像，给用户打标签，利用相同标签找到目标人群"><a href="#利用用户画像，给用户打标签，利用相同标签找到目标人群" class="headerlink" title="利用用户画像，给用户打标签，利用相同标签找到目标人群"></a>利用用户画像，给用户打标签，利用相同标签找到目标人群</h2><p>实例：美的豆浆机通过Youmi DSP进行了Look-alike人群扩展投放<br>有米广告取得美的家电第一方消费者数据，涵盖浏览、购买行为等ID信息。通过导入Youmi DMP进行全库记录匹配，找到个体的在线历史大数据。经由人群分析模型，有米洞察到美的用户的个性倾向特征，通过标签算法挖掘，将数据库中拥有高相似画像的人群列为一类精准用户。根据标签模型，得出这些用户具有较多且重合的“健康”“时尚”“亲子”“女性”“中高收入”“一二线城市”等细分人群画像。</p>
-<p>分析：利用用户画像给用户打上各类标签。根据种子人群分析大部分种子用户具有的标签特征 例如：家庭女性、30-40岁、已婚，未生小孩，健康。那么对于一个标签为：上班族，30-40岁、已婚，未生小孩，健康 女性就是其目标人群。</p>
-<h2 id="利用分类算法来实现的：种子人群为正样本，候选对象为负样本，训练分类模型，然后用模型对所有候选对象进行筛选。"><a href="#利用分类算法来实现的：种子人群为正样本，候选对象为负样本，训练分类模型，然后用模型对所有候选对象进行筛选。" class="headerlink" title="利用分类算法来实现的：种子人群为正样本，候选对象为负样本，训练分类模型，然后用模型对所有候选对象进行筛选。"></a>利用分类算法来实现的：种子人群为正样本，候选对象为负样本，训练分类模型，然后用模型对所有候选对象进行筛选。</h2><p>显然候选样本并发所有的样本都是负样本，所有这是一个典型的PU learning问题<br>PU learning：Positive and unlabeled learning</p>
-<h2 id="利用社交网络进行人群扩散：利用好友关系，将种子人群标签传给社区中的好友，从而实现人群扩散"><a href="#利用社交网络进行人群扩散：利用好友关系，将种子人群标签传给社区中的好友，从而实现人群扩散" class="headerlink" title="利用社交网络进行人群扩散：利用好友关系，将种子人群标签传给社区中的好友，从而实现人群扩散"></a>利用社交网络进行人群扩散：利用好友关系，将种子人群标签传给社区中的好友，从而实现人群扩散</h2><h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><ol>
-<li><p>数据准备<br>　　① 获得用户的属性（User Profile），如性别、年龄、学历、职业、地域、能力标签等；<br>　　② 根据项目内容和活动内容制定一套受众标签（Audience Label）；<br>　　③ 提取用户之间的关注关系，微博之间的转发关系；<br>　　④ 获取微博message 中的文本内容；<br>　　⑤ 获得微博message 中的图片内容。</p>
-</li>
-<li><p>用户标签特征处理<br>　　① 根据步骤1 中用户属性信息和已有的部分受众标签系统。利用GBDT 算法（可以直接用xgboost）将没有标签的受众全部打上标签。这个分类问题中请注意处理连续值变量以及归一化。<br>　　② 将标签进行向量化处理，这个问题转化成对中文单词进行向量化，这里用word2vec 处理后得到用户标签的向量化信息Label2vec。这一步也可以使用word2vec在中文的大数据样本下进行预训练，再用该模型对标签加以提取，对特征的提取有一定的提高，大约在0.5%左右。</p>
-</li>
-<li><p>文本特征处理<br>　　清洗整理步骤1 中提取到的所有微博message 文本内容，训练doc2vec 模型，得到单个文本的向量化表示，对所得的文本作聚类（KMeans，在30 万的微博用户的message 上测试，K 取128 对文本的区分度较强），最后提取每个cluster 的中心向量，并根据每个用户所占有的cluster 获得用户所发微博的文本信息的向量表示Content2vec。</p>
-</li>
-<li><p>图像特征<br>　　将步骤1 中提取到的所有的message 图片信息进行整理分类，使用预训练卷积网络模型（这里为了平衡效率选取VGG16 作为卷积网络）提取图像信息，对每个用户message 中的图片做向量化处理，形成Image2vec，如果有多张图片则将多张图片分别提取特征值再接一层Max Pooling 提取重要信息后输出。</p>
-</li>
-<li><p>社交关系建立（node2vec 向量化）<br>　　将步骤1 数据准备中获得的用户之间的关系和微博之间的转发评论关系转化成图结构，并提取用户关系sub-graph，最后使用node2vec 算法得到每个用户的社交网络图向量化表示。下图为社交关系化后的部分图示。</p>
-</li>
-</ol>
-<p><img src="https://upload-images.jianshu.io/upload_images/3698622-fae87cac852a4e89.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="社交关系向量化"></p>
-<p><strong>fully connected layers,FC</strong><br>        将步骤2345 得到的向量做拼接，经过两层FC，得到表示每个用户的多特征向量集（User Vector Set, UVS）。这里取的输出单元个数时可以根据性能和准确度做平衡，目前英特实现的是输出512 个单元，最后的特征输出表达了用户的社交关系、用户属性、发出的内容、感兴趣的内容等的混合特征向量，这些特征向量将作为下一步比对相似性的输入值。<br>　　分别计算种子用户和潜在目标用户的向量集，并比对相似性。英特使用的是余弦相似度计算相似性，将步骤6 得到的用户特征向量集作为输入x 和y，代入下面公式计算相似性。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3698622-6081cbd4c2554129.gif?imageMogr2/auto-orient/strip" alt=""><br>注意：余弦相似度更多是从方向上区分差异，而对绝对的数值不敏感，因此没法衡量每个维度值的差异。这里要在每个维度上减去一个均值或者乘以一个系数，或者在之前做好归一化。</p>
-<ol>
-<li>受众扩展<br>　　① 获取种子受众名单，以及目标受众的数量N；<br>　　② 检查种子用户是否存在于UVS 中，将存在的用户向量化；<br>　　③ 计算受众名单中用户和UVS 中用户的相似度，提取最相似的前N 个用户作为目标受众。</li>
-</ol>
-<p>　　最后将以上步骤串联起来，形成流程图。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3698622-947d0c0c9ded25e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Lookalike 算法流程图
-"></p>
-<p>在以上步骤提取完特征后，英特使用一个两层的神经网络做最后的特征归并提取，算法结构示意图如下</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3698622-c59e57ca74f9f2a3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Lookalike 算法结构示意图"><br>其中FC1 层也可以替换成Max Pooling，Max Pooling 层具有强解释性，也就是把用户特征群上提取的最重要的特征点作为下一层的输入，读者可以自行尝试，这里限于篇幅问题就不做展开了。</p>
-<h1 id="来自Youtube-amp-google"><a href="#来自Youtube-amp-google" class="headerlink" title="来自Youtube &amp;  google"></a>来自Youtube &amp;  google</h1><p>深度候选人生成模型 + 分布式打分模型<br>使用的是分类方式，将客户分成可能的N类，选取打分最高的类<br>引入DNN 的好处在于大多数类型的连续特征和离散特征可以直接添加到模型当中。</p>
-<h1 id="ref"><a href="#ref" class="headerlink" title="ref:"></a>ref:</h1><p><a href="">Deep Neural Networks for YouTube Recommendations</a><br><a href="">Audience Expansion for Online Social Network Advertising</a><br><a href="https://zhuanlan.zhihu.com/p/25509178">微信广告推广的</a><br><a href="http://blog.csdn.net/kwame211/article/details/77568021">综述类型的</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1335,7 +1349,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-count">56</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
