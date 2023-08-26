@@ -165,6 +165,201 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/08/pmml-Header/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/07/08/pmml-Header/" class="post-title-link" itemprop="url">PMML文档翻译-文件头（Header）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2018-07-08 18:39:41 / Modified: 18:40:49" itemprop="dateCreated datePublished" datetime="2018-07-08T18:39:41+08:00">2018-07-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PMML/" itemprop="url" rel="index"><span itemprop="name">PMML</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><ul>
+<li>基于PMML Version4.3</li>
+<li>基本可以视为官方文档的一个翻译</li>
+<li>如有疏漏，请联系yao544303963@gmail.com</li>
+</ul>
+<h1 id="头文件"><a href="#头文件" class="headerlink" title="头文件"></a>头文件</h1><p>包含了PMML文档的基本信息，例如模型的版权信息，模型的描述，以及生成该文件所用软件的信息（比如软件的名字和版本）。头文件中也会包含该PMML文件的生成时间。</p>
+<h1 id="Schema"><a href="#Schema" class="headerlink" title="Schema"></a>Schema</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:element name=&quot;Header&quot;&gt;</span><br><span class="line">  &lt;xs:complexType&gt;</span><br><span class="line">    &lt;xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Extension&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">      &lt;xs:element minOccurs=&quot;0&quot; ref=&quot;Application&quot;/&gt;</span><br><span class="line">      &lt;xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; ref=&quot;Annotation&quot;/&gt;</span><br><span class="line">      &lt;xs:element minOccurs=&quot;0&quot; ref=&quot;Timestamp&quot;/&gt;</span><br><span class="line">    &lt;/xs:sequence&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;copyright&quot; type=&quot;xs:string&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;description&quot; type=&quot;xs:string&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;modelVersion&quot; type=&quot;xs:string&quot;/&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:element name=&quot;Application&quot;&gt;</span><br><span class="line">  &lt;xs:complexType&gt;</span><br><span class="line">    &lt;xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Extension&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">    &lt;/xs:sequence&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;name&quot; type=&quot;xs:string&quot; use=&quot;required&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;version&quot; type=&quot;xs:string&quot;/&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:element name=&quot;Annotation&quot;&gt;</span><br><span class="line">  &lt;xs:complexType mixed=&quot;true&quot;&gt;</span><br><span class="line">    &lt;xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Extension&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">    &lt;/xs:sequence&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:element name=&quot;Timestamp&quot;&gt;</span><br><span class="line">  &lt;xs:complexType mixed=&quot;true&quot;&gt;</span><br><span class="line">    &lt;xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Extension&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">    &lt;/xs:sequence&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="说明-1"><a href="#说明-1" class="headerlink" title="说明"></a>说明</h1><h2 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h2><p>顶层标签，标记着header部分的开始。</p>
+<p><strong>包含属性：</strong><br><strong>copyright</strong>：<br>包含了该模型的版权信息。应用生成的PMML文件应该允许用户可以指定或替换该属性值。自PMML 4.1 版本起，该属性是可选的。<br><strong>description</strong>：<br>这个属性包含了对模型的非特定描述。它需要包含程序在后续使用该模型时必要的信息，但不包括那些可以在application、annotation和data dictionary中可以精确描述的信息。这个属性只包含人类可读的信息。<br><strong>modelVersion</strong>：<br>这个属性描述了模型的版本信息。相同或相似的模型可能被多次生成，所以这个模型对于区分这些非常重要。  </p>
+<h2 id="Application"><a href="#Application" class="headerlink" title="Application"></a>Application</h2><p>这个元素用来描述生成该模型的软件或应用。尽管生成的PMML模型是轻量级的，但是不同的机制会使基于同一个数据集产生的模型出现差异。  </p>
+<p><strong>包含属性：</strong><br><strong>name</strong>：<br>生成该PMML文件的程序名称<br><strong>version</strong>：<br>生成该模型使用的应用的版本  </p>
+<h2 id="Annotation"><a href="#Annotation" class="headerlink" title="Annotation"></a>Annotation</h2><p>该元素记录文件修改历史。每条注释都是一个自由的文本。用户可以在这里记录他们自己的标记。</p>
+<h2 id="Timestamp"><a href="#Timestamp" class="headerlink" title="Timestamp"></a>Timestamp</h2><p>该元素记录模型文件的创建时间</p>
+<h1 id="REF"><a href="#REF" class="headerlink" title="REF"></a>REF</h1><p><a href="http://dmg.org/pmml/v4-3/Header.html">PMML 4.3 - Header</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/08/pmml-catelog/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/07/08/pmml-catelog/" class="post-title-link" itemprop="url">PMML 翻译计划目录</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2018-07-08 18:36:28 / Modified: 18:39:06" itemprop="dateCreated datePublished" datetime="2018-07-08T18:36:28+08:00">2018-07-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PMML/" itemprop="url" rel="index"><span itemprop="name">PMML</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><ul>
+<li>本系列基于<a href="">PMML 4.3</a> 版本</li>
+<li>基本是原文的一个翻译，有些部分会加入一些个人的理解和相关知识点的说明</li>
+<li>在模型部分，计划根据PMML文件结构，增加对模型结构的解释和介绍</li>
+<li>本人技术水平有限，难免有所疏漏，如有问题，请联系yao544303963@gmail.com</li>
+<li>所有版权归原组织(DMG)所有，版权说明详见 <a href="http://dmg.org/documents/dmg-pmml-license-2016.pdf">PMML Notice and License</a></li>
+<li>坑开了，不知道什么时候填完，说不定还没填完，这个技术就过时了，欢迎一起跳坑。<a href="https://github.com/Yao544303/translation4pmml">github地址</a></li>
+</ul>
+<h1 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h1><p>有中文名的，是已经翻译的部分。</p>
+<h2 id="通用结构部分"><a href="#通用结构部分" class="headerlink" title="通用结构部分"></a>通用结构部分</h2><ul>
+<li>Conformance</li>
+<li>Interoperability</li>
+<li>General Structure: PMML 基本结构</li>
+<li>Field Scope</li>
+<li>Header: 文件头</li>
+<li>Data Dictionary: 数据字典</li>
+<li>Mining Schema: 数据挖掘模式</li>
+<li>Transformation Dictionary and Derived Fields: 数据转换操作和追加字段</li>
+<li>Statistics</li>
+<li>Taxonomies and Hierarchies</li>
+<li>Target Fields and Values</li>
+<li>Output fields</li>
+<li>Definition and Application of Functions</li>
+<li>Built-in functions</li>
+<li>Model Verification</li>
+<li>Model Expalnation</li>
+<li>Multiple Models</li>
+</ul>
+<h2 id="模型部分"><a href="#模型部分" class="headerlink" title="模型部分"></a>模型部分</h2><ul>
+<li>Association Rules</li>
+<li>Baseline Models</li>
+<li>Bayesian Network</li>
+<li>Cluster Models</li>
+<li>Gaussian Process</li>
+<li>General Regression</li>
+<li>k-Nearest Neighbors</li>
+<li>Naive Bayes</li>
+<li>Neural Network</li>
+<li>Regression</li>
+<li>Ruleset</li>
+<li>Scorecard</li>
+<li>Sequences</li>
+<li>Text Models</li>
+<li>Time Series</li>
+<li>Trees </li>
+<li>Vector Machine</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/02/discussWithDH/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1133,153 +1328,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/14/Syrian/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="喵十八">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="喵十八の小窝">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/04/14/Syrian/" class="post-title-link" itemprop="url">中国不是一百多年的中国了，世界还是一百多年前的世界</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2018-04-14 18:41:22 / Modified: 19:19:04" itemprop="dateCreated datePublished" datetime="2018-04-14T18:41:22+08:00">2018-04-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E4%B8%80%E8%AF%AD/" itemprop="url" rel="index"><span itemprop="name">一语</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>下午喝完一杯饮料的时间，被叙利亚的新闻刷频了。<br>美国发射了导弹，俄罗斯拦截了部分，剩下的都打在已经疏散了民众的区域内。<br>据报道，受伤了６个人，无人员死亡，万幸。</p>
-<p>想到前几日的看到的叙利亚杜马镇“化物事件”的会议，<a href="https://www.bilibili.com/video/av21905800?from=search&amp;seid=15825215720879292194">叙利亚：这些化学物质永远只攻击女人和孩子，它都学会区分武装人员了？！</a>　叙利亚大使压抑着愤怒，在控诉着那些假装道义，却伤天害理，颠倒黑白的不公时，美国等相关国家人员，却傲慢的离场。从叙利亚大使的身上，仿佛看到了近百年前，拒绝在凡尔赛合约上签字的顾维钧先生的身影。世界还是那个世界，只是中国不再是那个中国。</p>
-<p>弱国无外交，这是对的，却不应该是正确的。愿世界和平，王道于行。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/11/dttry1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="喵十八">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="喵十八の小窝">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/04/11/dttry1/" class="post-title-link" itemprop="url">DT近期合作爬坑记录</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2018-04-11 22:24:52 / Modified: 22:26:18" itemprop="dateCreated datePublished" datetime="2018-04-11T22:24:52+08:00">2018-04-11</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/bigdata/" itemprop="url" rel="index"><span itemprop="name">bigdata</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="DT代码中的坑"><a href="#DT代码中的坑" class="headerlink" title="DT代码中的坑"></a>DT代码中的坑</h1><p>连续两周时间都在支持DT以及相关的label的开发<br>能够明显的发现DT提供的代码质量非常之差。列举出来，前事不忘后事之师。</p>
-<h2 id="hard-core"><a href="#hard-core" class="headerlink" title="hard core"></a>hard core</h2><p>在spark的代码中，将master 以及入参全部hard core，入参不必说他，将master 设置之后，我spark submit可是会报错的啊。</p>
-<h2 id="不转为String-直接saveAsTextFile"><a href="#不转为String-直接saveAsTextFile" class="headerlink" title="不转为String 直接saveAsTextFile"></a>不转为String 直接saveAsTextFile</h2><p>常常出现<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(ABACD,ADF,1)</span><br><span class="line"></span><br><span class="line">[Ljava.long.String;@76abcd405]</span><br></pre></td></tr></table></figure><br>前者是元组直接输出，后者输出的是地址，写代码的时候一定需要注意</p>
-<h2 id="集群600G-内存，输入200G-全部cache"><a href="#集群600G-内存，输入200G-全部cache" class="headerlink" title="集群600G 内存，输入200G 全部cache"></a>集群600G 内存，输入200G 全部cache</h2><p>恩 cache 的确可以提高效率，但是你这个样子做，确定不会oom？</p>
-<h2 id="多次join"><a href="#多次join" class="headerlink" title="多次join"></a>多次join</h2><p>输入为 （A,B,C）<br>希望得到的输出 （A,B/sum(B),B,D）<br>做了多次join,开销非常之大<br>在实践之前，可以先进行采样，加入对A进行reduce 之后 ，按key分布的数据量不大，倾斜不严重的情况下，<br>可以将join 转变<br>map 处理为 RDD[String,Map]<br>再reduce， 得到RDD[String,Map]之后，在map内部进行相似逻辑的操作，这样能提高效率。</p>
-<h2 id="不做异常检测"><a href="#不做异常检测" class="headerlink" title="不做异常检测"></a>不做异常检测</h2><p>维表可能存在空值，不做异常检测，直接进行string =》 int 的转化，必然异常。</p>
-<h2 id="过滤数据"><a href="#过滤数据" class="headerlink" title="过滤数据"></a>过滤数据</h2><p>接上，对空值的过滤，需要谨慎再谨慎，每条数据都是很宝贵的，需要非常认真的对待，建议在filter之前，先sample一下，看看数据是什么样子，看看要filter的数据是什么样子，再做决断。</p>
-<h2 id="sample的重要性"><a href="#sample的重要性" class="headerlink" title="sample的重要性"></a>sample的重要性</h2><p>既然用到了spark 处理的数据量级自然不会小，在大数据量测试之前务必使用小数据量进行逻辑的验证，直接用大数据量跑的话，耗时耗资源不去说，万一错了，代价也很大。</p>
-<h1 id="其他非代码的坑"><a href="#其他非代码的坑" class="headerlink" title="其他非代码的坑"></a>其他非代码的坑</h1><h2 id="维表过多"><a href="#维表过多" class="headerlink" title="维表过多"></a>维表过多</h2><p>维表过多，导致管理起来非常困难，一定要协商好一个更新机制</p>
-<h2 id="Spark-submit-脚本"><a href="#Spark-submit-脚本" class="headerlink" title="Spark-submit 脚本"></a>Spark-submit 脚本</h2><p>这个必须有，整理的晚了，每次提交都要重新编写，虽然时间不多，但多几次，很容易让人狂躁<br>整理了如下一个模板<br><a href="https://github.com/Yao544303/shell/blob/master/java/spark_submit.sh">spark-submit模板</a></p>
-<h2 id="信息沟通必须及时"><a href="#信息沟通必须及时" class="headerlink" title="信息沟通必须及时"></a>信息沟通必须及时</h2>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1349,14 +1397,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-count">58</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">

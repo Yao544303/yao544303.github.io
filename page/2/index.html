@@ -165,6 +165,229 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fate-log-11-upload-requests/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/08/20/fate-log-11-upload-requests/" class="post-title-link" itemprop="url">FATE学习：跟着日志读源码（十一）upload 任务过程中产生的请求</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-08-20 13:41:40 / Modified: 13:42:32" itemprop="dateCreated datePublished" datetime="2023-08-20T13:41:40+08:00">2023-08-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FATE/" itemprop="url" rel="index"><span itemprop="name">FATE</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>upload 任务的http请求，可以分为两部分。<br>一部分是submit -&gt; job finish 这个流程中产生的。<br>另一部分是polling 的过程中，轮询产生的请求（只轮询后收集相关信息，不实际执行）</p>
+<h1 id="执行细节"><a href="#执行细节" class="headerlink" title="执行细节"></a>执行细节</h1><p>以下的日志，是一个upload执行后，容器中完整的日志。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:31] &quot;POST /v1/party/202107260820309976351/local/0/create HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:31] &quot;POST /v1/data/upload?%7B%22file%22:%20%22/data/projects/fate/examples/data/breast_hetero_guest.csv%22,%20%22head%22:%201,%20%22partition%22:%201,%20%22work_mode%22:%201,%20%22table_name%22:%20%22hetero_guest%22,%20%22namespace%22:%20%22cl%22,%20%22config%22:%20%22/data/projects/fate/cl/upload_guest.json%22,%20%22function%22:%20%22upload%22%7D HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:32] &quot;POST /v1/party/202107260820309976351/local/0/resource/apply HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:32] &quot;POST /v1/party/202107260820309976351/local/0/start HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:32] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/status/running HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:32] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/start HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:33] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/report HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:34] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/collect HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:36] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/collect HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:38] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/collect HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:40] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/collect HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:41] &quot;POST /v1/party/202107260820309976351/local/0/update HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:42] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/collect HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:43] &quot;POST /v1/tracker/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/output_data_info/save HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:43] &quot;POST /v1/tracker/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/metric_data/save HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:43] &quot;POST /v1/tracker/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/metric_meta/save HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:44] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/report HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:45] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/collect HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:45] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/report HTTP/1.1&quot; 200 -</span><br><span class="line">static conf path: /data/projects/fate/eggroll/conf/eggroll.properties</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:47] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/status/success HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:47] &quot;POST /v1/party/202107260820309976351/upload_0/202107260820309976351_upload_0/0/local/0/stop/success HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:47] &quot;POST /v1/party/202107260820309976351/local/0/model HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:47] &quot;POST /v1/party/202107260820309976351/local/0/status/success HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:47] &quot;POST /v1/party/202107260820309976351/local/0/stop/success HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:48] &quot;POST /v1/party/202107260820309976351/local/0/clean HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:48] &quot;POST /v1/party/202107260820309976351/local/0/stop/success HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.96.235 - - [26/Jul/2021 08:20:48] &quot;POST /v1/party/202107260820309976351/local/0/clean HTTP/1.1&quot; 200 -</span><br></pre></td></tr></table></figure><br>其中endpoint为 collect 的是第二部分产生的日志，可以发现除最后一条记录外，时间间隔和轮询时间间隔是一致的。</p>
+<p>其余则是第一部分的日志。</p>
+<h1 id="提交任务http-请求"><a href="#提交任务http-请求" class="headerlink" title="提交任务http 请求"></a>提交任务http 请求</h1><p>按照不同的请求，依次说明其功能和函数调用链</p>
+<ol>
+<li>data/upload：<br>提交job<br>fate_flow_client.py -&gt; fate_flow_server.py -&gt; data_access_app_manager.py -&gt; DAGScheduler.submit </li>
+</ol>
+<ol>
+<li>party/<job_id>/<role>/<party_id>/create：<br>创建job (接上文）<br>DAGScheduler.submit -&gt; FederatedScheduler.create_job -&gt; fate_flow_server.py -&gt; party_app.py -&gt; JobController.create_job</li>
+</ol>
+<ol>
+<li>party/<job_id>/<role>/<party_id>/resource/apply：<br>为job申请资源<br>DAGScheduler.schedule_waiting_jobs -&gt; FederatedScheduler.resource_for_job -&gt; fate_flow_server.py -&gt; party_app.py -&gt; ResourceManager.apply_for_job_resource</li>
+</ol>
+<ol>
+<li>party/<job_id>/<role>/<party_id>/start：<br>start job<br>DAGScheduler.schedule_waiting_jobs -&gt; DAGScheduler.start_job -&gt; FederatedScheduler.start_job(job=job) -&gt; fate_flow_server.py -&gt; party_app.py -&gt; JobController.start_job</li>
+</ol>
+<p><em>如下5-7 依次start task 并更新job状态</em></p>
+<ol>
+<li><p>party/<job_id>/<component_name>/<task_id>/<task_version>/<role>/<party_id>/status/running：<br>更新task状态<br>DAGScheduler.schedule_running_job -&gt; TaskScheduler.schedule -&gt; TaskScheduler.start_task -&gt; FederatedScheduler.sync_task_status -&gt; fate_flow_server.py -&gt; party_app.py -&gt; JobController.update_job_status</p>
+</li>
+<li><p>party/<job_id>/<component_name>/<task_id>/<task_version>/<role>/<party_id>/start：<br>紧跟上述 FederatedScheduler.sync_task_status 操作之后，start task。<br>DAGScheduler.schedule_running_job -&gt; TaskScheduler.schedule -&gt; TaskScheduler.start_task -&gt; FederatedScheduler.start_task -&gt; fate_flow_server.py -&gt; party_app.py -&gt; TaskController.start_task</p>
+</li>
+<li><p>party/<job_id>/<component_name>/<task_id>/<task_version>/<role>/<party_id>/report：<br>反馈状态<br>TaskExecutor.run_task -&gt; TaskExecutor.report_task_update_to_driver -&gt; ControllerClient.report_task -&gt; api_utils.local_api -&gt; fate_flow_server.py -&gt; party_app.py -&gt;  TaskController.update_task</p>
+</li>
+</ol>
+<p><em>如下8 -11都是是在upload task执行过程中产生的请求</em></p>
+<ol>
+<li><p>party/<job_id>/<role>/<party_id>/update：<br>更新job状态<br>Upload.save_data_table -&gt; ControllerClient.update_job -&gt; api_utils.local_api -&gt; fate_flow_server.py -&gt; party_app.py -&gt;  JobController.update_job</p>
+</li>
+<li><p>tracker/<job_id>/<component_name>/<task_id>/<task_version>/<role>/<party_id>/output_data_info/save：<br>保存output_data_info<br>Upload.save_data_table -&gt; TrackerClient.log_output_data_info -&gt;  api_utils.local_api -&gt; fate_flow_server.py -&gt; tracker_app.py -&gt; Tracker.insert_output_data_info_into_db</p>
+</li>
+<li><p>tracker/<job_id>/<component_name>/<task_id>/<task_version>/<role>/<party_id>/metric_data/save：<br>保存指标<br>Upload.save_data_table -&gt; TrackerClient.log_metric_data -&gt; api_utils.local_api -&gt; fate_flow_server.py -&gt; tracker_app.py -&gt; Tracker.save_metric_data</p>
+</li>
+<li><p>tracker/<job_id>/<component_name>/<task_id>/<task_version>/<role>/<party_id>/metric_meta/save：<br>保存指标元数据<br>Upload.save_data_table -&gt; TrackerClient.log_metric_meta -&gt; api_utils.local_api -&gt; fate_flow_server.py -&gt; tracker_app.py -&gt; Tracker.save_metric_meta</p>
+</li>
+</ol>
+<p><em>回到 task_executor，在finally 中执行 ，更新task状态</em></p>
+<ol>
+<li>party/<job_id>/<component_name>/<task_id>/<task_version>/<role>/<party_id>/report：<br>TaskExecutor.run_task -&gt; TaskExecutor.report_task_update_to_driver -&gt; ControllerClient.report_task -&gt; api_utils.local_api -&gt; fate_flow_server.py -&gt; party_app.py -&gt;  TaskController.update_task</li>
+</ol>
+<p><em>TaskExecutor.run_task() 执行完毕，执行TaskExecutor.report_task_update_to_driver()</em></p>
+<ol>
+<li>party/<job_id>/<component_name>/<task_id>/<task_version>/<role>/<party_id><br>report：TaskExecutor.report_task_update_to_driver -&gt; ControllerClient.report_task -&gt; api_utils.local_api -&gt; fate_flow_server.py -&gt; party_app.py -&gt;  TaskController.update_task</li>
+</ol>
+<p><em>Tips：这一次schedule_running_job之后，已经是success 了</em></p>
+<ol>
+<li>party/<job_id>/<component_name>/<task_id>/<task_version>/<role>/<party_id>/status/success：<br>DAGScheduler.schedule_running_job -&gt; TaskScheduler.schedule -&gt; FederatedScheduler.sync_task_status -&gt; fate_flow_server.py -&gt; party_app.py -&gt; TaskController.update_task_status</li>
+</ol>
+<p><em>Tips：因为已经success 进入下一环节</em></p>
+<ol>
+<li><p>party/<job_id>/<component_name>/<task_id>/<task_version>/<role>/<party_id>/stop/success：<br>DAGScheduler.schedule_running_job -&gt; TaskScheduler.schedule -&gt; FederatedScheduler.stop_task（接在上一步sync_task_status 之后） -&gt; fate_flow_server.py -&gt; party_app.py -&gt; TaskController.stop_task</p>
+</li>
+<li><p>party/<job_id>/<role>/<party_id>/model<br>DAGScheduler.schedule_running_job -&gt; FederatedScheduler.save_pipelined_model -&gt; fate_flow_server.py -&gt; party_app.py -&gt; JobController.save_pipelined_model</p>
+</li>
+<li><p>party/<job_id>/<role>/<party_id>/status/success<br>DAGScheduler.schedule_running_job -&gt; FederatedScheduler.sync_job_status -&gt; fate_flow_server.py -&gt; party_app.py -&gt; JobController.update_job_status</p>
+</li>
+<li><p>party/<job_id>/<role>/<party_id>/stop/success<br>DAGScheduler.schedule_running_job -&gt; DAGScheduler.finish -&gt; DAGScheduler.stop_job -&gt; FederatedScheduler.stop_job -&gt; fate_flow_server.py -&gt; party_app.py -&gt; JobController.stop_jobs</p>
+</li>
+<li><p>party/<job_id>/<role>/<party_id>/clean<br>DAGScheduler.schedule_running_job -&gt; DAGScheduler.finish -&gt;  FederatedScheduler.clean_job -&gt;  fate_flow_server.py -&gt; party_app.py -&gt; JobController.clean_job</p>
+</li>
+</ol>
+<p><em>再run 一次 清理干净 参见<a href="https://blog.csdn.net/yao544303963/article/details/119878479">FATE学习：跟着日志读源码（九）upload任务job finsih阶段</a></em></p>
+<ol>
+<li><p>party/<job_id>/<role>/<party_id>/stop/success：DAGScheduler.schedule_running_job -&gt; DAGScheduler.finish -&gt; DAGScheduler.stop_job -&gt; FederatedScheduler.stop_job -&gt; fate_flow_server.py -&gt; party_app.py -&gt; JobController.stop_jobs</p>
+</li>
+<li><p>party/<job_id>/<role>/<party_id>/clean：DAGScheduler.schedule_running_job -&gt; DAGScheduler.finish -&gt;  FederatedScheduler.clean_job -&gt;  fate_flow_server.py -&gt; party_app.py -&gt; JobController.clean_job</p>
+</li>
+</ol>
+<h1 id="对于轮询部分"><a href="#对于轮询部分" class="headerlink" title="对于轮询部分"></a>对于轮询部分</h1><p>party/<job_id>/<component_name>/<task_id>/<task_version>/<role>/<party_id>/collect：<br>DAGScheduler.schedule_running_job -&gt; TaskScheduler.schedule -&gt; TaskScheduler.collect_task_of_all_party -&gt; FederatedScheduler.collect_task -&gt; party_app.py -&gt; TaskController.collect_task</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fate-log-10-polling/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/08/20/fate-log-10-polling/" class="post-title-link" itemprop="url">FATE学习：跟着日志读源码（十）polling</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-08-20 12:13:12 / Modified: 13:35:08" itemprop="dateCreated datePublished" datetime="2023-08-20T12:13:12+08:00">2023-08-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FATE/" itemprop="url" rel="index"><span itemprop="name">FATE</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>在<a href="">FATE学习：跟着日志读源码（二）fate_flow server 启动</a>介绍过，fate_flow_server.py中的DAGScheduler(interval=2 * 1000).start()，默认每隔2s，启动一次dag_scheduler，共五种调度。<br>其中：</p>
+<ul>
+<li>调度处于waiting 状态的job：job的状态从waiting -&gt; running，主要在<a href="">FATE学习：跟着日志读源码（五）upload任务job schedule阶段</a>介绍。</li>
+<li>调度处于running 状态的job：涉及job和task的状态变化，<ul>
+<li>task的状态从waiting -&gt; running 在<a href="">FATE学习：跟着日志读源码（六）upload任务task schedule</a>中介绍。</li>
+<li>task的状态从running -&gt; success 在<a href="">FATE学习：跟着日志读源码（八）upload任务task finsih阶段</a> 中介绍</li>
+<li>job的状态从running -&gt; success 在<a href="">FATE学习：跟着日志读源码（八）upload任务task finsih阶段</a> 中介绍</li>
+<li>task的状态保持running不变，见后文</li>
+</ul>
+</li>
+<li>调度ready状态的job：TODO</li>
+<li>调度rerun任务的job：TODO</li>
+<li>更新已经为endstatus的job的status：见后文</li>
+</ul>
+<h1 id="task的状态保持running不变"><a href="#task的状态保持running不变" class="headerlink" title="task的状态保持running不变"></a>task的状态保持running不变</h1><p>若task的执行时间比轮询间隔2s要长，那么在轮询期间，task的状态保持running不变，<br>对应的${job_log_dir}/fate_flow_schedule.log 日志为<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:42,798] [1:140259369826048] - dag_scheduler.py[line:298]: scheduling job 202107260820309976351</span><br><span class="line">[INFO] [2021-07-26 08:20:42,800] [1:140259369826048] - task_scheduler.py[line:28]: scheduling job 202107260820309976351 tasks</span><br><span class="line">[INFO] [2021-07-26 08:20:42,836] [1:140259369826048] - job_saver.py[line:71]: try to update job 202107260820309976351 task 202107260820309976351_upload_0 0 status</span><br><span class="line">[INFO] [2021-07-26 08:20:42,845] [1:140259369826048] - job_saver.py[line:76]: update job 202107260820309976351 task 202107260820309976351_upload_0 0 status update does not take effect: &#123;&#x27;elapsed&#x27;: None, &#x27;end_time&#x27;: None, &#x27;job_id&#x27;: &#x27;202107260820309976351&#x27;, &#x27;party_id&#x27;: &#x27;0&#x27;, &#x27;party_status&#x27;: &#x27;running&#x27;, &#x27;role&#x27;: &#x27;local&#x27;, &#x27;start_time&#x27;: 1627287632259, &#x27;status&#x27;: &#x27;running&#x27;, &#x27;task_id&#x27;: &#x27;202107260820309976351_upload_0&#x27;, &#x27;task_version&#x27;: 0, &#x27;update_time&#x27;: 1627287631078&#125;</span><br><span class="line">[INFO] [2021-07-26 08:20:42,845] [1:140259369826048] - job_saver.py[line:81]: try to update job 202107260820309976351 task 202107260820309976351_upload_0 0</span><br><span class="line">[WARNING] [2021-07-26 08:20:42,860] [1:140259369826048] - job_saver.py[line:86]: job 202107260820309976351 task 202107260820309976351_upload_0 0 update does not take effect</span><br><span class="line">[INFO] [2021-07-26 08:20:42,867] [1:140259369826048] - task_scheduler.py[line:143]: job 202107260820309976351 task 202107260820309976351_upload_0 0 status is running, calculate by task party status list: [&#x27;running&#x27;]</span><br><span class="line">[INFO] [2021-07-26 08:20:42,867] [1:140259369826048] - task_scheduler.py[line:75]: finish scheduling job 202107260820309976351 tasks</span><br><span class="line">[INFO] [2021-07-26 08:20:42,868] [1:140259369826048] - dag_scheduler.py[line:310]: Job 202107260820309976351 status is running, calculate by task status list: [&#x27;running&#x27;]</span><br><span class="line">[INFO] [2021-07-26 08:20:42,868] [1:140259369826048] - dag_scheduler.py[line:325]: finish scheduling job 202107260820309976351</span><br></pre></td></tr></table></figure></p>
+<h1 id="调度已经为endstatus的job"><a href="#调度已经为endstatus的job" class="headerlink" title="调度已经为endstatus的job"></a>调度已经为endstatus的job</h1><p>源码：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">schedule_logger().info(&quot;start schedule end status jobs to update status&quot;)</span><br><span class="line">jobs = JobSaver.query_job(is_initiator=True, status=set(EndStatus.status_list()), end_time=[current_timestamp() - END_STATUS_JOB_SCHEDULING_TIME_LIMIT, current_timestamp()])</span><br><span class="line">schedule_logger().info(f&quot;have &#123;len(jobs)&#125; end status jobs&quot;)</span><br><span class="line">for job in jobs:</span><br><span class="line">    schedule_logger().info(f&quot;schedule end status job &#123;job.f_job_id&#125;&quot;)</span><br><span class="line">    try:</span><br><span class="line">        update_status = self.end_scheduling_updates(job_id=job.f_job_id)</span><br><span class="line">        if not update_status:</span><br><span class="line">            schedule_logger(job.f_job_id).info(f&quot;the number of updates has been exceeded&quot;)</span><br><span class="line">            continue</span><br><span class="line">        self.schedule_running_job(job=job)</span><br><span class="line">    except Exception as e:</span><br><span class="line">        schedule_logger(job.f_job_id).exception(e)</span><br><span class="line">        schedule_logger(job.f_job_id).error(f&quot;schedule job &#123;job.f_job_id&#125; failed&quot;)</span><br><span class="line">schedule_logger().info(&quot;schedule end status jobs finished&quot;)</span><br></pre></td></tr></table></figure><br>说明：结束之后的轮询dag_scheduler.py 中，schedule end status job 部分的功能。对于5分钟内（END_STATUS_JOB_SCHEDULING_TIME_LIMIT = 5 <em> 60 </em> 1000 # ms）已经finish 的job，都还会执行end_scheduling_updates。其中只有第一次能update成功（默认参数是一次 END_STATUS_JOB_SCHEDULING_UPDATES = 1），然后再schedule_running_job 该job。<br>此后，每次 dag_scheduler轮询（默认每2s），都会报出如下日志：<br>dag_scheduler.py[line:193]: the number of updates has been exceeded</p>
+<p>fate_flow/fate_flow_schedule.log<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:48,027] [1:140259369826048] - dag_scheduler.py[line:185]: start schedule end status jobs to update status</span><br><span class="line">[INFO] [2021-07-26 08:20:48,036] [1:140259369826048] - dag_scheduler.py[line:187]: have 1 end status jobs</span><br><span class="line">[INFO] [2021-07-26 08:20:48,036] [1:140259369826048] - dag_scheduler.py[line:189]: schedule end status job 202107260820309976351</span><br></pre></td></tr></table></figure><br>再一次调度schedule_running_job </p>
+<p>${job_log_dir}/fate_flow_schedule.log 日志为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:48,044] [1:140259369826048] - dag_scheduler.py[line:298]: scheduling job 202107260820309976351</span><br><span class="line">[INFO] [2021-07-26 08:20:48,046] [1:140259369826048] - task_scheduler.py[line:28]: scheduling job 202107260820309976351 tasks</span><br><span class="line">[INFO] [2021-07-26 08:20:48,066] [1:140259369826048] - task_scheduler.py[line:143]: job 202107260820309976351 task 202107260820309976351_upload_0 0 status is success, calculate by task party status list: [&#x27;success&#x27;]</span><br><span class="line">[INFO] [2021-07-26 08:20:48,067] [1:140259369826048] - task_scheduler.py[line:75]: finish scheduling job 202107260820309976351 tasks</span><br><span class="line">[INFO] [2021-07-26 08:20:48,067] [1:140259369826048] - dag_scheduler.py[line:310]: Job 202107260820309976351 status is success, calculate by task status list: [&#x27;success&#x27;]</span><br><span class="line">[INFO] [2021-07-26 08:20:48,067] [1:140259369826048] - dag_scheduler.py[line:502]: Job 202107260820309976351 finished with success, do something...</span><br><span class="line">[INFO] [2021-07-26 08:20:48,067] [1:140259369826048] - dag_scheduler.py[line:436]: request stop job 202107260820309976351 with success</span><br><span class="line">[INFO] [2021-07-26 08:20:48,074] [1:140259369826048] - dag_scheduler.py[line:445]: request stop job 202107260820309976351 with success to all party</span><br><span class="line">[INFO] [2021-07-26 08:20:48,074] [1:140259369826048] - federated_scheduler.py[line:88]: try to stop job 202107260820309976351</span><br><span class="line">[INFO] [2021-07-26 08:20:48,097] [1:140259119585024] - job_utils.py[line:396]: try to stop job 202107260820309976351 task 202107260820309976351_upload_0 local 0 with success party status process pid:90</span><br><span class="line">[INFO] [2021-07-26 08:20:48,097] [1:140259119585024] - job_utils.py[line:399]: can not found job 202107260820309976351 task 202107260820309976351_upload_0 local 0 with success party status process pid:90</span><br><span class="line">[INFO] [2021-07-26 08:20:48,100] [1:140259119585024] - job_utils.py[line:423]: start run subprocess to stop task session 202107260820309976351_upload_0_0_local_0</span><br><span class="line">[INFO] [2021-07-26 08:20:48,100] [1:140259119585024] - job_utils.py[line:310]: start process command: python3 /data/projects/fate/python/fate_flow/utils/session_utils.py -j 202107260820309976351_upload_0_0_local_0 --computing EGGROLL --federation EGGROLL --storage EGGROLL -c stop</span><br><span class="line">[INFO] [2021-07-26 08:20:48,111] [1:140259119585024] - job_utils.py[line:333]: start process command: python3 /data/projects/fate/python/fate_flow/utils/session_utils.py -j 202107260820309976351_upload_0_0_local_0 --computing EGGROLL --federation EGGROLL --storage EGGROLL -c stop successfully, pid is 159</span><br><span class="line">[INFO] [2021-07-26 08:20:48,111] [1:140259119585024] - task_controller.py[line:254]: job 202107260820309976351 task 202107260820309976351_upload_0 0 on local 0 process 90 kill success</span><br><span class="line">[INFO] [2021-07-26 08:20:48,112] [1:140259119585024] - job_saver.py[line:71]: try to update job 202107260820309976351 task 202107260820309976351_upload_0 0 status</span><br><span class="line">[INFO] [2021-07-26 08:20:48,119] [1:140259119585024] - job_saver.py[line:76]: update job 202107260820309976351 task 202107260820309976351_upload_0 0 status update does not take effect: &#123;&#x27;job_id&#x27;: &#x27;202107260820309976351&#x27;, &#x27;task_id&#x27;: &#x27;202107260820309976351_upload_0&#x27;, &#x27;task_version&#x27;: 0, &#x27;role&#x27;: &#x27;local&#x27;, &#x27;party_id&#x27;: &#x27;0&#x27;, &#x27;party_status&#x27;: &#x27;success&#x27;&#125;</span><br><span class="line">[INFO] [2021-07-26 08:20:48,144] [1:140259119585024] - job_saver.py[line:81]: try to update job 202107260820309976351 task 202107260820309976351_upload_0 0</span><br><span class="line">[WARNING] [2021-07-26 08:20:48,147] [1:140259119585024] - job_saver.py[line:86]: job 202107260820309976351 task 202107260820309976351_upload_0 0 update does not take effect</span><br><span class="line">[INFO] [2021-07-26 08:20:48,151] [1:140259119585024] - job_saver.py[line:45]: try to update job 202107260820309976351 status to success</span><br><span class="line">[INFO] [2021-07-26 08:20:48,156] [1:140259119585024] - job_saver.py[line:56]: update job 202107260820309976351 status does not take effect</span><br><span class="line">[INFO] [2021-07-26 08:20:48,158] [1:140259369826048] - federated_scheduler.py[line:92]: stop job 202107260820309976351 success</span><br><span class="line">[INFO] [2021-07-26 08:20:48,158] [1:140259369826048] - dag_scheduler.py[line:448]: stop job 202107260820309976351 with success successfully</span><br><span class="line">[INFO] [2021-07-26 08:20:48,158] [1:140259369826048] - federated_scheduler.py[line:107]: try to clean job 202107260820309976351</span><br><span class="line">[INFO] [2021-07-26 08:20:48,162] [1:140259119585024] - job_controller.py[line:344]: Job 202107260820309976351 on local 0 start to clean</span><br><span class="line">[INFO] [2021-07-26 08:20:48,162] [1:140259119585024] - job_controller.py[line:346]: job 202107260820309976351 on local 0 clean done</span><br><span class="line">[INFO] [2021-07-26 08:20:48,164] [1:140259369826048] - federated_scheduler.py[line:110]: clean job 202107260820309976351 success</span><br><span class="line">[INFO] [2021-07-26 08:20:48,164] [1:140259369826048] - dag_scheduler.py[line:505]: Job 202107260820309976351 finished with success, done</span><br><span class="line">[INFO] [2021-07-26 08:20:48,164] [1:140259369826048] - dag_scheduler.py[line:325]: finish scheduling job 202107260820309976351</span><br><span class="line">[INFO] [2021-07-26 08:20:48,596] [148:140090979002176] - session_utils.py[line:38]: start stop session 202107260820309976351_upload_0_0_local_0</span><br><span class="line">[INFO] [2021-07-26 08:20:48,762] [153:140325590579008] - session_utils.py[line:38]: start stop session 202107260820309976351_upload_0_0_local_0</span><br><span class="line">[INFO] [2021-07-26 08:20:48,941] [159:140675688425280] - session_utils.py[line:38]: start stop session 202107260820309976351_upload_0_0_local_0</span><br><span class="line">[INFO] [2021-07-26 08:20:50,205] [1:140259369826048] - dag_scheduler.py[line:193]: the number of updates has been exceeded</span><br><span class="line">[INFO] [2021-07-26 08:20:50,227] [153:140325590579008] - session_utils.py[line:47]: stop session 202107260820309976351_upload_0_0_local_0 success</span><br><span class="line">[INFO] [2021-07-26 08:20:50,233] [148:140090979002176] - session_utils.py[line:47]: stop session 202107260820309976351_upload_0_0_local_0 success</span><br><span class="line">[INFO] [2021-07-26 08:20:50,240] [159:140675688425280] - session_utils.py[line:47]: stop session 202107260820309976351_upload_0_0_local_0 success</span><br></pre></td></tr></table></figure>
+<p>再次调度产生的日志<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 08:20:52,248] [1:140259369826048] - dag_scheduler.py[line:193]: the number of updates has been exceeded</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fate-log-9-upload-job-finish/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1329,346 +1552,6 @@ fate_flow/peewee.log<figure class="highlight plaintext"><table><tr><td class="gu
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fate-log-1-dir-struct/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="喵十八">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="喵十八の小窝">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/08/20/fate-log-1-dir-struct/" class="post-title-link" itemprop="url">FATE学习：跟着日志读源码（一）日志目录结构</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2023-08-20 12:10:35 / Modified: 12:18:49" itemprop="dateCreated datePublished" datetime="2023-08-20T12:10:35+08:00">2023-08-20</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FATE/" itemprop="url" rel="index"><span itemprop="name">FATE</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>介绍fate运行过程中产生的各个类型日志</p>
-<h1 id="版本说明"><a href="#版本说明" class="headerlink" title="版本说明"></a>版本说明</h1><p>部署方式为KubeFATE。相关版本为：</p>
-<ul>
-<li>FATE: 1.5.1</li>
-<li>KubeFATE: v1.3.0</li>
-</ul>
-<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><ul>
-<li>job：一个完整的调度单元，可以拆分成不同的task。</li>
-<li>task：最小的执行单元。</li>
-<li>component：预先定义的不同组件，具体的task执行，就是运行不同的组件。</li>
-</ul>
-<h1 id="FATE框架"><a href="#FATE框架" class="headerlink" title="FATE框架"></a>FATE框架</h1><p>根据官方的架构图，在单个Party的上FATE-Flow 的架构如下<br><img src="/image/fate/fea45d92e84d4785acd417e65dc420d7.png" alt=""></p>
-<p>整体分成6大块：</p>
-<ul>
-<li>FATE-Flow Client: 客户端，提供给用户的交互接口，日常提交的命令<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python fate_flow_client.py -f submit_job -c examples/test_hetero_lr_job_conf.json -d examples/test_hetero_lr_job_dsl.json</span><br></pre></td></tr></table></figure>
-就是调用了客户端。</li>
-<li>FATE-Flow Server: 服务端，用于处理Client 提交的各类请求。</li>
-<li>FATE-Board: Web UI，用于监控FATE 任务的运行情况。</li>
-<li>Transfer : 用来处理多方联邦时的交互和通信</li>
-<li>Metadata Service: 对联邦过程，产生的各类Metadata进行存储、管理并提供查询</li>
-<li>Local FileSystem: 本地文件系统，进行持久化</li>
-<li>Storage &amp; Computing: 底层存储和计算引擎</li>
-</ul>
-<p>其中 FATE-Flow Server 最为复杂，</p>
-<ul>
-<li>API Service: 处理Client 提交的各类请求</li>
-<li>Job Queue: 异步调度的方式，所有提交的job 先进入job queue （见后文，所有job创建完毕，都是waiting状态）,根据资源情况，进行下发（调度策略是啥？？）</li>
-<li>DAG Scheduler: 每个job 会根据涉及的计算内容，解析为一个DAG（有向无环图），图中的每个节点为一个task。针对每个job，通过一个DAG Scheduler 进行该job下涉及task 的调度。</li>
-<li>Task Scheduler: task 在本Party的调度，涉及到跨多个Party 会调用Federated Task Scheduler 进行调度。</li>
-<li>Federated Task Scheduler:涉及到跨多个Party 的Task 的调度</li>
-<li>Executor: 联邦任务执行节点，支持不同的 Operator 容器。这里会调用Framework </li>
-<li>Framework: 计算框架抽象层，根据backend 的设置 调用底层的Storage &amp; Computing，同时若为联邦任务，则和Transfer 进行通信。</li>
-<li>DSL Parser: 是调度的核心，通过 DSL parser 解析到一个计算任务的上下游关系及依赖等。</li>
-<li>Controller: 任务的控制器</li>
-<li>Model Registry: 模型管理器</li>
-<li>Tracking Manager：任务输入输出的实时追踪，包括每个 task 输出的 data 和 model。</li>
-</ul>
-<h1 id="日志分类"><a href="#日志分类" class="headerlink" title="日志分类"></a>日志分类</h1><p>从FATE的框架，可以看出FATE 涉及大量的http/grpc 请求， 以及DB操作，因而按照日志的操作来源分，主要有一下三类：</p>
-<ul>
-<li>http/grpc 请求日志</li>
-<li>操作DB的日志</li>
-<li>fate 框架运行时的日志</li>
-</ul>
-<p>而从日志输出的位置来看，则可以分为如下三类：</p>
-<ul>
-<li>Console 日志</li>
-<li>容器日志</li>
-<li>FATE Flow 日志</li>
-</ul>
-<p>鉴于按照位置来看，可以更好的体现出整个执行的时序，下文会按照这个维度，来进行解析</p>
-<h1 id="Console-日志"><a href="#Console-日志" class="headerlink" title="Console 日志"></a>Console 日志</h1><p>控制台部分，也是就正常提交任务之后会产生的日志，例如 执行命令<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python fate_flow_client.py -f upload -c examples/upload_guest.json</span><br></pre></td></tr></table></figure></p>
-<p>返回的日志为<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;data&quot;: &#123;</span><br><span class="line">        &quot;board_url&quot;: &quot;http://fateboard:8080/index.html#/dashboard?job_id=20210720163310959474309&amp;role=local&amp;party_id=0&quot;,</span><br><span class="line">        &quot;job_dsl_path&quot;: &quot;/data/projects/fate/jobs/20210720163310959474309/job_dsl.json&quot;,</span><br><span class="line">        &quot;job_id&quot;: &quot;20210720163310959474309&quot;,</span><br><span class="line">        &quot;job_runtime_conf_on_party_path&quot;: &quot;/data/projects/fate/jobs/20210720163310959474309/local/job_runtime_on_party_conf.json&quot;,</span><br><span class="line">        &quot;job_runtime_conf_path&quot;: &quot;/data/projects/fate/jobs/20210720163310959474309/job_runtime_conf.json&quot;,</span><br><span class="line">        &quot;logs_directory&quot;: &quot;/data/projects/fate/logs/20210720163310959474309&quot;,</span><br><span class="line">        &quot;model_info&quot;: &#123;</span><br><span class="line">            &quot;model_id&quot;: &quot;local-0#model&quot;,</span><br><span class="line">            &quot;model_version&quot;: &quot;20210720163310959474309&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;namespace&quot;: &quot;cl&quot;,</span><br><span class="line">        &quot;pipeline_dsl_path&quot;: &quot;/data/projects/fate/jobs/20210720163310959474309/pipeline_dsl.json&quot;,</span><br><span class="line">        &quot;table_name&quot;: &quot;bgame3342_20210719&quot;,</span><br><span class="line">        &quot;train_runtime_conf_path&quot;: &quot;/data/projects/fate/jobs/20210720163310959474309/train_runtime_conf.json&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;jobId&quot;: &quot;20210720163310959474309&quot;,</span><br><span class="line">    &quot;retcode&quot;: 0,</span><br><span class="line">    &quot;retmsg&quot;: &quot;success&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>包含4个部分：</p>
-<ul>
-<li>data: 提交任务的相关参数</li>
-<li>jobId: FATE为该job分配的id</li>
-<li>retcode: 提交请求的返回状态码</li>
-<li>retmsg: 提交请求返回的状态信息。如不成功，会有相关报错。<br>这里需要关注的日志信息，只有retmsg。</li>
-</ul>
-<h1 id="Server日志"><a href="#Server日志" class="headerlink" title="Server日志"></a>Server日志</h1><p>这一部分日志，可以在部署fate_flow server 的容器中看到。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">10.200.224.54 - - [20/Jul/2021 16:33:12] &quot;POST /v1/party/20210720163310959474309/local/0/create HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.224.54 - - [20/Jul/2021 16:33:12] &quot;POST /v1/data/upload?%7B%22file%22:%20%22/data/projects/fate/python/cl/fc/data/predict_data/20210719/bgame3342_20210719.csv%22,%20%22head%22:%201,%20%22partition%22:%201,%20%22work_mode%22:%201,%20%22table_name%22:%20%22bgame3342_20210719%22,%20%22namespace%22:%20%22cl%22,%20%22count%22:%20752361,%20%22config%22:%20%22/data/projects/fate/python/cl/fc/config/20210719/upload_20210719_bgame3342.json%22,%20%22function%22:%20%22upload%22,%20%22drop%22:%20%221%22%7D HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.224.54 - - [20/Jul/2021 16:33:14] &quot;POST /v1/party/20210720163310959474309/local/0/resource/apply HTTP/1.1&quot; 200 -</span><br><span class="line">10.200.224.54 - - [20/Jul/2021 16:33:14] &quot;POST /v1/party/20210720163310959474309/local/0/start HTTP/1.1&quot; 200 -</span><br></pre></td></tr></table></figure><br>记录了 FATE-Flow Server 收到的POST请求。<br>这一部分主要是federate_scheduler.py 向server 发起的POST 请求。</p>
-<h1 id="FATE-Flow-日志"><a href="#FATE-Flow-日志" class="headerlink" title="FATE Flow 日志"></a>FATE Flow 日志</h1><p>这一部分是fate运行过程中的主要产生的日志，用来排查fate job、task的运行状况。目录位于kubefate 的容器中， /data/projects/fate/logs/<br>其中 fate_flow 目录记录了fate 启动以来的总体的日志。 各个${jobid} 目录下，记录了各个job详细的日志。<br>相关处理类：python/fate_arch/common/log.py</p>
-<h2 id="fate-flow-目录下日志分类"><a href="#fate-flow-目录下日志分类" class="headerlink" title="fate_flow 目录下日志分类"></a>fate_flow 目录下日志分类</h2><p>总的结构类似，分成如下几个类型的日志</p>
-<ul>
-<li>DEBUG.log</li>
-<li>INFO.log</li>
-<li>ERROR.log</li>
-<li>WARNING.log</li>
-<li>peewee.log</li>
-<li>stat.log</li>
-<li>fate_flow_audit.log </li>
-<li>fate_flow_detect.log</li>
-<li>fate_flow_stat.log</li>
-<li>fate_flow_schedule.log </li>
-</ul>
-<h3 id="DEBUG、INFO、ERROR、WARNING"><a href="#DEBUG、INFO、ERROR、WARNING" class="headerlink" title="DEBUG、INFO、ERROR、WARNING"></a>DEBUG、INFO、ERROR、WARNING</h3><p>正常四个级别的日志输出</p>
-<h3 id="peewee-log"><a href="#peewee-log" class="headerlink" title="peewee.log"></a>peewee.log</h3><p>fate 操作数据是使用peewee 这一ORM 实现的，peewee.log 记录了相关操作的日志。关于peewee 可以参考<a href="http://docs.peewee-orm.com/en/latest/index.html">官方文档</a></p>
-<h3 id="stat-log"><a href="#stat-log" class="headerlink" title="stat.log"></a>stat.log</h3><p>记录了各param 的check ，感觉可有可无，不知道单独放一个日志的设计意图。</p>
-<p>样例<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] [2021-07-26 15:26:37,778] [1150092:140485761271616] - intersect_param.py[line:61]: Finish encode parameter check!</span><br><span class="line">[DEBUG] [2021-07-26 15:26:37,778] [1150092:140485761271616] - intersect_param.py[line:184]: Finish intersect parameter check!</span><br><span class="line">[DEBUG] [2021-07-26 15:26:37,778] [1150092:140485761271616] - intersect_param.py[line:61]: Finish encode parameter check!</span><br><span class="line">[DEBUG] [2021-07-26 15:26:37,778] [1150092:140485761271616] - intersect_param.py[line:184]: Finish intersect parameter check!</span><br><span class="line">[DEBUG] [2021-07-26 15:26:37,780] [1150092:140485761271616] - encrypt_param.py[line:71]: Finish encrypt parameter check!</span><br><span class="line">[DEBUG] [2021-07-26 15:26:37,780] [1150092:140485761271616] - predict_param.py[line:44]: Finish predict parameter check!</span><br><span class="line">[DEBUG] [2021-07-26 15:26:37,781] [1150092:140485761271616] - encrypt_param.py[line:71]: Finish encrypt parameter check!</span><br><span class="line">[DEBUG] [2021-07-26 15:26:37,781] [1150092:140485761271616] - predict_param.py[line:44]: Finish predict parameter check!</span><br><span class="line">[DEBUG] [2021-07-26 15:26:37,782] [1150092:140485761271616] - encrypt_param.py[line:71]: Finish encrypt parameter check!</span><br><span class="line">[DEBUG] [2021-07-26 15:26:37,782] [1150092:140485761271616] - predict_param.py[line:44]: Finish predict parameter check!</span><br></pre></td></tr></table></figure></p>
-<h3 id="fate-flow-audit-log"><a href="#fate-flow-audit-log" class="headerlink" title="fate_flow_audit.log"></a>fate_flow_audit.log</h3><p>记录发起的grpc 请求。函数为 audit_logger。有调用的地方在<br>python/fate_flow/utils/api_utils.py 中的<br>federated_coordination_on_grpc<br>federated_coordination_on_http<br>forward_api</p>
-<p>和 python/fate_flow/utils/grpc_utils.py 中的<br>unaryCall</p>
-<p>日志样例：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-05-18 08:00:26,886] [1:140215515608832] - grpc_utils.py[line:93]: rpc receive: header &#123;</span><br><span class="line">  task &#123;</span><br><span class="line">    taskId: &quot;2021051808002667189911&quot;</span><br><span class="line">  &#125;</span><br><span class="line">  src &#123;</span><br><span class="line">    name: &quot;2021051808002667189911&quot;</span><br><span class="line">    partyId: &quot;9999&quot;</span><br><span class="line">    role: &quot;fateflow&quot;</span><br><span class="line">    callback &#123;</span><br><span class="line">      ip: &quot;10.200.96.205&quot;</span><br><span class="line">      port: 9360</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  dst &#123;</span><br><span class="line">    name: &quot;2021051808002667189911&quot;</span><br><span class="line">    partyId: &quot;10000&quot;</span><br><span class="line">    role: &quot;fateflow&quot;</span><br><span class="line">  &#125;</span><br><span class="line">  command &#123;</span><br><span class="line">    name: &quot;fateflow&quot;</span><br><span class="line">  &#125;</span><br><span class="line">  operator: &quot;POST&quot;</span><br><span class="line">  conf &#123;</span><br><span class="line">    overallTimeout: 30000</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">body &#123;</span><br><span class="line">  key: &quot;/v1/party/2021051808002667189911/host/10000/create&quot;</span><br><span class="line">  value: &quot;&#123;\&quot;name\&quot;: \&quot;\&quot;, \&quot;description\&quot;: \&quot;\&quot;, \&quot;tag\&quot;: \&quot;\&quot;, \&quot;is_initiator\&quot;: false, \&quot;progress\&quot;: 0, \&quot;ready_signal\&quot;: false, \&quot;cancel_signal\&quot;: false, \&quot;rerun_signal\&quot;: false, \&quot;end_scheduling_updates\&quot;: 0, \&quot;cores\&quot;: 0, \&quot;memory\&quot;: 0, \&quot;remaining_cores\&quot;: 0, \&quot;remaining_memory\&quot;: 0, \&quot;resource_in_use\&quot;: false, \&quot;job_id\&quot;: \&quot;2021051808002667189911\&quot;, \&quot;dsl\&quot;: &#123;\&quot;components\&quot;: &#123;\&quot;dataio_0\&quot;: &#123;\&quot;module\&quot;: \&quot;DataIO\&quot;, \&quot;input\&quot;: &#123;\&quot;model\&quot;: [\&quot;pipeline.dataio_0.dataio\&quot;], \&quot;data\&quot;: &#123;\&quot;data\&quot;: [\&quot;args.eval_data\&quot;]&#125;&#125;, \&quot;output\&quot;: &#123;\&quot;data\&quot;: [\&quot;train\&quot;]&#125;, \&quot;CodePath\&quot;: \&quot;federatedml/util/data_io.py/DataIO\&quot;&#125;, \&quot;intersection_0\&quot;: &#123;\&quot;module\&quot;: \&quot;Intersection\&quot;, \&quot;output\&quot;: &#123;\&quot;data\&quot;: [\&quot;train\&quot;]&#125;, \&quot;input\&quot;: &#123;\&quot;data\&quot;: &#123;\&quot;data\&quot;: [\&quot;dataio_0.train\&quot;]&#125;&#125;, \&quot;CodePath\&quot;: \&quot;federatedml/statistic/intersect/intersect_model.py/IntersectGuest\&quot;&#125;, \&quot;secureboost_0\&quot;: &#123;\&quot;module\&quot;: \&quot;HeteroSecureBoost\&quot;, \&quot;input\&quot;: &#123;\&quot;model\&quot;: [\&quot;pipeline.secureboost_0.train\&quot;], \&quot;data\&quot;: &#123;\&quot;test_data\&quot;: [\&quot;intersection_0.train\&quot;]&#125;&#125;, \&quot;output\&quot;: &#123;\&quot;data\&quot;: [\&quot;train\&quot;]&#125;, \&quot;CodePath\&quot;: \&quot;federatedml/ensemble/boosting/hetero/hetero_secureboost_guest.py/HeteroSecureBoostingTreeGuest\&quot;&#125;&#125;&#125;, \&quot;train_runtime_conf\&quot;: &#123;\&quot;initiator\&quot;: &#123;\&quot;role\&quot;: \&quot;guest\&quot;, \&quot;party_id\&quot;: 9999&#125;, \&quot;job_parameters\&quot;: &#123;\&quot;job_type\&quot;: \&quot;train\&quot;, \&quot;work_mode\&quot;: 1, \&quot;backend\&quot;: 0, \&quot;computing_engine\&quot;: \&quot;EGGROLL\&quot;, \&quot;federation_engine\&quot;: \&quot;EGGROLL\&quot;, \&quot;storage_engine\&quot;: \&quot;EGGROLL\&quot;, \&quot;engines_address\&quot;: &#123;&#125;, \&quot;federated_mode\&quot;: \&quot;MULTIPLE\&quot;, \&quot;task_cores\&quot;: 2, \&quot;task_parallelism\&quot;: 1, \&quot;computing_partitions\&quot;: 2, \&quot;federated_status_collect_type\&quot;: \&quot;PULL\&quot;, \&quot;model_id\&quot;: \&quot;guest-9999#host-10000#model\&quot;, \&quot;model_version\&quot;: \&quot;2021051807524507002410\&quot;, \&quot;eggroll_run\&quot;: &#123;&#125;, \&quot;spark_run\&quot;: &#123;&#125;, \&quot;rabbitmq_run\&quot;: &#123;&#125;, \&quot;adaptation_parameters\&quot;: &#123;\&quot;task_nodes\&quot;: 1, \&quot;task_cores_per_node\&quot;: 2, \&quot;task_memory_per_node\&quot;: 0, \&quot;request_task_cores\&quot;: 2, \&quot;if_initiator_baseline\&quot;: true&#125;&#125;, \&quot;role\&quot;: &#123;\&quot;guest\&quot;: [9999], \&quot;host\&quot;: [10000]&#125;, \&quot;role_parameters\&quot;: &#123;\&quot;guest\&quot;: &#123;\&quot;args\&quot;: &#123;\&quot;data\&quot;: &#123;\&quot;train_data\&quot;: [&#123;\&quot;name\&quot;: \&quot;breast_hetero_guest\&quot;, \&quot;namespace\&quot;: \&quot;experiment\&quot;&#125;], \&quot;eval_data\&quot;: [&#123;\&quot;name\&quot;: \&quot;breast_hetero_guest\&quot;, \&quot;namespace\&quot;: \&quot;experiment\&quot;&#125;]&#125;&#125;, \&quot;dataio_0\&quot;: &#123;\&quot;with_label\&quot;: [true], \&quot;label_name\&quot;: [\&quot;y\&quot;], \&quot;label_type\&quot;: [\&quot;int\&quot;], \&quot;output_format\&quot;: [\&quot;dense\&quot;]&#125;&#125;, \&quot;host\&quot;: &#123;\&quot;args\&quot;: &#123;\&quot;data\&quot;: &#123;\&quot;train_data\&quot;: [&#123;\&quot;name\&quot;: \&quot;breast_hetero_host\&quot;, \&quot;namespace\&quot;: \&quot;experiment\&quot;&#125;], \&quot;eval_data\&quot;: [&#123;\&quot;name\&quot;: \&quot;breast_hetero_host\&quot;, \&quot;namespace\&quot;: \&quot;experiment\&quot;&#125;]&#125;&#125;, \&quot;dataio_0\&quot;: &#123;\&quot;with_label\&quot;: [false], \&quot;output_format\&quot;: [\&quot;dense\&quot;]&#125;&#125;&#125;, \&quot;algorithm_parameters\&quot;: &#123;\&quot;secureboost_0\&quot;: &#123;\&quot;task_type\&quot;: \&quot;classification\&quot;, \&quot;learning_rate\&quot;: 0.1, \&quot;num_trees\&quot;: 5, \&quot;subsample_feature_rate\&quot;: 1, \&quot;n_iter_no_change\&quot;: false, \&quot;tol\&quot;: 0.0001, \&quot;bin_num\&quot;: 50, \&quot;objective_param\&quot;: &#123;\&quot;objective\&quot;: \&quot;cross_entropy\&quot;&#125;, \&quot;encrypt_param\&quot;: &#123;\&quot;method\&quot;: \&quot;paillier\&quot;&#125;, \&quot;predict_param\&quot;: &#123;\&quot;threshold\&quot;: 0.5&#125;, \&quot;cv_param\&quot;: &#123;\&quot;n_splits\&quot;: 5, \&quot;shuffle\&quot;: false, \&quot;random_seed\&quot;: 103, \&quot;need_cv\&quot;: false&#125;, \&quot;validation_freqs\&quot;: 1&#125;, \&quot;evaluation_0\&quot;: &#123;\&quot;eval_type\&quot;: \&quot;binary\&quot;&#125;&#125;, \&quot;config\&quot;: \&quot;/data/projects/fate/examples/min_test_task/test/submit_job_guest.config_1621324363_9498\&quot;, \&quot;dsl\&quot;: \&quot;/data/projects/fate/examples/min_test_task/config/test_secureboost_train_dsl.json\&quot;, \&quot;function\&quot;: \&quot;submit_job\&quot;&#125;, \&quot;roles\&quot;: &#123;\&quot;guest\&quot;: [9999], \&quot;host\&quot;: [10000], \&quot;arbiter\&quot;: []&#125;, \&quot;work_mode\&quot;: 1, \&quot;initiator_role\&quot;: \&quot;guest\&quot;, \&quot;initiator_party_id\&quot;: 9999, \&quot;role\&quot;: \&quot;guest\&quot;, \&quot;party_id\&quot;: 9999, \&quot;runtime_conf\&quot;: &#123;\&quot;initiator\&quot;: &#123;\&quot;role\&quot;: \&quot;guest\&quot;, \&quot;party_id\&quot;: 9999&#125;, \&quot;job_parameters\&quot;: &#123;\&quot;job_type\&quot;: \&quot;predict\&quot;, \&quot;work_mode\&quot;: 1, \&quot;backend\&quot;: 0, \&quot;computing_engine\&quot;: \&quot;EGGROLL\&quot;, \&quot;federation_engine\&quot;: \&quot;EGGROLL\&quot;, \&quot;storage_engine\&quot;: \&quot;EGGROLL\&quot;, \&quot;engines_address\&quot;: &#123;&#125;, \&quot;federated_mode\&quot;: \&quot;MULTIPLE\&quot;, \&quot;task_parallelism\&quot;: 1, \&quot;computing_partitions\&quot;: 4, \&quot;federated_status_collect_type\&quot;: \&quot;PULL\&quot;, \&quot;model_id\&quot;: \&quot;guest-9999#host-10000#model\&quot;, \&quot;model_version\&quot;: \&quot;2021051807524507002410\&quot;, \&quot;eggroll_run\&quot;: &#123;&#125;, \&quot;spark_run\&quot;: &#123;&#125;, \&quot;rabbitmq_run\&quot;: &#123;&#125;, \&quot;adaptation_parameters\&quot;: &#123;\&quot;task_nodes\&quot;: 1, \&quot;task_cores_per_node\&quot;: 4, \&quot;task_memory_per_node\&quot;: 0, \&quot;request_task_cores\&quot;: 4, \&quot;if_initiator_baseline\&quot;: true&#125;&#125;, \&quot;role\&quot;: &#123;\&quot;guest\&quot;: [9999], \&quot;host\&quot;: [10000], \&quot;arbiter\&quot;: []&#125;, \&quot;role_parameters\&quot;: &#123;\&quot;guest\&quot;: &#123;\&quot;args\&quot;: &#123;\&quot;data\&quot;: &#123;\&quot;eval_data\&quot;: [&#123;\&quot;name\&quot;: \&quot;breast_hetero_guest\&quot;, \&quot;namespace\&quot;: \&quot;experiment\&quot;&#125;]&#125;&#125;&#125;, \&quot;host\&quot;: &#123;\&quot;args\&quot;: &#123;\&quot;data\&quot;: &#123;\&quot;eval_data\&quot;: [&#123;\&quot;name\&quot;: \&quot;breast_hetero_host\&quot;, \&quot;namespace\&quot;: \&quot;experiment\&quot;&#125;]&#125;&#125;&#125;&#125;, \&quot;config\&quot;: \&quot;/data/projects/fate/examples/min_test_task/test/submit_job_guest.config_1621324825_2041\&quot;, \&quot;function\&quot;: \&quot;submit_job\&quot;&#125;, \&quot;runtime_conf_on_party\&quot;: &#123;\&quot;initiator\&quot;: &#123;\&quot;role\&quot;: \&quot;guest\&quot;, \&quot;party_id\&quot;: 9999&#125;, \&quot;job_parameters\&quot;: &#123;\&quot;job_type\&quot;: \&quot;predict\&quot;, \&quot;work_mode\&quot;: 1, \&quot;backend\&quot;: 0, \&quot;computing_engine\&quot;: \&quot;EGGROLL\&quot;, \&quot;federation_engine\&quot;: \&quot;EGGROLL\&quot;, \&quot;storage_engine\&quot;: \&quot;EGGROLL\&quot;, \&quot;engines_address\&quot;: &#123;&#125;, \&quot;federated_mode\&quot;: \&quot;MULTIPLE\&quot;, \&quot;task_parallelism\&quot;: 1, \&quot;computing_partitions\&quot;: 4, \&quot;federated_status_collect_type\&quot;: \&quot;PULL\&quot;, \&quot;model_id\&quot;: \&quot;guest-9999#host-10000#model\&quot;, \&quot;model_version\&quot;: \&quot;2021051807524507002410\&quot;, \&quot;eggroll_run\&quot;: &#123;&#125;, \&quot;spark_run\&quot;: &#123;&#125;, \&quot;rabbitmq_run\&quot;: &#123;&#125;, \&quot;adaptation_parameters\&quot;: &#123;\&quot;task_nodes\&quot;: 1, \&quot;task_cores_per_node\&quot;: 4, \&quot;task_memory_per_node\&quot;: 0, \&quot;request_task_cores\&quot;: 4, \&quot;if_initiator_baseline\&quot;: true&#125;&#125;, \&quot;role\&quot;: &#123;\&quot;guest\&quot;: [9999], \&quot;host\&quot;: [10000], \&quot;arbiter\&quot;: []&#125;, \&quot;role_parameters\&quot;: &#123;\&quot;guest\&quot;: &#123;\&quot;args\&quot;: &#123;\&quot;data\&quot;: &#123;\&quot;eval_data\&quot;: [&#123;\&quot;name\&quot;: \&quot;breast_hetero_guest\&quot;, \&quot;namespace\&quot;: \&quot;experiment\&quot;&#125;]&#125;&#125;&#125;, \&quot;host\&quot;: &#123;\&quot;args\&quot;: &#123;\&quot;data\&quot;: &#123;\&quot;eval_data\&quot;: [&#123;\&quot;name\&quot;: \&quot;breast_hetero_host\&quot;, \&quot;namespace\&quot;: \&quot;experiment\&quot;&#125;]&#125;&#125;&#125;&#125;, \&quot;config\&quot;: \&quot;/data/projects/fate/examples/min_test_task/test/submit_job_guest.config_1621324825_2041\&quot;, \&quot;function\&quot;: \&quot;submit_job\&quot;&#125;, \&quot;src_role\&quot;: \&quot;guest\&quot;, \&quot;src_party_id\&quot;: 9999&#125;&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="fate-flow-detect-log"><a href="#fate-flow-detect-log" class="headerlink" title="fate_flow_detect.log"></a>fate_flow_detect.log</h3><p>detector.py 产生的日志，涉及如下函数</p>
-<ul>
-<li>detect_running_task：探测正在运行的task</li>
-<li>detect_running_job：探测正在运行的job</li>
-<li>detect_resource_record：探测资源使用记录</li>
-<li>detect_expired_session：探测是否有过期的session，有的话，调用request_stop_jobs进行stop<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 10:01:34,230] [1:139736070596352] - detector.py[line:38]: start to detect running task..</span><br><span class="line">[INFO] [2021-07-26 10:01:34,241] [1:139736070596352] - detector.py[line:70]: finish detect 1 running task</span><br><span class="line">[INFO] [2021-07-26 10:01:34,241] [1:139736070596352] - detector.py[line:74]: start detect running job</span><br><span class="line">[INFO] [2021-07-26 10:01:34,251] [1:139736070596352] - detector.py[line:88]: finish detect running job</span><br><span class="line">[INFO] [2021-07-26 10:01:34,251] [1:139736070596352] - detector.py[line:93]: start detect resource recycle</span><br><span class="line">[INFO] [2021-07-26 10:01:34,255] [1:139736070596352] - detector.py[line:116]: finish detect resource recycle</span><br><span class="line">[INFO] [2021-07-26 10:01:34,255] [1:139736070596352] - detector.py[line:120]: start detect expired session</span><br><span class="line">[INFO] [2021-07-26 10:01:39,260] [1:139736070596352] - detector.py[line:38]: start to detect running task..</span><br><span class="line">[INFO] [2021-07-26 10:01:39,270] [1:139736070596352] - detector.py[line:70]: finish detect 1 running task</span><br><span class="line">[INFO] [2021-07-26 10:01:39,270] [1:139736070596352] - detector.py[line:74]: start detect running job</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="fate-flow-scheduler-log"><a href="#fate-flow-scheduler-log" class="headerlink" title="fate_flow_scheduler.log"></a>fate_flow_scheduler.log</h3><p>这里和${jobid} 目录下的fate_flow_scheduler.log 记录具体job的调度细节不同，只记录最外层的job级别的调度。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-26 10:02:14,169] [1:139736062203648] - dag_scheduler.py[line:152]: schedule running job 202107260958386097411239</span><br><span class="line">[INFO] [2021-07-26 10:02:55,598] [1:139736062203648] - dag_scheduler.py[line:152]: schedule running job 202107260959086853751240</span><br><span class="line">[INFO] [2021-07-26 10:03:46,124] [1:139736062203648] - dag_scheduler.py[line:152]: schedule running job 202107261000016603571241</span><br><span class="line">[INFO] [2021-07-26 10:04:37,635] [1:139736062203648] - dag_scheduler.py[line:158]: schedule running jobs finished</span><br><span class="line">[INFO] [2021-07-26 10:04:37,635] [1:139736062203648] - dag_scheduler.py[line:161]: start schedule ready jobs</span><br><span class="line">[INFO] [2021-07-26 10:04:37,645] [1:139736062203648] - dag_scheduler.py[line:163]: have 0 ready jobs</span><br><span class="line">[INFO] [2021-07-26 10:04:37,645] [1:139736062203648] - dag_scheduler.py[line:171]: schedule ready jobs finished</span><br><span class="line">[INFO] [2021-07-26 10:04:37,645] [1:139736062203648] - dag_scheduler.py[line:173]: start schedule rerun jobs</span><br><span class="line">[INFO] [2021-07-26 10:04:37,652] [1:139736062203648] - dag_scheduler.py[line:175]: have 0 rerun jobs</span><br><span class="line">[INFO] [2021-07-26 10:04:37,652] [1:139736062203648] - dag_scheduler.py[line:183]: schedule rerun jobs finished</span><br><span class="line">[INFO] [2021-07-26 10:04:37,652] [1:139736062203648] - dag_scheduler.py[line:185]: start schedule end status jobs to update status</span><br><span class="line">[INFO] [2021-07-26 10:04:37,673] [1:139736062203648] - dag_scheduler.py[line:187]: have 5 end status jobs</span><br><span class="line">[INFO] [2021-07-26 10:04:37,674] [1:139736062203648] - dag_scheduler.py[line:189]: schedule end status job 202107260956208255521237</span><br><span class="line">[INFO] [2021-07-26 10:04:37,829] [1:139736062203648] - dag_scheduler.py[line:189]: schedule end status job 202107260956590660001238</span><br><span class="line">[INFO] [2021-07-26 10:04:37,956] [1:139736062203648] - dag_scheduler.py[line:189]: schedule end status job 202107260958386097411239</span><br><span class="line">[INFO] [2021-07-26 10:04:38,088] [1:139736062203648] - dag_scheduler.py[line:189]: schedule end status job 202107260959086853751240</span><br><span class="line">[INFO] [2021-07-26 10:04:38,225] [1:139736062203648] - dag_scheduler.py[line:189]: schedule end status job 202107261000016603571241</span><br></pre></td></tr></table></figure></p>
-<h3 id="fate-flow-stat-log"><a href="#fate-flow-stat-log" class="headerlink" title="fate_flow_stat.log"></a>fate_flow_stat.log</h3><p>记录各个进程的状态<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-07-25 17:20:50,581] [1:139738990319424] - job_utils.py[line:345]: child process 676448 exit with exitcode 0</span><br><span class="line">[INFO] [2021-07-25 17:20:50,582] [1:139738990319424] - job_utils.py[line:342]: no child process was immediately available</span><br><span class="line">[INFO] [2021-07-25 17:20:56,256] [1:139738990319424] - job_utils.py[line:345]: child process 676533 exit with exitcode 0</span><br><span class="line">[INFO] [2021-07-25 17:20:56,256] [1:139738990319424] - job_utils.py[line:342]: no child process was immediately available</span><br><span class="line">[INFO] [2021-07-25 17:21:02,272] [1:139738990319424] - job_utils.py[line:345]: child process 676692 exit with exitcode 0</span><br><span class="line">[INFO] [2021-07-25 17:21:02,273] [1:139738990319424] - job_utils.py[line:342]: no child process was immediately available</span><br><span class="line">[INFO] [2021-07-25 17:21:09,043] [1:139738990319424] - job_utils.py[line:345]: child process 676378 exit with exitcode 0</span><br><span class="line">[INFO] [2021-07-25 17:21:09,043] [1:139738990319424] - job_utils.py[line:342]: no child process was immediately available</span><br><span class="line">[INFO] [2021-07-25 17:21:15,706] [1:139738990319424] - job_utils.py[line:345]: child process 676612 exit with exitcode 0</span><br><span class="line">[WARNING] [2021-07-25 17:21:15,707] [1:139738990319424] - job_utils.py[line:348]: current process has no existing unwaited-for child processes.</span><br></pre></td></tr></table></figure></p>
-<h2 id="jobid-目录下日志"><a href="#jobid-目录下日志" class="headerlink" title="${jobid} 目录下日志"></a>${jobid} 目录下日志</h2><p>${jobid} 目录下的日志与 fate_flow 的日志不完全一致，主要分成如下几个部分</p>
-<ul>
-<li>fate_flow_audit.log  </li>
-<li>fate_flow_schedule.log  </li>
-<li>fate_flow_sql.log</li>
-<li>${role}/${party_id}/</li>
-</ul>
-<h3 id="fate-flow-audit-log-1"><a href="#fate-flow-audit-log-1" class="headerlink" title="fate_flow_audit.log"></a>fate_flow_audit.log</h3><p>同fate_flow 目录下的fate_flow_audit.log，fate_flow 下的fate_flow_audit.log 是各个${jobid} 中fate_flow_audit.log 的集合</p>
-<h3 id="fate-flow-schedule-log"><a href="#fate-flow-schedule-log" class="headerlink" title="fate_flow_schedule.log"></a>fate_flow_schedule.log</h3><p>记录fate调度的主要日志，函数为schedule_logger。不同于fate_flow 下的fate_flow_schedule.log，只记录dag_scheduler.py 的日志，调度过程中，记录了众多调用模块的日志，后文详细说明。</p>
-<h3 id="fate-flow-sql-log"><a href="#fate-flow-sql-log" class="headerlink" title="fate_flow_sql.log"></a>fate_flow_sql.log</h3><p>记录操作DB的sql 日志。函数为sql_logger，FATE中操作DB的日志，调用在 job_saver.py：将job的各项metrics 写DB 和 save_model_info.py 将模型的相关信息写DB</p>
-<p>python/fate_flow/operation/job_saver.py<br>create_job_family_entity 函数，创建job时，将job初始化信息写DB<br>execute_update 函数：更新job相关信息</p>
-<p>FATE-1.5.1/python/fate_flow/utils/model_utils.py 中<br>save_model_info 函数，将模型相关信息写DB</p>
-<h3 id="role-party-id"><a href="#role-party-id" class="headerlink" title="${role}/${party_id}/"></a>${role}/${party_id}/</h3><p>记录了各个role &amp; party_id 下具体task执行的日志<br>具体目录结构为</p>
-<ul>
-<li>DEBUG.log</li>
-<li>INFO.log</li>
-<li>ERROR.log</li>
-<li>WARNING.log</li>
-<li>${taskName}/DEBUG.log</li>
-<li>${taskName}/INFO.log</li>
-<li>${taskName}/ERROR.log</li>
-<li>${taskName}/WARNING.log</li>
-<li>${taskName}/peewee.log</li>
-<li>${taskName}/fate_flow_schedule.log</li>
-<li>${taskName}/stat.log</li>
-<li>${taskName}/std.log</li>
-</ul>
-<p>其中 DEBUG、INFO、WARNING、ERROR 是各个${taskName} 下对应日志的合集。</p>
-<p>${taskName}/fate_flow_schedule.log 记录了task_executor.py 执行该task的日志<br>${taskName}/peewee.log 是该task 通过peewee 操作DB的记录<br>${taskName}/stat.log 记录了该task的相关统计值<br>${taskName}/std.log std 输出</p>
-<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a href="https://wdxtub.com/flt/flt-c1/2021/07/02/">【联邦学习之旅】C1 FATE Flow 源码解析</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fedai-overview/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="喵十八">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="喵十八の小窝">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/08/20/fedai-overview/" class="post-title-link" itemprop="url">联邦学习哪家强，中国山东找saber</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2023-08-20 11:46:42 / Modified: 12:06:59" itemprop="dateCreated datePublished" datetime="2023-08-20T11:46:42+08:00">2023-08-20</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FATE/" itemprop="url" rel="index"><span itemprop="name">FATE</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong>ERROR：本文要素过多，包含开车、粗鄙之语、魔法、表情包等。但不包含联邦学习的具体说明，相关内容，文末给出传送门，请自行参阅。</strong></p>
-<h1 id="先吐槽"><a href="#先吐槽" class="headerlink" title="先吐槽"></a>先吐槽</h1><p>人呐就都不知道，自己不可以预料，一个人的职业发展啊，当然要靠自我奋斗，但是也要考虑技术的演进。我绝对不知道，我作为一个搞大数据的，怎么开始搞联邦学习了？</p>
-<p><img src="/image/fate/0d5a5e318d7f8e52bbfa2f45ffa42349.jpg" alt=""></p>
-<p>所以当领导给我安排任务，说“公司都决定了，你来调研联邦学习吧”。</p>
-<p>我说另请高明吧，我实在也不是谦虚。我一个玩大数据的，一年正经代码写不了几行，到是sql和shell 写的飞起的咸鱼，怎么就能研究联邦学习了呢？但是，领导说“公司已经研究决定了”。后来我就装了两虚拟机。</p>
-<p>一台主机名是gou，一台主机名是qi，提醒我，工作再多，也得有健康的身体去享受</p>
-<p><img src="/image/fate/6be630a085ee553471e954f804ec2e78.png" alt=""></p>
-<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><p>说到联邦学习，最近概念有点活，相关在大神遍地的知乎，随便一搜就是了。当然，我有个朋友对此很是不屑，评价到</p>
-<blockquote>
-<p>联邦学习反映了大数据在面对隐私时既想当xx又想立xx的复杂心情 —by 我的一个朋友</p>
-</blockquote>
-<p>当然，无论我朋友说啥，反正他又不发我工资，该调研FATE，还是继续调研哈。</p>
-<p><img src="/image/fate/d7811ed7c9a0ec4f3e1d9b5455a7bc55.png" alt=""></p>
-<p>然后本着博（不）采（务）众（正）长（业）的态度，想看看除了FATE，其他框架的情况，以及好久没写python，就想写个爬虫，练练手的，即复习了python，又能增加装逼素材</p>
-<p><img src="/image/fate/143340550b2dd66479ff3a34f1769640.png" alt=""></p>
-<p>于是，在github， 使用federated learning关键词搜索，爬取了star数 top30的repository，以及之前有了解的京东的9nfl和 字节跳动的Fedlearner ，一共32个项目的数据。</p>
-<p>然而，像腾讯的AngelFL，这种未开源，只见文章的框架，暂时还无法统计。</p>
-<p>因为时间精力有限，无法走读所有项目的源码，只能爬取git上的数据，进行一些简单的分析（吹逼），给有志于从事联邦学习的小伙伴在选择入门框架上一（带）些（到）建（坑）议（里）。</p>
-<p><img src="/image/fate/c0b77fe777fbd6d6221af27f74d21581.png" alt=""></p>
-<h2 id="repository的类型"><a href="#repository的类型" class="headerlink" title="repository的类型"></a>repository的类型</h2><p>我们先从repository 的类型，开始吹起，粗略分了一下类，大致为三分天下，一类是Framework Or System 即联邦学习的框架或者系统，一类是Research Collections即学习资料收集，如研究类文献、paper和最新的idea的收集整理，还有一类是配套的设施，支持，如K8s 解决方案方案 KubeFATE，分布式机器学习 eggroll 等。</p>
-<p><img src="/image/fate/4ceb3991d18b35a14529065b3bbfd80f.png" alt=""></p>
-<p>总的来看Framework Or System 独占7成。毕竟是个新兴的领域，Research 也不少。而相关的配套就比较少了，只有可怜的6.25%</p>
-<h2 id="活跃度"><a href="#活跃度" class="headerlink" title="活跃度"></a>活跃度</h2><p>其次，从issue、commit、pr等指标来看，分别统计了各项指标的排列前三的项目，可以发现FATE 和 tensorflow federated(缩写TFF） 双雄争霸，是社区活跃度最高的两个项目。</p>
-<p><img src="/image/fate/c14af37c2188b47e09f9a3b4ae2ceddf.png" alt=""></p>
-<p>TFF自不必说，背靠Google这颗大树好乘凉，又有TensorFlow 强大的算法库支持。整个项目规划清晰，文档完善，除了tutorials，连design，openmined2020 都给你贴出来了。假如你之前就是个TensorFlow玩家，给我一个不用TFF 入门的理由？</p>
-<p>而FATE</p>
-<p><img src="/image/fate/e7fa568f70e6b63871f77d1f6d33cf17.png" alt=""></p>
-<p>不好意思，放错图了，是这个</p>
-<p><img src="/image/fate/98b49a10bdc993bc245288fa7ce586db.png" alt=""></p>
-<p>号称工业级的开源联邦学习框架，在项目的完整性和易用性上，完全不虚TFF，各种文档一应俱全，还有热心网友编写教程，手把手教你怎么玩。项目1.5重构后，整体规划也更加清晰。同时还支持双语教学，对于英语不好的同学来说，简直就是福音。</p>
-<p><img src="/image/fate/7735f07951812f4f2cf5ca97c4c830f6.png" alt=""></p>
-<p>唯一美中不足的，可能是进化太快了？（看看这个release数，看看这个commit数），一些老的文档已经跟不上最新的版本了。</p>
-<p><img src="/image/fate/749b372183589fd41e67e2484d62e4df.png" alt=""></p>
-<p>字节跳动的 Fedlearner凭着极其简洁的文档和天马行空的代码结构，能够在开源不久就获得如此之高的star数，看来凭借推荐算法起家的字节跳动，其能力都得到了大家的认可。（访问github 双击鼠标不加star吧？）</p>
-<p><img src="/image/fate/53a9e0713e1d6c24cf7e67dd92d4ab4f.png" alt=""></p>
-<p>百度的PaddleFL虽然人气比不过上面几个，不过依旧默默努力。加上有源于产业实践的开源深度学习平台 飞桨的加持，愿天道酬勤吧？</p>
-<p>FedML 则是一个更加学术性的项目，查了下貌似没啥大公司的加成，更加偏向于一些paper和 idea 的实践和论证，是一个不错的学习和拓宽思路的项目。</p>
-<p>xaynet 第一次看到xaynetwork 这个名字，我是陌生的，后来一查，居然是一家德国的公司，作为一个 潜在的巴伐利亚拖拉机主，不禁心头狂喜（deploy 这个项目的时候，需要在机柜边上放个油纸包么？） 的确，欧洲一直以来，没什么让人亮眼的互联网公司，但随着GDPR的出台，欧洲可能也在谋求些什么。</p>
-<p><img src="/image/fate/d92f7328044b4a58cb60b631e4a69187.png" alt=""></p>
-<p>Train on the Edge with Federated Learning，这个巨大的title，仿佛就是Google 最初联邦学习想法的实现。</p>
-<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>虽然选了top30 的，但从活跃度的绝对数量上看，头部聚集效应明显，无论是commits on master/main 的数量，还是pr 和 issues 的数量，头部的几位都把后面的远远甩在了身后。</p>
-<p><img src="/image/fate/be914640aedcd715d8491f68de188b9d.png" alt=""></p>
-<h2 id="使用语言"><a href="#使用语言" class="headerlink" title="使用语言"></a>使用语言</h2><p><img src="/image/fate/f091be675bf0c77cd5d712c4291e294e.png" alt=""></p>
-<p>再从开发的语言上来看看，python 一马当先，一骑绝尘，一夫当关，一统天下</p>
-<p>有志于此的小伙伴，还是好好学python 吧。</p>
-<p><img src="/image/fate/f4d146cc8d2463ee9fb74e043930dff4.png" alt=""></p>
-<p>当然仔细分析一下，像FATE 依赖的分布式机器学习引擎eggroll，也涉及了scala 和java。 还有TTF依赖的TensorFlow，也是C++ 写的，也就是在引擎层面，python 还是未够班啊。</p>
-<p><img src="/image/fate/9e13bdd07be8bd7dbe20f3ddb73bc0fc.png" alt=""></p>
-<h2 id="公司-amp-组织参与度"><a href="#公司-amp-组织参与度" class="headerlink" title="公司&amp;组织参与度"></a>公司&amp;组织参与度</h2><p>从公司参与度上 ，微众银行、IBM、GOOGLE 位列三甲。</p>
-<p><img src="/image/fate/a2c71f164052ea76a79d0bbf81758d0e.png" alt=""></p>
-<p>当然，FATE也并非微众一家之功，从现有的信息来看，VMare也在FATE的实现中，出了不少力 。</p>
-<p>GOOGLE作为科技巨头，上榜也一点也不意外。</p>
-<p>到是看到了蓝色巨人IBM，蓝色巨人的底蕴还是深厚的<br>[图片上传失败…(image-b0cc3b-1607480144280)]</p>
-<p>不禁想起了我的又一个朋友，身为前IBM员工，一直感叹：</p>
-<blockquote>
-<p>老东家在云计算、大数据方向，IBM都是起了个大早，赶了个晚集 ！</p>
-</blockquote>
-<p>如果联邦学习会成为下个趋势的话，期望看到蓝色巨人有所作为吧。</p>
-<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>以上，就是基于一个不靠谱的爬虫获取的不靠谱的分析 。</p>
-<p>如果非要有什么结论，或者在选型上有所建议的话，个人的建议是 双持FATE和TTF。</p>
-<p><img src="/image/fate/3b952bd5eef7f17ff3db63d10e738e71.png" alt=""></p>
-<p>TTF背靠大树，以及有着TensorFlow 这么丰富的宝库，必定后劲绵长。而FATE，尤其完善的配套（可以去看下FATE下的repo），活跃的社区，中文的支持。学习起来，必然事半功倍。</p>
-<p>当然，除了以上两个，本着open source 的精神，还是要博采众长。尤其是一些走在前沿，带着极强research性质的框架，可能功能不是那么完善和强大，但是很多思路确可以借鉴。作为一个技术人员，切不可固步自封，而应该更加的开放，不是么？</p>
-<p><img src="/image/fate/d0c304da9af60fb9424373c4fa125f77.png" alt=""></p>
-<h1 id="假装必须有的FAQ"><a href="#假装必须有的FAQ" class="headerlink" title="假装必须有的FAQ"></a>假装必须有的FAQ</h1><h2 id="Q1：-为什么开头是ERROR-？"><a href="#Q1：-为什么开头是ERROR-？" class="headerlink" title="Q1： 为什么开头是ERROR ？"></a>Q1： 为什么开头是ERROR ？</h2><p>A: WARNNING你会看？</p>
-<h2 id="Q2-为什么是山东"><a href="#Q2-为什么是山东" class="headerlink" title="Q2: 为什么是山东?"></a>Q2: 为什么是山东?</h2><p><img src="/image/fate/444088ba625e3d41b24131aa5ca3ff51.png" alt=""></p>
-<p>A:即便诸葛村夫的广告你没看过， 喜马拉雅山以东啊，懂？</p>
-<h2 id="Q3-学好了FATE-可以补魔么？"><a href="#Q3-学好了FATE-可以补魔么？" class="headerlink" title="Q3: 学好了FATE 可以补魔么？"></a>Q3: 学好了FATE 可以补魔么？</h2><p>A:不用FATE，给你自己new 一个对象，def 一个补魔的function，配合一个while(ture) 你就可以永动补魔到OOM了</p>
-<p><img src="/image/fate/9a5a82a041930e346697ace5e76185c6.png" alt=""></p>
-<h2 id="Q4：为什么是潜在巴伐利亚拖拉机主，不是别的？"><a href="#Q4：为什么是潜在巴伐利亚拖拉机主，不是别的？" class="headerlink" title="Q4：为什么是潜在巴伐利亚拖拉机主，不是别的？"></a>Q4：为什么是潜在巴伐利亚拖拉机主，不是别的？</h2><p>A: 人呢，要知足，我觉得有拖拉机开就不错了，不奢求开破二手车 更不奢望压金砖 况且，拖拉机和我的气质更配</p>
-<h2 id="Q5-你说的那么多朋友，真的是朋友？"><a href="#Q5-你说的那么多朋友，真的是朋友？" class="headerlink" title="Q5: 你说的那么多朋友，真的是朋友？"></a>Q5: 你说的那么多朋友，真的是朋友？</h2><p>A:</p>
-<p><img src="/image/fate/a2aa239b5fb920c7a384dcaf349dcc8a.jpg" alt=""></p>
-<h1 id="REF"><a href="#REF" class="headerlink" title="REF"></a>REF</h1><ul>
-<li><a href="http://news.yesky.com/hotnews/363/714746363.shtml">9nfl</a></li>
-<li><a href="https://mp.weixin.qq.com/s/MHUpJT1jr71Rt93BhPCvvg">Fedlearner</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/112983993">AngelFL</a> </li>
-<li><a href="https://github.com/PaddlePaddle/PaddleFL">PaddleFL</a></li>
-<li><a href="https://tensorflow.google.cn/">TensorFlow</a></li>
-<li><a href="https://tensorflow.google.cn/federated">TFF</a></li>
-<li><a href="https://fedml.ai/">FedML</a></li>
-<li><a href="https://github.com/xaynetwork">xaynet</a></li>
-<li><a href="https://gdpr-info.eu/">GDPR</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/101644082">GOOGLE 联邦学习漫画</a></li>
-<li><a href="https://github.com/WeBankFinTech/eggroll">eggroll</a></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1738,14 +1621,14 @@ fate_flow/peewee.log<figure class="highlight plaintext"><table><tr><td class="gu
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-count">58</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
