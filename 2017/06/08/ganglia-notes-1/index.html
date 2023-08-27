@@ -492,25 +492,30 @@ json文件默认目录：/var/lib/jmxtrans/
 	siteTime()
 </script>
 
-<!-- 不蒜字统计 -->
-<div>
-	<i class="fa fa-user-md"></i>
-	<span id="busuanzi_container_site_uv">
-	  访问人数：<span id="busuanzi_value_site_uv"></span>
-	</span>&nbsp;|&nbsp;
-	
-	<i class="fa fa-eye"></i>
-	<span id="busuanzi_container_site_pv">
-	  总访问量：<span id="busuanzi_value_site_pv"></span>
-	</span>&nbsp;|&nbsp;
-	
-	<!-- 添加博客全站总字数统计-->
-	<i class="fa fa-pencil"></i>
-	<span class="post-count">博客全站共 113k 字</span>
-</div>
+
 	
 
         
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
 
 
 
