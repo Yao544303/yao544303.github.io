@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta property="og:type" content="website">
@@ -133,6 +133,11 @@
     <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>Schedule</a>
+
+  </li>
         <li class="menu-item menu-item-commonweal">
 
     <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
@@ -152,6 +157,9 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Yao544303" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
 
 
     <main class="main">
@@ -175,6 +183,14 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       735 字
+    </span>
+
+    <span title="post.min2read">
+       3 分钟
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -219,15 +235,15 @@
 <li>如有疏漏，请联系yao544303963@gmail.com</li>
 </ul>
 <h1 id="头文件"><a href="#头文件" class="headerlink" title="头文件"></a>头文件</h1><p>包含了PMML文档的基本信息，例如模型的版权信息，模型的描述，以及生成该文件所用软件的信息（比如软件的名字和版本）。头文件中也会包含该PMML文件的生成时间。</p>
-<h1 id="Schema"><a href="#Schema" class="headerlink" title="Schema"></a>Schema</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&lt;xs:element name=&quot;Header&quot;&gt;</span><br><span class="line">  &lt;xs:complexType&gt;</span><br><span class="line">    &lt;xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Extension&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">      &lt;xs:element minOccurs=&quot;0&quot; ref=&quot;Application&quot;/&gt;</span><br><span class="line">      &lt;xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; ref=&quot;Annotation&quot;/&gt;</span><br><span class="line">      &lt;xs:element minOccurs=&quot;0&quot; ref=&quot;Timestamp&quot;/&gt;</span><br><span class="line">    &lt;/xs:sequence&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;copyright&quot; type=&quot;xs:string&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;description&quot; type=&quot;xs:string&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;modelVersion&quot; type=&quot;xs:string&quot;/&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:element name=&quot;Application&quot;&gt;</span><br><span class="line">  &lt;xs:complexType&gt;</span><br><span class="line">    &lt;xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Extension&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">    &lt;/xs:sequence&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;name&quot; type=&quot;xs:string&quot; use=&quot;required&quot;/&gt;</span><br><span class="line">    &lt;xs:attribute name=&quot;version&quot; type=&quot;xs:string&quot;/&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:element name=&quot;Annotation&quot;&gt;</span><br><span class="line">  &lt;xs:complexType mixed=&quot;true&quot;&gt;</span><br><span class="line">    &lt;xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Extension&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">    &lt;/xs:sequence&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br><span class="line"></span><br><span class="line">&lt;xs:element name=&quot;Timestamp&quot;&gt;</span><br><span class="line">  &lt;xs:complexType mixed=&quot;true&quot;&gt;</span><br><span class="line">    &lt;xs:sequence&gt;</span><br><span class="line">      &lt;xs:element ref=&quot;Extension&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span><br><span class="line">    &lt;/xs:sequence&gt;</span><br><span class="line">  &lt;/xs:complexType&gt;</span><br><span class="line">&lt;/xs:element&gt;</span><br></pre></td></tr></table></figure>
-<h1 id="说明-1"><a href="#说明-1" class="headerlink" title="说明"></a>说明</h1><h2 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h2><p>顶层标签，标记着header部分的开始。</p>
-<p><strong>包含属性：</strong><br><strong>copyright</strong>：<br>包含了该模型的版权信息。应用生成的PMML文件应该允许用户可以指定或替换该属性值。自PMML 4.1 版本起，该属性是可选的。<br><strong>description</strong>：<br>这个属性包含了对模型的非特定描述。它需要包含程序在后续使用该模型时必要的信息，但不包括那些可以在application、annotation和data dictionary中可以精确描述的信息。这个属性只包含人类可读的信息。<br><strong>modelVersion</strong>：<br>这个属性描述了模型的版本信息。相同或相似的模型可能被多次生成，所以这个模型对于区分这些非常重要。  </p>
-<h2 id="Application"><a href="#Application" class="headerlink" title="Application"></a>Application</h2><p>这个元素用来描述生成该模型的软件或应用。尽管生成的PMML模型是轻量级的，但是不同的机制会使基于同一个数据集产生的模型出现差异。  </p>
-<p><strong>包含属性：</strong><br><strong>name</strong>：<br>生成该PMML文件的程序名称<br><strong>version</strong>：<br>生成该模型使用的应用的版本  </p>
-<h2 id="Annotation"><a href="#Annotation" class="headerlink" title="Annotation"></a>Annotation</h2><p>该元素记录文件修改历史。每条注释都是一个自由的文本。用户可以在这里记录他们自己的标记。</p>
-<h2 id="Timestamp"><a href="#Timestamp" class="headerlink" title="Timestamp"></a>Timestamp</h2><p>该元素记录模型文件的创建时间</p>
-<h1 id="REF"><a href="#REF" class="headerlink" title="REF"></a>REF</h1><p><a href="http://dmg.org/pmml/v4-3/Header.html">PMML 4.3 - Header</a></p>
-
+<h1 id="Schema"><a href="#Schema" class="headerlink" title="Schema"></a>Schema</h1>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/07/08/pmml-Header/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -256,6 +272,14 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       277 字
+    </span>
+
+    <span title="post.min2read">
+       1 分钟
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -295,7 +319,7 @@
 
       
           <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><ul>
-<li>本系列基于<a href="">PMML 4.3</a> 版本</li>
+<li>本系列基于<a href>PMML 4.3</a> 版本</li>
 <li>基本是原文的一个翻译，有些部分会加入一些个人的理解和相关知识点的说明</li>
 <li>在模型部分，计划根据PMML文件结构，增加对模型结构的解释和介绍</li>
 <li>本人技术水平有限，难免有所疏漏，如有问题，请联系yao544303963@gmail.com</li>
@@ -303,45 +327,15 @@
 <li>坑开了，不知道什么时候填完，说不定还没填完，这个技术就过时了，欢迎一起跳坑。<a href="https://github.com/Yao544303/translation4pmml">github地址</a></li>
 </ul>
 <h1 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h1><p>有中文名的，是已经翻译的部分。</p>
-<h2 id="通用结构部分"><a href="#通用结构部分" class="headerlink" title="通用结构部分"></a>通用结构部分</h2><ul>
-<li>Conformance</li>
-<li>Interoperability</li>
-<li>General Structure: PMML 基本结构</li>
-<li>Field Scope</li>
-<li>Header: 文件头</li>
-<li>Data Dictionary: 数据字典</li>
-<li>Mining Schema: 数据挖掘模式</li>
-<li>Transformation Dictionary and Derived Fields: 数据转换操作和追加字段</li>
-<li>Statistics</li>
-<li>Taxonomies and Hierarchies</li>
-<li>Target Fields and Values</li>
-<li>Output fields</li>
-<li>Definition and Application of Functions</li>
-<li>Built-in functions</li>
-<li>Model Verification</li>
-<li>Model Expalnation</li>
-<li>Multiple Models</li>
-</ul>
-<h2 id="模型部分"><a href="#模型部分" class="headerlink" title="模型部分"></a>模型部分</h2><ul>
-<li>Association Rules</li>
-<li>Baseline Models</li>
-<li>Bayesian Network</li>
-<li>Cluster Models</li>
-<li>Gaussian Process</li>
-<li>General Regression</li>
-<li>k-Nearest Neighbors</li>
-<li>Naive Bayes</li>
-<li>Neural Network</li>
-<li>Regression</li>
-<li>Ruleset</li>
-<li>Scorecard</li>
-<li>Sequences</li>
-<li>Text Models</li>
-<li>Time Series</li>
-<li>Trees </li>
-<li>Vector Machine</li>
-</ul>
-
+<h2 id="通用结构部分"><a href="#通用结构部分" class="headerlink" title="通用结构部分"></a>通用结构部分</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/07/08/pmml-catelog/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -370,6 +364,14 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       762 字
+    </span>
+
+    <span title="post.min2read">
+       2 分钟
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -416,59 +418,14 @@
       
           <h1 id="交流目的及解答"><a href="#交流目的及解答" class="headerlink" title="交流目的及解答"></a>交流目的及解答</h1><h2 id="反馈现在遇到的问题"><a href="#反馈现在遇到的问题" class="headerlink" title="反馈现在遇到的问题"></a>反馈现在遇到的问题</h2><p>获得解答</p>
 <h2 id="确定后续的技术路线，借助DT的经验来确定选型是否合适"><a href="#确定后续的技术路线，借助DT的经验来确定选型是否合适" class="headerlink" title="确定后续的技术路线，借助DT的经验来确定选型是否合适"></a>确定后续的技术路线，借助DT的经验来确定选型是否合适</h2><p>之前定的方案是合适的，但是细节上需要进一步明确。</p>
-<h2 id="得出能够落实的方案（理论依据-实现可能）"><a href="#得出能够落实的方案（理论依据-实现可能）" class="headerlink" title="得出能够落实的方案（理论依据 + 实现可能）"></a>得出能够落实的方案（理论依据 + 实现可能）</h2><ul>
-<li>向业务请教现有有效规则经验，抽象化为特征</li>
-<li>积累数据</li>
-<li>模型迁移尝试</li>
-<li>构建稀疏特征，第一步尝试使用MLR等传统模型处理，第二步采用多层神经网络（是否激进一些，直接使用神经网络？？？）</li>
-</ul>
-<h1 id="交流内容点"><a href="#交流内容点" class="headerlink" title="交流内容点"></a>交流内容点</h1><h2 id="异常值处理"><a href="#异常值处理" class="headerlink" title="异常值处理"></a>异常值处理</h2><h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
-<li>是否进行异常值处理？</li>
-<li>使用哪些异常处理的方式会更为合适？</li>
-</ul>
-<h3 id="解答"><a href="#解答" class="headerlink" title="解答"></a>解答</h3><ul>
-<li>尽量使用尊重数据本身，不要做异常值处理</li>
-</ul>
-<h2 id="特征构建及选择"><a href="#特征构建及选择" class="headerlink" title="特征构建及选择"></a>特征构建及选择</h2><h3 id="问题-1"><a href="#问题-1" class="headerlink" title="问题"></a>问题</h3><ul>
-<li>如何进行分段（离散化、分箱） ？</li>
-<li>是否做哑变量处理？</li>
-<li>如何进行选择(高度线性相关、近零方差、逐步迭代回归)？</li>
-<li>扩展维度编码（是否一起编码） 做成插件形式？</li>
-</ul>
-<h3 id="解答-1"><a href="#解答-1" class="headerlink" title="解答"></a>解答</h3><ul>
-<li>通过业务的先验知识，增加强相关的特征</li>
-<li>通过比较粗暴的方式，获取全量的特征（比如每个时间段的点击），然后通过多层神经网络（中间层加入特征选取的功能）进行筛选和预测</li>
-<li>通过高次特征组合的方式，来扩展特征</li>
-<li>尽量使用端到端的方式，进行特征选取</li>
-<li>case1 人 品牌 交互行为 时间 ，以这个四个张量维度，作为基础，分别计算各个维度可能扩展出来的特征，从而扩展出数百个强关联的特征。例如人的年龄、性别。 品牌的价位，点击情况等等。</li>
-<li>总结：尽可能多的选取特征，交给模型去筛选（注：为避免高阶特征可能出现的共线性问题，尽量选取抗共线性模型）</li>
-</ul>
-<h2 id="稀疏矩阵处理"><a href="#稀疏矩阵处理" class="headerlink" title="稀疏矩阵处理"></a>稀疏矩阵处理</h2><h3 id="问题-2"><a href="#问题-2" class="headerlink" title="问题"></a>问题</h3><ul>
-<li>采用神经网络：技术选型 线下Keras 线上DL4J</li>
-<li>采用GBDT +  LR</li>
-<li>采用XGBoost</li>
-</ul>
-<h3 id="解答-2"><a href="#解答-2" class="headerlink" title="解答"></a>解答</h3><ul>
-<li>第一步可以使用MLR,GBM,XGBoost等</li>
-<li>后续，构建多层神经网络（层之间，增加不同的特征处理手段）</li>
-<li>采用流式学习的模型，可以考虑进行增量学习</li>
-<li>调优经验：一方面是根据已有的经验（树的深度，分叉等等）进行调参，另一方面是通过grid search 搜索</li>
-</ul>
-<h2 id="数据非平衡-amp-数据提纯问题"><a href="#数据非平衡-amp-数据提纯问题" class="headerlink" title="数据非平衡  &amp;  数据提纯问题"></a>数据非平衡  &amp;  数据提纯问题</h2><h3 id="解答-3"><a href="#解答-3" class="headerlink" title="解答"></a>解答</h3><ul>
-<li>尽量尊重样本本身，不要对样本做过多的处理</li>
-<li>case1 文本问题，4万样本，百万级别特征</li>
-<li>case2 图像问题，3万样本</li>
-<li>case3 CTR 问题，4亿样本，亿级别特征，正负样本1：80</li>
-</ul>
-<h2 id="关于推荐算法"><a href="#关于推荐算法" class="headerlink" title="关于推荐算法"></a>关于推荐算法</h2><h3 id="解答-4"><a href="#解答-4" class="headerlink" title="解答"></a>解答</h3><ul>
-<li>可以尝试</li>
-<li>无监督学习一般来说，难以超越有监督学习</li>
-</ul>
-<h2 id="关于模型迁移"><a href="#关于模型迁移" class="headerlink" title="关于模型迁移"></a>关于模型迁移</h2><p><strong>解答</strong></p>
-<ul>
-<li>相似类型业务的模型，可以迁移使用</li>
-</ul>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/07/02/discussWithDH/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -497,6 +454,14 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       1.4k 字
+    </span>
+
+    <span title="post.min2read">
+       4 分钟
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -541,48 +506,14 @@
 <li>天马行空是老板本色，能不能让它落地是你的实力。</li>
 <li>摆正心态，解决问题。只有崎岖不平时，才能看出人与人之间的差距，有人被困住了，有人迈过去了。</li>
 </ul>
-<p><a href="http://www.sohu.com/a/233884337_661623">ref</a></p>
-<h1 id="程序员，唯有锻炼与读书不能辜负"><a href="#程序员，唯有锻炼与读书不能辜负" class="headerlink" title="程序员，唯有锻炼与读书不能辜负"></a>程序员，唯有锻炼与读书不能辜负</h1><h2 id="类别-1"><a href="#类别-1" class="headerlink" title="类别"></a>类别</h2><p>鸡汤</p>
-<h2 id="内容-1"><a href="#内容-1" class="headerlink" title="内容"></a>内容</h2><ul>
-<li>不管长相如何，锻炼久了，减脂塑形，精力充沛，可以遇见全新的自己。</li>
-<li>不论学历如何，读书多了，内心充实，精神丰富，腹有诗书气自华。</li>
-</ul>
-<h3 id="坚持跑步的效果："><a href="#坚持跑步的效果：" class="headerlink" title="坚持跑步的效果："></a>坚持跑步的效果：</h3><ol>
-<li>越来越勤奋</li>
-<li>抗压能力越来越强</li>
-<li>会早起</li>
-<li>魅力会增加</li>
-</ol>
-<h3 id="坚持读书的效果"><a href="#坚持读书的效果" class="headerlink" title="坚持读书的效果"></a>坚持读书的效果</h3><ol>
-<li>刺激精神</li>
-<li>减轻压力</li>
-<li>提高记忆力</li>
-<li>增强分析能力</li>
-<li>提高写作技能</li>
-</ol>
-<p><a href="https://mp.weixin.qq.com/s/Acyi1VfbG96baVtFZVUOXA">ref</a></p>
-<h1 id="小糖的一段微博"><a href="#小糖的一段微博" class="headerlink" title="小糖的一段微博"></a>小糖的一段微博</h1><h2 id="类别-2"><a href="#类别-2" class="headerlink" title="类别"></a>类别</h2><p>感悟</p>
-<h2 id="内容-2"><a href="#内容-2" class="headerlink" title="内容"></a>内容</h2><p>三四年前去考试的时候住的姨姥姥家，老城区，大半夜坐的车，只记得成排的梧桐树和几乎照不亮的路灯。天太暗，车多，路特别难找，那段时间老人家一个人住，大半夜地跑出来接我们娘俩。她家就几十平米两间房，睡的木板床，家里泛着一股潮湿的陈醋味道。卫生间也小，晚上刷牙的时候一个水盆边儿站不下两个人。后来我们挤在一张床上，床挺大，褥子垫的老高。她肯定特想跟我妈说话，但后来就念叨着“娃娃明天考试”迷迷糊糊地打起了呼噜。早上四点她就爬起来给我们做饭，臊子面，老陕都知道这玩意准备工作多麻烦。我就这醋味和肉香，闷头睡到了六点。也不知道是不是因为她做得真的很好吃，早上那顿比平时吃的要多。后来她就送我到车站，车开了还一直跟着走。我妈说她热心肠，爱干活，年轻时候给厂子里扫地，每天都是四点起床。后来我们离开的时候，她还托我姨姥爷送了好多韭菜盒子。我还记得那堆饼子有多重，回到家的时候累得说不出话。再后来她打过几次电话来，都是找我姥姥，过年问个好。这些年去了好多次西安，但从来没去过她家。一直到上个月听说她住院，我妈和姥姥去看了，说刚做完手术，不舍得住院，一直在家休息。隔天早上又四点钟起来，做了一桌热腾腾的臊子面。得知她去世的消息时我还在看书，现在当然看不下去了，一个人坐在地板上敲字。好像不写点什么就会觉得更难受。我只见过她一次，就记得她长得和我姥姥很像，个子不高，爱笑。我还记得她家的红木衣柜，大红脸盆，还有散不去的陈醋香。我姨姥爷不喜欢做饭，下次去她家还能闻到这味道吗？我只知道不会再有人四点起来做臊子面，不会再有人拉着我的手帮我看手相，也不会再有人送一大袋子提不动的韭菜盒子给远道而来的亲人;我只知道我是个废物，为了一个只见过一面的老人泣不成声，却他妈连请个假跟她道别都做不到。</p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>本来想写点什么，但发现再多感悟，在这真挚的流露前，不如无言。人生不易，且自珍惜。</p>
-<h1 id="机器学习工程师是在打造数据科学界的万金油？"><a href="#机器学习工程师是在打造数据科学界的万金油？" class="headerlink" title="机器学习工程师是在打造数据科学界的万金油？"></a>机器学习工程师是在打造数据科学界的万金油？</h1><h2 id="类别-3"><a href="#类别-3" class="headerlink" title="类别"></a>类别</h2><p>经验</p>
-<h2 id="内容-3"><a href="#内容-3" class="headerlink" title="内容"></a>内容</h2><ol>
-<li>机器学习工程师技能要求广泛。</li>
-<li>扮演着融合连接的角色。</li>
-<li>将机器学习的算法抽象为方便调用的API</li>
-</ol>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>机器学习工程师应该做到以下几点：</p>
-<ul>
-<li>断言所有生产任务在实际执行和调度方面都能正常工作</li>
-<li>勤用机器学习库，将机器学习库的作用发挥到极致，经常添加新的功能</li>
-<li>确保数据代码具有可维护性、可扩展性和可调试性</li>
-<li>自动化和抽象在大多数机器学习任务中存在的不同的、可重复的例程</li>
-<li>为数据科学团队带来最好的软件开发实践，并帮助它们加速工作</li>
-<li>与开发运营团队一起选择最佳运营架构</li>
-<li>不断寻求性能提升，并确定在生产环境中使用哪种机器学习技术</li>
-</ul>
-<h3 id="题外话"><a href="#题外话" class="headerlink" title="题外话"></a>题外话</h3><p>这个文章感触很深，因为自己现在做的就是这个工作。衔接着算法和工程。同时由于其他一些原因，事实上还承担着全流程责任人的角色。<br>说白了，既要写代码，也要研究算法，还得和业务沟通交流需求，制定计划。<br>开发语言也在Scala、Java、C++、Python、R、Excel、PPT中来回切换。可能理论公式推导到一半，就得帮人调bug。<br>全栈工程师，真是一份完美的工作啊！（呵呵哒）</p>
-<p><a href="https://mp.weixin.qq.com/s/2lY_pcVnMs0JCW6DZTI3eA">ref</a></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/07/02/readnotes4june/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -611,6 +542,14 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       1.4k 字
+    </span>
+
+    <span title="post.min2read">
+       6 分钟
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -651,54 +590,14 @@
       
           <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>以下内容来自群中出现的问题，大家讨论的结果<br>Q群：432600958<br>微信群：加微信w3aboutyun,附上about云铁粉<br>部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。</p>
 <h1 id="两个集群间迁徙hive数据有什么方案-—by-阿黄生"><a href="#两个集群间迁徙hive数据有什么方案-—by-阿黄生" class="headerlink" title="两个集群间迁徙hive数据有什么方案 —by 阿黄生"></a>两个集群间迁徙hive数据有什么方案 —by 阿黄生</h1><h2 id="时间"><a href="#时间" class="headerlink" title="时间"></a>时间</h2><p>2018.06.01</p>
-<h2 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h2><p><strong>Step1</strong>：<br>迁移hdfs数据至新集群,通过distcp实现</p>
-<p><strong>Step2</strong>：<br>源集群metastore数据备份导出(mysql导出)</p>
-<p><strong>Step3</strong>：<br>新的集群导入metastore数据(mysql导入)</p>
-<p><strong>Step4</strong>：<br>升级hive内容库(如果hive版本需要升级操作，同版本不需要操作)</p>
-<p><strong>Step5</strong>：<br>修改 metastore 内容库的集群信息（重要）</p>
-<h2 id="REF"><a href="#REF" class="headerlink" title="REF"></a>REF</h2><p><a href="https://blog.csdn.net/yinansheng1/article/details/78402459">Distcp</a><br><a href="https://blog.csdn.net/levy_cui/article/details/70156682">hadoop跨集群之间迁移hive数据</a></p>
-<h1 id="Scala优雅的实现"><a href="#Scala优雅的实现" class="headerlink" title="Scala优雅的实现"></a>Scala优雅的实现</h1><h2 id="时间-1"><a href="#时间-1" class="headerlink" title="时间"></a>时间</h2><p>2018.06.01</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>存在一个Array[String]  例如 Array(“A”,”B”,”C”,”D”,…..”Z”)<br>现在希望替换B为 b1,b2,b3,b4,b5，然后转为String<br>即生成如下结果</p>
-<blockquote>
-<p>Ab1CDEF…Z<br>Ab2CDEF…Z<br>Ab3CDEF…Z<br>Ab4CDEF…Z<br>Ab5CDEF…Z  </p>
-</blockquote>
-<p>怎么能写的优雅点？ </p>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>生成一个可变的Array，替换array(2) 然后mkString</p>
-<h1 id="创建SparkContext-两种写法"><a href="#创建SparkContext-两种写法" class="headerlink" title="创建SparkContext 两种写法"></a>创建SparkContext 两种写法</h1><h2 id="时间-2"><a href="#时间-2" class="headerlink" title="时间"></a>时间</h2><p>2018.06.05</p>
-<h2 id="内容-1"><a href="#内容-1" class="headerlink" title="内容"></a>内容</h2><p>第一种写法<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">val sc = new SparkContext(sparkConf)</span><br></pre></td></tr></table></figure><br>第二种写法<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">val sc = SparkContext,getOrCreate(conf)</span><br></pre></td></tr></table></figure><br>两者的区别在于，第一种写法是根据SparkConf 新建一个sparkContext,这里注意一旦设置完成SparkConf，就不可被使用者修改。<br>第二种写法，是先使用现用的SparkContext,没有再创建一个。主要用于多applications共享SparkContext。<br>api解释：</p>
-<blockquote>
-<p>This function may be used to get or instantiate a SparkContext and register it as a singleton object. Because we can only have one active SparkContext per JVM, this is useful when applications may wish to share a SparkContext.<br>This method allows not passing a SparkConf (useful if just retrieving).<br>Note: This function cannot be used to create multiple SparkContext instances even if multiple contexts are allowed.</p>
-</blockquote>
-<p>在实际应用中，如果没有多applications 共享sparkContext的业务需求，两者无差别。(不过getOrCreate这种写法看着好像厉害点)</p>
-<h1 id="编写应用的jar包-和-spark自带的jar包冲突"><a href="#编写应用的jar包-和-spark自带的jar包冲突" class="headerlink" title="编写应用的jar包 和 spark自带的jar包冲突"></a>编写应用的jar包 和 spark自带的jar包冲突</h1><h2 id="时间-3"><a href="#时间-3" class="headerlink" title="时间"></a>时间</h2><p>2018.06.10</p>
-<h2 id="内容-2"><a href="#内容-2" class="headerlink" title="内容"></a>内容</h2><h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>使用jpmml 报错如下：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">java.lang.NoSuchMethodError: org.jpmml.model.JAXBUtil.createFilteredSource(Lorg/xml/sax/InputSource;[Lorg/xml/sax/XMLFilter;)Ljavax/xml/transform/sax/SAXSource;</span><br><span class="line">        at org.jpmml.model.filters.ImportFilter.apply(ImportFilter.java:94)</span><br><span class="line">        at org.jpmml.model.PMMLUtil.unmarshal(PMMLUtil.java:33)</span><br></pre></td></tr></table></figure></p>
-<p>查看jar包，能够发现有这个类。</p>
-<p>查看依赖是否有冲突<br>mvn -Dverbose dependency:tree —&gt; tree.txt</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[INFO] +- org.jpmml:pmml-evaluator:jar:1.4.1:compile</span><br><span class="line">[INFO] |  +- (org.jpmml:pmml-model:jar:1.4.1:compile - omitted for conflict with 1.2.15)</span><br><span class="line">[INFO] |  +- com.google.guava:guava:jar:24.0-jre:compile</span><br></pre></td></tr></table></figure>
-<p>可以发现，使用jpmml时，使用的pmml的版本为1.4.1<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.jpmml&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;pmml-evaluator&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.4.1&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure><br>但是spark mllib 中自带的jpmml的版本为1.2.15，直接使用的时候，会因为jar包依赖冲突报错</p>
-<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>具体思路是使用shade。</p>
-<p><strong>Step1</strong><br>新建一个空的项目，将jpmml以及它的相关依赖包以shade的打包成一个独立的jar包，对应jpmml相关类的使用均从此jar包引用。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.jpmml&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;pmml-evaluator&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;1.4.1&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.jpmml&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;pmml-evaluator-extension&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;1.4.1&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;maven-shade-plugin&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;2.4.2&lt;/version&gt;</span><br><span class="line">            &lt;configuration&gt;</span><br><span class="line">                &lt;createDependencyReducedPom&gt;false&lt;/createDependencyReducedPom&gt;</span><br><span class="line">            &lt;/configuration&gt;</span><br><span class="line">            &lt;executions&gt;</span><br><span class="line">                &lt;execution&gt;</span><br><span class="line">                    &lt;phase&gt;package&lt;/phase&gt;</span><br><span class="line">                    &lt;goals&gt;</span><br><span class="line">                        &lt;goal&gt;shade&lt;/goal&gt;</span><br><span class="line">                    &lt;/goals&gt;</span><br><span class="line">                    &lt;configuration&gt;</span><br><span class="line">                        &lt;relocations&gt;</span><br><span class="line">                            &lt;relocation&gt;</span><br><span class="line">                                &lt;pattern&gt;org.jpmml&lt;/pattern&gt;</span><br><span class="line">                                &lt;shadedPattern&gt;my.pmml.jpmml&lt;/shadedPattern&gt;</span><br><span class="line">                            &lt;/relocation&gt;</span><br><span class="line">                            &lt;relocation&gt;</span><br><span class="line">                                &lt;pattern&gt;org.dmg&lt;/pattern&gt;</span><br><span class="line">                                &lt;shadedPattern&gt;my.pmml.dmg&lt;/shadedPattern&gt;</span><br><span class="line">                            &lt;/relocation&gt;</span><br><span class="line"></span><br><span class="line">                        &lt;/relocations&gt;</span><br><span class="line">                    &lt;/configuration&gt;</span><br><span class="line">                &lt;/execution&gt;</span><br><span class="line">            &lt;/executions&gt;</span><br><span class="line">        &lt;/plugin&gt;</span><br><span class="line">    &lt;/plugins&gt;</span><br><span class="line">&lt;/build&gt;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>将org.jpmml映射为my.pmml.jpmml</li>
-<li>将org.dmg映射为my.pmml.dmg<br>然后利用mvn clean install命令进行打包得到jpmml-base-1.0-SNAPSHOT.jar，创建一个属于你自己版本的jpmml包。之后将该包上传到私服maven镜像。</li>
-</ul>
-<p><strong>Step2</strong><br>在工程中使用自己的jpmml包<br>原始的maven 依赖<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.jpmml&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;pmml-evaluator&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.4.1&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
-<p>新的maven 依赖<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;my.pmml.jpmml&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;pmml-evaluator&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
-<p>原来的import<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import org.dmg.pmml.FieldName;</span><br><span class="line">import org.dmg.pmml.PMML;</span><br><span class="line">import org.jpmml.evaluator.ModelEvaluator;</span><br><span class="line">import org.jpmml.evaluator.ModelEvaluatorFactory;</span><br><span class="line">import org.jpmml.model.PMMLUtil;</span><br></pre></td></tr></table></figure></p>
-<p>新的import<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import my.pmml.dmg.pmml.FieldName;</span><br><span class="line">import my.pmml.dmg.pmml.PMML;</span><br><span class="line">import my.pmml.jpmml.evaluator.*;</span><br><span class="line">import my.pmml.jpmml.model.PMMLUtil;</span><br></pre></td></tr></table></figure></p>
-<h3 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h3><p><a href="https://github.com/jpmml/jpmml-evaluator">jpmml</a><br><a href="https://blog.csdn.net/lkforce/article/details/62429998">用dependency:tree查看maven引入jar包的传递依赖</a><br><a href="https://www.jianshu.com/p/d9fb7afa634d">java 依赖包冲突，使用maven的Shade方式解决</a></p>
-<h1 id="关于图计算"><a href="#关于图计算" class="headerlink" title="关于图计算"></a>关于图计算</h1><h2 id="时间-4"><a href="#时间-4" class="headerlink" title="时间"></a>时间</h2><p>2018.06.26</p>
-<h2 id="内容-3"><a href="#内容-3" class="headerlink" title="内容"></a>内容</h2><ul>
-<li>spark graphx实现的算法都比较简单，复杂的一般都得自己再写</li>
-<li>如果，数据量不大，java之类的都有一些开源的图计算jar包，能够支持</li>
-<li>我们对关系计算，引入了neo4j数据库，大数据量就在库中查询实现，小数据量引用开源图算法包</li>
-</ul>
-<h1 id="一个奇怪的问题：-A-master-URL-must-be-set-in-your-configuration"><a href="#一个奇怪的问题：-A-master-URL-must-be-set-in-your-configuration" class="headerlink" title="一个奇怪的问题： A master URL must be set in your configuration"></a>一个奇怪的问题： A master URL must be set in your configuration</h1><h2 id="时间-5"><a href="#时间-5" class="headerlink" title="时间"></a>时间</h2><p>2018.06.28</p>
-<h2 id="内容-4"><a href="#内容-4" class="headerlink" title="内容"></a>内容</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val sparkConf = new SparkConf().setAppName(&quot;XXXX&quot;)</span><br><span class="line">val sc = new SparkContext(sparkConf)</span><br></pre></td></tr></table></figure>
-<p>这个放在main方法外面就会报异常。非常诡异。</p>
-<h2 id="REF-1"><a href="#REF-1" class="headerlink" title="REF"></a>REF</h2><p><a href="https://blog.csdn.net/sinat_33761963/article/details/51723175">异常解决：A master URL must be set in your configuration</a></p>
-<h1 id="资料分享"><a href="#资料分享" class="headerlink" title="资料分享"></a>资料分享</h1><h2 id="Spark-Summits介绍及如何下载相关视频资料"><a href="#Spark-Summits介绍及如何下载相关视频资料" class="headerlink" title="Spark Summits介绍及如何下载相关视频资料"></a>Spark Summits介绍及如何下载相关视频资料</h2><p><a href="https://pan.baidu.com/s/15ScF3brxRQGszmo-Jv1I6A">链接</a> 密码：kuxh</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/07/02/spark-discuss201806/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -727,6 +626,14 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       673 字
+    </span>
+
+    <span title="post.min2read">
+       2 分钟
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -767,43 +674,14 @@
       
           <h1 id="阿里有一帮吃货工程师，在食堂玩起了“黑科技”"><a href="#阿里有一帮吃货工程师，在食堂玩起了“黑科技”" class="headerlink" title="阿里有一帮吃货工程师，在食堂玩起了“黑科技”"></a>阿里有一帮吃货工程师，在食堂玩起了“黑科技”</h1><h2 id="类别"><a href="#类别" class="headerlink" title="类别"></a>类别</h2><p>创意</p>
 <h2 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h2><p>吃饭，算价格麻烦<br>通过图像识别辨明菜品<br>计算价格（荤菜肉少算素菜价格）<br>计算热量发给钉钉 每日告警<br><a href="https://mp.weixin.qq.com/s/2UAOjlnzR5ROc27f6unasw">ref</a></p>
-<h1 id="技术与商业到底啥关系？我们从业务角度聊一聊"><a href="#技术与商业到底啥关系？我们从业务角度聊一聊" class="headerlink" title="技术与商业到底啥关系？我们从业务角度聊一聊"></a>技术与商业到底啥关系？我们从业务角度聊一聊</h1><h2 id="类别-1"><a href="#类别-1" class="headerlink" title="类别"></a>类别</h2><p>视野</p>
-<h2 id="内容-1"><a href="#内容-1" class="headerlink" title="内容"></a>内容</h2><p>一、技术促进繁荣生态</p>
-<ul>
-<li>就中国的消费领域来讲，用户众多且多元化</li>
-<li>中国被称为世界工厂，我们的设计生产和制造能力有着完整、丰富、敏捷的特征。</li>
-<li>除了电商生态外，整个新零售的体系是一个更大的生态，我们的用户非常多样，用户的需求也逐渐升级</li>
-</ul>
-<p>二、技术提升商业效率</p>
-<ul>
-<li>流量集中化</li>
-<li>产品化</li>
-<li>大数据赋能</li>
-</ul>
-<p>三、技术洞察商业本质</p>
-<ul>
-<li>用户是非常复杂的</li>
-<li>面向的商家也是非常复杂的</li>
-<li>我们面对数十亿计的商品，形形色色非常复杂。</li>
-</ul>
-<p>四、技术引领商业创新</p>
-<ul>
-<li>创新的智能商业体系。</li>
-<li>线上线下商业打通升级。</li>
-<li>创新跨界市场的发现和培育。</li>
-</ul>
-<p><a href="https://mp.weixin.qq.com/s/ph6xg6oxw76uezp6c6PmpQ">ref</a></p>
-<h1 id="年轻人，你为什么要来阿里搞技术？"><a href="#年轻人，你为什么要来阿里搞技术？" class="headerlink" title="年轻人，你为什么要来阿里搞技术？"></a>年轻人，你为什么要来阿里搞技术？</h1><h2 id="类别-2"><a href="#类别-2" class="headerlink" title="类别"></a>类别</h2><p>鸡汤</p>
-<h2 id="内容-2"><a href="#内容-2" class="headerlink" title="内容"></a>内容</h2><p>在阿里有句话，在成就别人中成就自己。<br>Stay hungry,stay foolish,but be crazy.<br>大丈夫抱经世之才，岂可空老于林泉之下    你是想卖一辈子糖水，还是想和我们一起改变世界。<br>非凡人、平凡心、非凡事  </p>
-<p><a href="https://mp.weixin.qq.com/s/Kw0cTZErXEV8G0QxbE90rg">ref</a></p>
-<h1 id="当我们在做数据异常分析时，我们在分析什么"><a href="#当我们在做数据异常分析时，我们在分析什么" class="headerlink" title="当我们在做数据异常分析时，我们在分析什么"></a>当我们在做数据异常分析时，我们在分析什么</h1><h2 id="类别-3"><a href="#类别-3" class="headerlink" title="类别"></a>类别</h2><p>数据挖掘</p>
-<h2 id="内容-3"><a href="#内容-3" class="headerlink" title="内容"></a>内容</h2><p><a href="http://www.woshipm.com/data-analysis/999413.html">ref</a></p>
-<h1 id="中国没有哲学家"><a href="#中国没有哲学家" class="headerlink" title="中国没有哲学家"></a>中国没有哲学家</h1><h2 id="类别-4"><a href="#类别-4" class="headerlink" title="类别"></a>类别</h2><p>思考</p>
-<h2 id="内容-4"><a href="#内容-4" class="headerlink" title="内容"></a>内容</h2><p>按照西方对哲学家的定义，中国没有哲学家<br>中国有哲学家，也有哲学，只是，没有将这种哲学提升到一个科学的角度，更多的从伦理等经验进行总结<br>名实之辩  白马非马<br>通过修改定义的标准，你可以论证任何荒谬的命题，这是一种常见的诡辩术。 逻辑学上叫做“诉诸纯洁”，有个案例就是“没有真正的苏格兰人”<br>“你可以知道所有的语言是怎么叫这种鸟的，可是结果还是一点也不懂得它。你仅仅是知道了世界不同地区的人怎么称呼这只鸟罢了。我们还是来仔细瞧瞧它在做什么吧——那才是真正重要的”<br><a href="http://www.sohu.com/a/232129357_669860">ref</a></p>
-<h1 id="诺，你的30岁"><a href="#诺，你的30岁" class="headerlink" title="诺，你的30岁"></a>诺，你的30岁</h1><h2 id="类别-5"><a href="#类别-5" class="headerlink" title="类别"></a>类别</h2><p>鸡汤</p>
-<h2 id="内容-5"><a href="#内容-5" class="headerlink" title="内容"></a>内容</h2><p>多读书<br>既然无所事事亦难逃一死，何不奋斗终生  </p>
-<p><a href="https://mp.weixin.qq.com/s/v2Itu0StSsD1Kya6nOCokQ">ref</a></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/06/05/readnotes4may/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -832,6 +710,14 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       2.8k 字
+    </span>
+
+    <span title="post.min2read">
+       9 分钟
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -874,84 +760,14 @@
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>先声明，我是数据驱动和计算驱动派的</p>
 <p>数据，即特征工程 决定了模型的上限，所有模型都是去拟合这个上限</p>
 <p>计算能力，决定了模型能够拟合这个上限到什么程度</p>
-<h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>在真实的数据科学世界里，我们会有两个极端，一个是业务，一个是工程。</p>
-<p>偏向业务的数据科学被称为数据分析（Data Analysis），也就是A型数据科学。</p>
-<p>偏向工程的数据科学被称为数据构建(Data Building)，也就是B型数据科学。</p>
-<p>一般称之为数据科学家 和 数据工程师</p>
-<h2 id="软件工程师，数据工程师，数据科学家-数据分析师的区别"><a href="#软件工程师，数据工程师，数据科学家-数据分析师的区别" class="headerlink" title="软件工程师，数据工程师，数据科学家 数据分析师的区别"></a>软件工程师，数据工程师，数据科学家 数据分析师的区别</h2><p>国外 ETL 服务商 Stitch 的 CEO Jake Stein，近日对这个话题进行了总结。他还绘制了一张工具图，来呈现他们在日常工具使用上的不同。</p>
-<p><strong>软件工程师</strong></p>
-<p>软件工程师干的活儿是开发应用和系统。这过程中的每一个环节，从设计、写代码、测试到检查，开发者都要参与。生成数据的产品都是他们开发的。软件工程是三个角色中最古老的一个，并且有相当成熟的方法体系和工具库。</p>
-<p>工作内容包括：<br>前端、后端开发  网页应用 移动应用 操作系统开发 软件设计 </p>
-<p><strong>数据工程师</strong></p>
-<p>数据工程师需要开发能对数据进行整合、存储和提取的系统，并从软件工程师开发的应用和系统中获取数据。数据工程的诞生，是作为软件工程大类下的一个更细分的技能类别。据雷锋网了解，根据国外统计，40% 的数据工程师原本是软件工程师。</p>
-<p>工作内容包括：<br>高级数据结构 分布式计算 并发程序设计 使用 Hadoop, Spark, Kafka, Hive 等新工具 开发ETL/数据流水线（data pipelines）</p>
-<p><strong>数据科学家</strong></p>
-<p>数据科学家的职责是基于数据作分析。优秀的数据科学家应该全面理解商业运作和数据之于实现高级目标的价值。</p>
-<p>工作内容包括：<br>数据建模 机器学习 算法 商业智能的 dashboards</p>
-<p><strong>数据分析师</strong></p>
-<p>数据科学家和数据分析师的区别在于，后者不负责编程，统计建模，机器学习等。两者所使用的工具也有很大的区别。数据分析师使用的商业智能工具包括： Microsoft Excel , Tableau, SAS, SAP, Qlik 等。 就数据挖掘和数据建模而言，数据分析师大多使用BM SPSS Modeler, Rapid Miner, SAS, KNIME.；数据科学家倾向于使用R和Python。</p>
-<p><strong>工具链</strong></p>
-<p>从工具上来看，按由业务到工程的顺序，这个链条是：EXCEL &gt;&gt; R &gt;&gt; Python &gt;&gt; Scala</p>
-<h2 id="Data-Building-的重要性"><a href="#Data-Building-的重要性" class="headerlink" title="Data Building 的重要性"></a>Data Building 的重要性</h2><p>在大数据时代，数据工程师的角色愈发地重要。也许，数据架构师的称谓更准确。和数据分析师不同，他们不太关注统计、分析技能、建模等。他们的工作重点在于数据架构、计算、数据存储、数据流等。 因此，数据工程师必须具备相当强的编程能力—包括编写数据查询程序的能力。也就是说，他们的能力必须达到开发高手的级别。 </p>
-<p>数据工程师还负责数据库设计，数据仓储，建立数据湖。 这就意味着，他们必须十分熟悉现有的数据库技术和数据管理系统，比如和大数据有关的Hadoop与HBase 等。</p>
-<p>同时，对模型的实现原理，也必须有所涉及。</p>
-<p>此外，非功能性的基础设施问题，如数据的可扩展性、可靠性、韧性、有效性，备份等也由数据工程师来负责。</p>
-<p>具体到dpi数据现在的工作，就是从特征的选择，到提取转化，到模型上线。</p>
-<p>此外我们希望能够设计出一套更快速的迭代出特征的方法，方便公司其他同事，有选取一些好的特征的想法时，就能快速的实现，并进行建模测试。</p>
-<h2 id="实际的工作"><a href="#实际的工作" class="headerlink" title="实际的工作"></a>实际的工作</h2><p>实际中，训练集的大小，正样本的大小也就1万多条，算上负样本，也就3万，现在单点计算能力，基本可以hold住，随便玩。但是面对预测集合呢？<br>需要注意的是，你对训练集进行的一些特征处理的手段，是要应用到训练集上的一旦使用了一些异常值处理，比如计算分位数，这些，sortby 之后再操作，开销是非常可观。</p>
-<p>同时，因为分布式计算的特性，所以一些算法，在spark 训练时，效率和性能 都不如 R python 单机训练，这也需要对Spark本身进行优化</p>
-<h1 id="模型上线实现方案-及-遇到的坑"><a href="#模型上线实现方案-及-遇到的坑" class="headerlink" title="模型上线实现方案 及 遇到的坑"></a>模型上线实现方案 及 遇到的坑</h1><h2 id="R-server"><a href="#R-server" class="headerlink" title="R server"></a>R server</h2><p>因为做数据分析的，大部分是使用R的，但是R这个语言，是搞统计的写的，并不能很好的工程化。</p>
-<p>微软买了个R server,类似于提供了一个接口，去调用R训练好的模型。<br>R Server其实是对开源R从研究角度向工业生产角度的一种努力。微软的R其实包括了微软R Open和R Server。 ROpen是基于开源R的一个改进实现，对开源R从底层基于（英特尔数学核心函数库）提供了多线程的支持。RServer其实主要有两个最重要的功能，第一个是分布式，第二是DeployR，也就是部署。RServer能够支持分析任务运行的时候，数据能够从磁盘读取，不需要在任务开始时就把所有数据加载到内存。在这个基础之上，R Server就可以通过多台机器协同工作进行分布式的R分析任务。这个支持是通过ScaleR完成，并不是所有的开源R包都能实现分布式。DeployR主要是指开发完R脚本之后可以通过简单的Publish Service就把R发布成web服务提供服务，不需要额外的开发和运维成本。</p>
-<p><strong>通过三种模式提供R Server服务</strong></p>
-<p>第一种是在物理机或者虚拟机上安装R Server， 这种R Server可以提供Web结点和Compute 结点，其中Web结点用来发布模型提供Web 服务，Compute Node则主要用于计算。这两种Node是逻辑概念，可以部署在同一物理机上。多台机器可以组成R Server的服务集群，应对大量请求和Fail Over，通过DeployR发布web服务主要推荐这种方式。</p>
-<p>第二种是在Azure上将HDInsight集群和R Server结合, 在Spark的基础之上提供R的分析能力，在这种模式，HDInsight提供了Edge Node作为R的开发环境，开发完成的Rscript可以直接通过rxSetComputeContext切换到 Spark Context在Spark的大数据集上分布式运行。运行结果可以通过DeployR发布在Edge Node或者其他R Server集群上。 Edge Node的发布不具备fail over的能力。</p>
-<p>第三种就是SQL Server +R 的模式，这种模式可以把完成开发之后的Rscript嵌入到Sql Server的存储过程中，通过存储过程调用的方式对SQL server数据进行分析，简化了数据移动和处理的过程。在Sql Server上运行R也能支持ScaleR, 但是目前ScaleR的高性能和分布式只有企业版支持，其他版本相对较低。</p>
-<p><strong>优势</strong><br>可以直接使用R模型</p>
-<p><strong>缺点</strong><br>无法处理大规模数据量 R本身的局限性， 环境要求特殊</p>
-<h2 id="python-sklearn"><a href="#python-sklearn" class="headerlink" title="python sklearn"></a>python sklearn</h2><p>sklearn是机器学习中一个常用的python第三方模块，里面对一些常用的机器学习方法进行了封装，在进行机器学习任务时，并不需要每个人都实现所有的算法，只需要简单的调用sklearn里的模块就可以实现大多数机器学习任务。</p>
-<p><strong>优势</strong><br>包很多，资源很丰富，发展快</p>
-<p><strong>缺点</strong><br>无法处理大规模的数据</p>
-<h2 id="模型转化pmml"><a href="#模型转化pmml" class="headerlink" title="模型转化pmml"></a>模型转化pmml</h2><p>全称（Predictive Model Markup Language），利用XML描述和存储数据挖掘模型，是一个已经被W3C所接受的标准。MML是一种基于XML的语言，用来定义预测模型。</p>
-<p>它为各个公司定义预测模型和在不同的应用程序之间共享模型提供了一种快速并且简单的方式。通过使用标准的XML解析器对PMML进行解析，应用程序能够决定模型输入和输出的数据类型，模型详细的格式，并且按照标准的数据挖掘术语来解释模型的结果。　</p>
-<p>PMML提供了一个灵活机制来定义预测模型的模式，同时支持涉及多个预测模型的模型选择和模型平衡（model averaging）。对于那些需要全部学习（ensemble learning）、部分学习（partitioned learning）和分布式学习（distributed learning）的应用程序，这种语言被证明是非常有用的。另外，它使得在不同的应用程序和系统之间移动预测模型变得容易、方便。</p>
-<p><strong>优势</strong><br>跨语言，跨平台</p>
-<p><strong>缺点</strong></p>
-<ul>
-<li>当模型表述比较复杂的时候，如 随机森林，PMML会过大，加载报错</li>
-<li>使用PMML 需要字段名、字段类型完全匹配</li>
-<li>当特征名过多时，创建DataFrame 不可行 （通过hive 建表，然后从hive 读取的方式，但是编写schema 太过冗长，且整个过程过于冗长）</li>
-<li>PMML 版本问题，spark 1.6.3 只支持4.2</li>
-<li>模型必须是单纯的模型，不能包含任何特征处理，如果有特征处理，必须归入pipeline</li>
-<li>不同环境下，模型的支持情况不同</li>
-</ul>
-<p><strong>Tips</strong></p>
-<ul>
-<li>想要使用PMML进行模型跨环境使用，需要满足下列条件</li>
-<li>表述模型的兼容性</li>
-<li>表述模型的复杂性不可过高</li>
-<li>表述模型的字段名，字段类型必须保持一致，这个涉及到各环境模型训练的细节，必须在训练前先设计好</li>
-</ul>
-<h2 id="pyspark-amp-Rspark"><a href="#pyspark-amp-Rspark" class="headerlink" title="pyspark  &amp;  Rspark"></a>pyspark  &amp;  Rspark</h2><ul>
-<li>版本的坑</li>
-<li>API的坑</li>
-<li>环境的坑</li>
-</ul>
-<h2 id="Scala-写-Spark"><a href="#Scala-写-Spark" class="headerlink" title="Scala 写 Spark"></a>Scala 写 Spark</h2><p><strong>优势</strong></p>
-<ul>
-<li>无缝衔接</li>
-</ul>
-<p><strong>缺点</strong></p>
-<ul>
-<li>效率低，准确度低，慢，难以收敛</li>
-<li>API 中坑，没有办法存文件</li>
-<li>版本的坑，新版的api 支持的功能更多。比如 去除outlier 之后的 MaxAbsScaler，多项式展开 PolynomialExpansion</li>
-</ul>
-<h2 id="直接写一个java类"><a href="#直接写一个java类" class="headerlink" title="直接写一个java类"></a>直接写一个java类</h2><ul>
-<li>需要对模型有深入了解</li>
-<li>需要编程能力较强</li>
-</ul>
-<h1 id="ref"><a href="#ref" class="headerlink" title="ref"></a>ref</h1><p><a href="http://tech.sina.com.cn/roll/2017-03-21/doc-ifycnpvh5201784.shtml">一张图看懂数据科学家、数据工程师和软件工程师之间的区别</a><br><a href="https://segmentfault.com/a/1190000004879349">[原]深入对比数据科学工具箱：Python和R之争[2016版]</a></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/05/30/ml-online/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -980,6 +796,14 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       1.2k 字
+    </span>
+
+    <span title="post.min2read">
+       4 分钟
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -1022,50 +846,14 @@
 <p>Q群：432600958</p>
 <p>微信群：加微信w3aboutyun,附上about云铁粉</p>
 <p>部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。<br><del>五月一直在加班，整理的东西有限</del></p>
-<h1 id="如何从小白快速蜕变为大佬"><a href="#如何从小白快速蜕变为大佬" class="headerlink" title="如何从小白快速蜕变为大佬"></a>如何从小白快速蜕变为大佬</h1><h2 id="时间"><a href="#时间" class="headerlink" title="时间"></a>时间</h2><p>2018.05.03</p>
-<h2 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h2><p>这是一些经验，主要有两点<br>1、 培养自己的阅读习惯<br>2、 提高对新技术的敏感力<br>文章末附了很多公众号</p>
-<p><a href="https://mp.weixin.qq.com/s/glPjf3S7j7uCX2_zgDr2jg">ref</a></p>
-<h1 id="Spark-读取本地文件"><a href="#Spark-读取本地文件" class="headerlink" title="Spark 读取本地文件"></a>Spark 读取本地文件</h1><h2 id="时间-1"><a href="#时间-1" class="headerlink" title="时间"></a>时间</h2><p>2018.05.03</p>
-<h2 id="讨论内容"><a href="#讨论内容" class="headerlink" title="讨论内容"></a>讨论内容</h2><p>Spark 作为一个分布式系统，如果读取本地文件，则要求该文件在所有节点都存在，并且目录都要求一致。</p>
-<ul>
-<li>解决方法1：分发到所有节点（麻烦）</li>
-<li>解决方法2：将文件传到hdfs，读取hdfs路径</li>
-<li>解决方法3：使用addfile方法<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><a href="https://www.iteblog.com/archives/1704.html">Spark中函数addFile 和 addJar函数介绍</a></li>
-</ul>
-<h1 id="机器学习优化算法讨论-—-by-木东居士-ref"><a href="#机器学习优化算法讨论-—-by-木东居士-ref" class="headerlink" title="机器学习优化算法讨论  — by 木东居士 ref"></a>机器学习优化算法讨论  — by 木东居士 <a href="https://wx.zsxq.com/mweb/views/topicdetail/topicdetail.html?topic_id=15454141825552&amp;user_id=48512221855458">ref</a></h1><h2 id="时间-2"><a href="#时间-2" class="headerlink" title="时间"></a>时间</h2><p>2018.05.03</p>
-<h2 id="讨论内容-1"><a href="#讨论内容-1" class="headerlink" title="讨论内容"></a>讨论内容</h2><p>机器学习的算法其实比运筹算法要简单，更偏重应用场景，更多的时间在做特征工程</p>
-<p>机器学习算法里基本都有用到二阶特性（牛顿法要求hessian矩阵），都是一阶的（如梯度下降）</p>
-<p>大规模学习来说，障碍往往在于算法的计算能力不足，而不是数据不够，所以也可以说传统额统计学习方法都不适合大规模数据处理</p>
-<p>在样本量比较多的时候，线性分类方法的劣势小很多，例如可以通过手工拆分/离散化特征来模拟非线性关系。而且有个经验是，在数据量大的时候，一些看起来粗暴无脑的方法反而有令人惊奇的效果。</p>
-<p>SVM 计算复杂度O(n^2)，存在两个超参数，只能通过穷举实验来求，计算时间要高于不少非线性分类器<br>随机森林 计算复杂度O(nlogn)</p>
-<h1 id="资源分享"><a href="#资源分享" class="headerlink" title="资源分享"></a>资源分享</h1><h2 id="时间-3"><a href="#时间-3" class="headerlink" title="时间"></a>时间</h2><p>2018.05.08</p>
-<h2 id="内容-1"><a href="#内容-1" class="headerlink" title="内容"></a>内容</h2><p><a href="https://pan.baidu.com/s/11TeYq09tY9JRz2R1pILx9g">经典算法大全</a> 密码 ce85</p>
-<p><a href="https://pan.baidu.com/share/init?surl=sjI1HVJ">算法导论中文版.pdf</a> 密码 2ygr</p>
-<p><a href="https://pan.baidu.com/s/1LztUJ56WU9JjqZWNejvaoQ">python资源分享</a>  密码：ll7q</p>
-<p>内容包括：《Python 2.7 Tutorial 中文版》《Python3程序开发指南(第二版)》《Python高级编程》《python核心笔记》《python核心编程第二版笔记》《Python技术手册（第2版）》《Python源码剖析》《quantsp研究计划书》《笨办法学Python》<br>by 小青年 </p>
-<h1 id="工作感悟"><a href="#工作感悟" class="headerlink" title="工作感悟"></a>工作感悟</h1><h2 id="时间-4"><a href="#时间-4" class="headerlink" title="时间"></a>时间</h2><p>2018.05.12</p>
-<h2 id="内容-2"><a href="#内容-2" class="headerlink" title="内容"></a>内容</h2><h3 id="工作的意义"><a href="#工作的意义" class="headerlink" title="工作的意义"></a>工作的意义</h3><p>最近在思考一个问题，工作的意义，一份工作最终目的究竟不该是一份简单的工资，而是这个公司能赋予你的资源，另一个是这份资源的成果转换对于市场的冲击力，对人，对社会的贡献度，人终究是需要处理社会活动的。</p>
-<p>职业背景和职业活动的限制，换句话说，工作本身是用来解决社会问题的，个人可能觉得只是天天码代码，做工作量，但它的成效简直太小了，一眼可以看到他的发展和未来。但如果说直面社会问题，去为解决问题而去选择走向，我个人理解人是会不去换不同的工作和行业，最终形成一套解决方案的，另一个角度，如果是为了盈利，这个解决方案的出发点一开始就是针对购买力的问题，你做的是服务和解决方案的路子。触手伸的越广，收益越大。</p>
-<p>即使是办企业也一样，仔细去看每个企业的基本描述类似，但核心针对点不一样，不管是个人也好，企业也罢，需要求同存异，找出自己的突破点，这个时代不是靠努力，而是靠挖掘力，执行力。</p>
-<p> by 道友 枫柚master </p>
-<h1 id="Spark-persist-DISK-ONLY-产生的问题"><a href="#Spark-persist-DISK-ONLY-产生的问题" class="headerlink" title="Spark persist(DISK_ONLY)产生的问题"></a>Spark persist(DISK_ONLY)产生的问题</h1><h2 id="时间-5"><a href="#时间-5" class="headerlink" title="时间"></a>时间</h2><p>2018.05.30</p>
-<h2 id="内容-3"><a href="#内容-3" class="headerlink" title="内容"></a>内容</h2><p>在Spark 的代码中增加persist(DISK_ONLY) 之后，会出现多个task failed,错误原因为container memoryOverhead</p>
-<p>去掉persist(DISK_ONLY) 就不再报这个错误，没有task failed, 并且运行速度提升。<br>此外，对比每个stage的IO,发现DISK_ONLY的有部分stage的IO是去掉persist的两倍。</p>
-<p><strong>猜想原因</strong></p>
-<p>DISK_ONLY 是将不做序列化的对象直接存入DISK,这部分产生大量IO,会占用内存。</p>
-<p><a href="https://blog.csdn.net/qq_20641565/article/details/76216417">Spark中cache和persist的作用以及存储级别</a></p>
-<h1 id="Spark-代码优化"><a href="#Spark-代码优化" class="headerlink" title="Spark 代码优化"></a>Spark 代码优化</h1><ul>
-<li>使用更高效的数据结构  BitSet、OpenHashSet、OpenHashMap</li>
-<li>inline</li>
-<li>一些汉字字符串，做维表映射之后，变成数字编号</li>
-</ul>
-<p><a href="https://www.jianshu.com/p/de8bb509b6f5">Spark 高效数据结构</a></p>
-<h1 id="人工智能主要三块-大数据、NLP、CV"><a href="#人工智能主要三块-大数据、NLP、CV" class="headerlink" title="人工智能主要三块  大数据、NLP、CV"></a>人工智能主要三块  大数据、NLP、CV</h1><h1 id="分布式发号器选择方案"><a href="#分布式发号器选择方案" class="headerlink" title="分布式发号器选择方案"></a>分布式发号器选择方案</h1><ul>
-<li>UUID</li>
-<li>DB</li>
-<li>SnowFlake</li>
-</ul>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/05/30/spark-discuss201805/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1094,6 +882,14 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       3.3k 字
+    </span>
+
+    <span title="post.min2read">
+       11 分钟
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -1137,85 +933,15 @@
 <li>部分内容整理时，已经注明出处，但很多内容，较为零碎，也无暇整理，如有不妥，请联系我，谢谢。</li>
 <li>这次整理开始，按照问题进行分类</li>
 </ul>
-<h1 id="银行存储金额-使用什么类型"><a href="#银行存储金额-使用什么类型" class="headerlink" title="银行存储金额,使用什么类型"></a>银行存储金额,使用什么类型</h1><h2 id="时间"><a href="#时间" class="headerlink" title="时间"></a>时间</h2><p>2018.04.27</p>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>用Int，直接存分</p>
-<h1 id="今日头条用户定向预估的实现方案-讨论"><a href="#今日头条用户定向预估的实现方案-讨论" class="headerlink" title="今日头条用户定向预估的实现方案　讨论"></a>今日头条用户定向预估的实现方案　讨论</h1><h2 id="时间-1"><a href="#时间-1" class="headerlink" title="时间"></a>时间</h2><p>2018.04.27</p>
-<h2 id="说明-1"><a href="#说明-1" class="headerlink" title="说明"></a>说明</h2><p><a href="http://wsq.discuz.com/?siteid=264104844&amp;c=index&amp;a=viewthread&amp;tid=24415&amp;source=pcscan">ref</a><br>看到今日头条的广告投放平台，可以选择各种维度的用户定向条件，并根据不同的条件组合实时给出预估覆盖用户量，感觉把各种维度组合存储下来这个数据量太大了，尤其App行为定向几乎涵盖了市场上所有的App，还有商圈定向，所有维度组合得上亿条吧？有没有人知道这块的技术是如何实现的呢？1.如何存储？2.如何快速查询？ </p>
-<h2 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h2><ul>
-<li>类似kylin那样玩 </li>
-<li>计算广告领域的 adx 受众定向，有些维度需要存 有些不需要  有的维度只是为了分流 给adx或dsp等</li>
-<li>不是实时计算 实时计算的一般是ctr 和 反作弊 其它的都是以前计算  推荐的也是多数提前计算 kylin满足不了  单纯的dsp的qps可以到5000+ 不超 100ms访给头条  头条的qps会更大</li>
-<li>应该也是给用户打上标签了。所以也可以计算很快。 类似hbase这样的数据库</li>
-</ul>
-<h1 id="kafka提升写入速度"><a href="#kafka提升写入速度" class="headerlink" title="kafka提升写入速度"></a>kafka提升写入速度</h1><h2 id="时间-2"><a href="#时间-2" class="headerlink" title="时间"></a>时间</h2><p>2018.04.26</p>
-<h2 id="相关讨论"><a href="#相关讨论" class="headerlink" title="相关讨论"></a>相关讨论</h2><ul>
-<li>加分区  我一天700亿，就是普通配置，加分区提升速度  我最大的topic 500亿一天，70个分区  qps我以前看大概单台1w多吧，非高峰期  分区计算要根据机器数和磁盘数来定 最好小于 机器数*磁盘数 磁盘大小决定你可以保存多久，有多长时间的备份</li>
-</ul>
-<h1 id="各大hadoop-版本比较-—by-刘明-阿黄生"><a href="#各大hadoop-版本比较-—by-刘明-阿黄生" class="headerlink" title="各大hadoop 版本比较  —by 刘明 阿黄生"></a>各大hadoop 版本比较  —by 刘明 阿黄生</h1><h2 id="时间-3"><a href="#时间-3" class="headerlink" title="时间"></a>时间</h2><p>2018.04.25</p>
-<h2 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h2><p>1.原生hadoop，用脚本管理。<br>（缺点：无界面管理 优点：以后经常升级组件会比较方便）<br>2.Cloudera发行版（Cloudera’s Distribution Including Apache Hadoop，简称 CDH ） 免费<br>  Cloudera公司也提供了类似的工具：Cloudera Manager（简称 CM ）来配置、监控和管理CDH集群<br>（缺点：需要厂商支持的时候贵的一逼 优点：组件升级、性能图标方面更方面）<br>3.Hortonworks发行版（Hortonworks Data Platform，简称 HDP ） 免费<br>  Hortonworks公司的Apache Ambari项目的目的就是通过软件来配置、监控和管理Hadoop（HDP）集群，以使Hadoop的管理更加  简单。Ambari提供了一个基于它自身RESTful的api实现的直观的、简单易用的web界面。<br>（缺点：暂不明 优点：日常管理更方便）<br>总结：Cloudera、Hortonworks都是大厂发布，性能稳定，运维人员喜欢用，管理方便。原生hadoop一般适用于开发人员。</p>
-<h1 id="关于数据挖掘中-模型、算法和数据的一些看法"><a href="#关于数据挖掘中-模型、算法和数据的一些看法" class="headerlink" title="关于数据挖掘中 模型、算法和数据的一些看法"></a>关于数据挖掘中 模型、算法和数据的一些看法</h1><h2 id="时间-4"><a href="#时间-4" class="headerlink" title="时间"></a>时间</h2><p>2018.04.20</p>
-<h2 id="观点"><a href="#观点" class="headerlink" title="观点"></a>观点</h2><ul>
-<li>一般是先看有哪些数据，再看要产出什么，算法是最后的，而且也不是最重要，顶多就是一个速度快慢的问题了。模型算法这种大家似懂非懂的，出去忽悠甲方，才好吹牛B啊。</li>
-<li>底层的基础算法公式是一致的，然后去和业务做匹配，形成针对业务的模型迭代算法。比如，人口模型，用地模型什么的。</li>
-<li>挖掘初期，能尽量用简单的方法处理好适当数据，产生效果就不错了。上升期，模型数据都可以进一步突破，也可以选择不同场景来做。是的，先要有东西出来，而不是说做的完美。先找合适场景，能产生数据价值，搞简单算法，先落地为主</li>
-<li>分公司，像搜索的几家公司，除了全文检索的技术，后面自然语言的算法，模型太多了。</li>
-<li>场景不同，除非老板给你的定位就是搞搜索，nlp，否则你开始就搞这个，几个月都弄不出来成绩就完了</li>
-<li>算法模型是要有大量训练数据和测试数据进行模型验证的。要不然模型容易过拟合或者欠拟合。</li>
-<li>数据量不够的话，可以用k折交叉验证来进行模型验证</li>
-<li>我看过一本书忘记名字了，讲大数据的，书中一个观点挺有意思的，说大数据的本质不是数据量的大小，我的理解就是不抽样的数据，会有很多看似无用的数据，但当数据量上来了，这些没用的数据就能挖掘出实际价值</li>
-</ul>
-<h1 id="关于大公司的开源技术，解决方案的一些看法"><a href="#关于大公司的开源技术，解决方案的一些看法" class="headerlink" title="关于大公司的开源技术，解决方案的一些看法"></a>关于大公司的开源技术，解决方案的一些看法</h1><h2 id="时间-5"><a href="#时间-5" class="headerlink" title="时间"></a>时间</h2><p>2018.04.20_3</p>
-<h2 id="观点-1"><a href="#观点-1" class="headerlink" title="观点"></a>观点</h2><ul>
-<li>很多解决方案，大厂的虽然是out的，在外面也可以吃很长一段时间</li>
-<li>大厂开源看思路，照搬就是作死，正好拿些小厂商做试验，如果可行，就分分钟钟拷贝出来</li>
-<li>很多技术，小公司并没有机会用到比如数据上云，和数据挖掘</li>
-<li>阿里主要是有盈利目标。就算懂了，也是自己小范围使用。最恶心就是阿里开源。明知道自己的东西需要一大堆外围配合，例如ssd阵列冷热分离，仍然阉割之后拿出来社区版，结果造成你上坑几率极大。</li>
-</ul>
-<h1 id="Spark中-hashshuffle-和-sortshuffle"><a href="#Spark中-hashshuffle-和-sortshuffle" class="headerlink" title="Spark中　hashshuffle 和 sortshuffle"></a>Spark中　hashshuffle 和 sortshuffle</h1><h2 id="时间-6"><a href="#时间-6" class="headerlink" title="时间"></a>时间</h2><p>2018.04.18</p>
-<h2 id="说明-2"><a href="#说明-2" class="headerlink" title="说明"></a>说明</h2><p>1.6 以上默认Sort-Based Shuffle<br>1.2 是HashShuffle</p>
-<p><strong>原始HashShuffle 机制</strong><br>思考核心点：上游数据是怎么分配给下游数据的。<br>假设有4个Map 要分成3类，也就是有3个Reducer,中间会生成4*3 个小文件</p>
-<p><strong>优化后的HashShuffle 机制</strong><br>因为Hash算法会根据你的 Key 进行分类，在同一个进程中，无论是有多少过Task，都会把同样的Key放在同一个Buffer里，然后把Buffer中的数据写入以Core数量为单位的本地文件中，(一个Core只有一种类型的Key的数据)，每1个Task所在的进程中，分别写入共同进程中的3份本地文件，这里有4个Mapper Tasks，所以总共输出是 2个Cores x 3个分类文件 = 6个本地小文件。</p>
-<p><strong>Sort Shuffle</strong></p>
-<ul>
-<li>首先每个ShuffleMapTask不会为每个Reducer单独生成一个文件，相反，Sort-based Shuffle会把Mapper中每个ShuffleMapTask所有的输出数据Data只写到一个文件中。因为每个ShuffleMapTask中的数据会被分类，所以Sort-based Shuffle使用了index文件存储具体ShuffleMapTask输出数据在同一个Data文件中是如何分类的信息！！</li>
-<li>基于Sort-base的Shuffle会在Mapper中的每一个ShuffleMapTask中产生两个文件：Data文件和Index文件，其中Data文件是存储当前Task的Shuffle输出的。而index文件中则存储了Data文件中的数据通过Partitioner的分类信息，此时下一个阶段的Stage中的Task就是根据这个Index文件获取自己所要抓取的上一个Stage中的ShuffleMapTask产生的数据的，Reducer就是根据index文件来获取属于自己的数据。<br>Sorted-based Shuffle：会产生 2*M(M代表了Mapper阶段中并行的Partition的总数量，其实就是ShuffleMapTask的总数量)个Shuffle临时文件。</li>
-</ul>
-<h2 id="ref"><a href="#ref" class="headerlink" title="ref:"></a>ref:</h2><p><a href="https://www.cnblogs.com/jcchoiling/p/6431969.html">[Spark性能调优] 第二章：彻底解密Spark的HashShuffle</a><br><a href="http://zhou-yuefei.iteye.com/blog/2294132">Spark sort-based Shuffle内幕彻底解密</a></p>
-<h1 id="一些零散的关于技术的想法："><a href="#一些零散的关于技术的想法：" class="headerlink" title="一些零散的关于技术的想法："></a>一些零散的关于技术的想法：</h1><p>技术的广度 Vs 深度<br>知识体系的力量</p>
-<h2 id="时间-7"><a href="#时间-7" class="headerlink" title="时间"></a>时间</h2><p>2018.04.17</p>
-<h2 id="相关讨论内容"><a href="#相关讨论内容" class="headerlink" title="相关讨论内容"></a>相关讨论内容</h2><ul>
-<li>编程我的感觉就是：有基础就可以做了，但是要成为资深程序猿的话，学习能力、创新能力、思维开阔性很重要</li>
-<li>自我认知的四个层次，不知道自己不知道，知道自己不知道，知道自己知道和不知道自己知道</li>
-<li>系统的教育，比零散的学习，思维的深度 和强度要高不少，我是这么觉得的，受过这种教育的人，会构建自己的知识体系，然后学到新的东西，都能放到这个体系中</li>
-<li>知识体系的例子：打个比方，你看到一个新的分布式技术，自然而然会想到并发，高可用，存储结构计算框架，按着一个套路去套，去学习</li>
-<li>我老大是搞cdn的， 我那时候搞storm抓不住重点， 我老大听我说完 就告诉我看他的通信模型就够了， 现在想来就是他有知识体系 我没有</li>
-<li>一般说30就不干程序员的，都是新创业公司，因为付不起工资其实30后能力和经验才开始体现，思考思维才逐步成熟。</li>
-<li>30岁以前写代码是体力劳动，积累经验。一旦30岁开始，年龄和职业能力出现巨大偏差就有问题了。</li>
-<li>昨天我和领导谈话，领导说做完项目，小组互相评价，我说好，后来我补充了一句，另外技术方面也得总结，最好这个项目能为下个项目做铺垫。后来领导问我做了这么长时间，有提高么，仔细想想，其实压力还是蛮大的，学习是一方面，但技术设限这点上确实是我没法独立去突破的，优质的程序员得到什么程度都是去自己评估，这就问题很大了。</li>
-</ul>
-<h1 id="面试相关"><a href="#面试相关" class="headerlink" title="面试相关"></a>面试相关</h1><h2 id="时间-8"><a href="#时间-8" class="headerlink" title="时间"></a>时间</h2><p>2018.04.17 及之后</p>
-<h2 id="相关讨论内容-1"><a href="#相关讨论内容-1" class="headerlink" title="相关讨论内容"></a>相关讨论内容</h2><ul>
-<li>怎么筛选人： 公司用什么？需要什么样的人？怎么去判断一个人技术是否牛逼？要人的标准是什么？</li>
-<li>注重的方面：技术、团队、态度</li>
-<li>面试是双向选择，并不是跪舔，打破这个规则以后工作都是不平等的。</li>
-</ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="作为面试者："><a href="#作为面试者：" class="headerlink" title="作为面试者："></a>作为面试者：</h3><ul>
-<li>态度要端正</li>
-<li>打好基础，具备相应的实力。对于技术问题，一定要做，而且总结。</li>
-<li>摆正心态，平稳应对难题，特别你的职位越高，心态越重要。遇到难题，就有点懊恼，这是不行的。</li>
-<li>做好简历</li>
-</ul>
-<h3 id="作为面试官："><a href="#作为面试官：" class="headerlink" title="作为面试官："></a>作为面试官：</h3><ul>
-<li>明确招人的需求和目的</li>
-<li>通过阅读简历及提问，认清面试者的真实水平<br>这个地方，可以考虑设计一下有层次的问题。一来，逐层挖深，能更好的分析出面试者技术水平。二来，可以考验面试者思维的逻辑性和缜密性。三来，更有逻辑条理的问题，能更好的挖掘出一些深层次的问题，形成一些思维的交锋，能够让面试者感受面试官的技术水平。毕竟面试是个双向选择的过程，要是面试官太水，真的人才说不定就看不上了。</li>
-<li>人品、态度考察。 这个可能hr会比技术人员更在行。技术人员从整体上给出一个把握就行。</li>
-</ul>
-<h3 id="一些面试问题"><a href="#一些面试问题" class="headerlink" title="一些面试问题"></a>一些面试问题</h3><h4 id="面试问题集合-—by-一杯咖啡。"><a href="#面试问题集合-—by-一杯咖啡。" class="headerlink" title="面试问题集合　—by 一杯咖啡。"></a>面试问题集合　—by 一杯咖啡。</h4><p>1、多线程的锁有哪几种<br>2、standby NN 和 secondary NN的区别？<br>3、Hadoop的HA如何避免脑裂？<br>4、讲讲HBase rowkey的设计<br>5、hbase访问热点问题<br>6、flume的数据源有哪些？<br>7、hive中数据倾斜问题？<br>8、写MR topN<br>9、spark rdd的lineage是怎么回事？<br>10、spark的宽依赖和窄依赖？（画出来）<br>11、rdd的懒加载是如何实现的？<br>12、HBase的major compaction机制，如何避免它对我们的业务的影响<br>13、oracle的分页？<br>14、窗口函数（我不知道这题问的是hive的窗口函数还是spark的窗口函数）<br>15、用SQL统计UV、PV指标<br>16、kafka是如何实现消息的副本？怎么控制N+1?<br>17、HBase查询的时候用什么对象？（这题不知道要问啥，面试官说：表操作的几个对象？？）</p>
-<h4 id="从头写一个简单的分布式服务，我只要最简单的功能，work-向master发心跳，超时剔除。-—-by-王二铁"><a href="#从头写一个简单的分布式服务，我只要最简单的功能，work-向master发心跳，超时剔除。-—-by-王二铁" class="headerlink" title="从头写一个简单的分布式服务，我只要最简单的功能，work 向master发心跳，超时剔除。 — by 王二铁"></a>从头写一个简单的分布式服务，我只要最简单的功能，work 向master发心跳，超时剔除。 — by 王二铁</h4><p>参考zk 实现原理，要求对分布式架构有一定的了解</p>
-<h4 id="大文件放到内存处理"><a href="#大文件放到内存处理" class="headerlink" title="大文件放到内存处理"></a>大文件放到内存处理</h4><p>有一个5000w的用户文件，一个2亿记录的用户看电影的记录文件，列出前1000个看电影最多的用户（内存只有1G) 那前1000w个呢<br>一个5000万长度的数组加一个5000万个key的HashMap，内存消耗会超过1个G吗？遍历2亿次加上5000万*log(5000wan）时间效率。这应该是最蠢的方法了。<br>所有数据肯定内存是没法容下的，先把大文件hash成许多个小文件直到内存可以处理，之后算每个小文件的top1000，然后再递归合并小文件，直到内存可以处理</p>
-<h1 id="一些好的经验总结"><a href="#一些好的经验总结" class="headerlink" title="一些好的经验总结"></a>一些好的经验总结</h1><p><a href="https://mp.weixin.qq.com/s?__biz=MzA3MjQ1NDYzOQ==&amp;mid=2660384603&amp;idx=1&amp;sn=410f152d3fa02f928f43e0dd1b1ad6b8&amp;chksm=847887dbb30f0ecda1b66da265561166a31d7f71e2bafd66ce86ca9f39e4d410c7cc9553ce3a&amp;mpshare=1&amp;scene=1&amp;srcid=0422wzyGBSQvfUjbNHBlCUl7#rd">MapReduce执行过程分析</a><br><a href="https://www.cnblogs.com/hd-zg/p/5831219.html">kafka 的offset</a><br><a href="http://dongxicheng.org/mapreduce/hadoop-permission-management/">Hadoop权限管理</a><br><a href="http://www.importnew.com/27645.html">JVM 堆内存和非堆内存</a><br><a href="https://wenku.baidu.com/view/34c3529a804d2b160a4ec0b4.html?qq-pf-to=pcqq.group">YARN ResourceManager调度器的分析</a><br><a href="https://blog.csdn.net/cymvp/article/details/50781727">YARN 内存参数终极详解</a></p>
-<p><a href="https://pan.baidu.com/s/1YjE34zgfV3k16I-Ye57CLA">Docker</a> 密码: 8m4a<br><a href="http://www.aboutyun.com/thread-24377-1-1.html">实战Docker到Kubernetes技术系列视频教程</a><br><a href="http://www.aboutyun.com/forum.php?mod=viewthread&amp;tid=22614">如何免费上谷歌</a></p>
-
+<h1 id="银行存储金额-使用什么类型"><a href="#银行存储金额-使用什么类型" class="headerlink" title="银行存储金额,使用什么类型"></a>银行存储金额,使用什么类型</h1><h2 id="时间"><a href="#时间" class="headerlink" title="时间"></a>时间</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/05/01/spark-discuss20180402/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1244,6 +970,14 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       1.2k 字
+    </span>
+
+    <span title="post.min2read">
+       5 分钟
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -1284,36 +1018,14 @@
       
           <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>以下内容来自群中出现的问题，大家讨论的结果<br>Q群：432600958<br>微信群：加微信w3aboutyun,附上about云铁粉</p>
 <h1 id="2018-04-13-01"><a href="#2018-04-13-01" class="headerlink" title="2018.04.13_01"></a>2018.04.13_01</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>面试资源题目分享</p>
-<h2 id="资料"><a href="#资料" class="headerlink" title="资料"></a>资料</h2><p><a href="https://kd.youth.cn/article/s?uid=6552956&amp;app_version=1.2.3&amp;sid=1405269&amp;time=1523783769&amp;signature=p8ebgqKwdz5B3lN0vmO4GjQD2FJ6OkK1EZXnGLQox9rJAkWR2Y&amp;sign=93411672e114e162b3f6c902425db83a">TOP 25大常见Hadoop面试题及答案</a><br><a href="https://pan.baidu.com/s/1qKmsd7bJ4PEzMsDXWgzlDg">Spark面试题汇总</a>  密码：bcpc</p>
-<h1 id="2018-04-12-01"><a href="#2018-04-12-01" class="headerlink" title="2018.04.12_01"></a>2018.04.12_01</h1><h2 id="问题描述-1"><a href="#问题描述-1" class="headerlink" title="问题描述"></a>问题描述</h2><p>sklearn 训练的模型如何在spark streaming 中使用</p>
-<h2 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h2><p>使用PMML<br>虽然spark streaming 有的模型不支持<br>可以使用 java 导入，调用java类</p>
-<h1 id="2018-04-11-01"><a href="#2018-04-11-01" class="headerlink" title="2018.04.11_01"></a>2018.04.11_01</h1><h2 id="问题描述-2"><a href="#问题描述-2" class="headerlink" title="问题描述"></a>问题描述</h2><p>已经建立好hive表，利用spark-streaming 往对应的hdfs目录写数据，却无法select出来。</p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>hive建好表，对应的目录为<br>/user/hive/warehouse/testdb.db/cljwifi</p>
-<p>假设文件为file1<br>/user/hive/warehouse/testdb.db/cljwifi/file1<br>这种形式，访问正常</p>
-<p>spark-streaming 落盘数据，假设目录已经存在会报错，因而只能新建一个目录，比如<br>/user/hive/warehouse/testdb.db/cljwifi/dir1/file1<br>这样的情况是无法访问的</p>
-<h2 id="解决思路-1"><a href="#解决思路-1" class="headerlink" title="解决思路"></a>解决思路</h2><h3 id="1-建立分区表"><a href="#1-建立分区表" class="headerlink" title="1 建立分区表"></a>1 建立分区表</h3><p>这样spark-streaming 落盘的目录，加上分区字段<br>/user/hive/warehouse/testdb.db/cljwifi/day=20180304</p>
-<h3 id="2-mv数据"><a href="#2-mv数据" class="headerlink" title="2 mv数据"></a>2 mv数据</h3><p>spark-streaming 落盘结束之后，编写定时脚本，移动数据</p>
-<h1 id="2018-04-10-01"><a href="#2018-04-10-01" class="headerlink" title="2018.04.10_01"></a>2018.04.10_01</h1><h2 id="问题描述-3"><a href="#问题描述-3" class="headerlink" title="问题描述"></a>问题描述</h2><p>在代码中设定了appName<br> val sparkConf = new SparkConf().setAppName(“name1”)<br>提交时用了—name参数<br>spark-submit —master yarn-cluster —name  name2<br>最终在yarn 的监控上显示的name2</p>
-<h2 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h2><p>代码中setMaster永远生效，优先级高于—master<br>代码中的setAppName 当 yarn-client 时，优先级高于—name 当yarn-cluster 模式时，优先级低于—name<br>原因待阅读源码细查</p>
-<h1 id="2018-04-10-02"><a href="#2018-04-10-02" class="headerlink" title="2018.04.10_02"></a>2018.04.10_02</h1><h2 id="问题描述-4"><a href="#问题描述-4" class="headerlink" title="问题描述"></a>问题描述</h2><p>Yarn 监控界面中的Reserve 的作用</p>
-<h2 id="解释-1"><a href="#解释-1" class="headerlink" title="解释"></a>解释</h2><p>An implementation detail of this change that prevents applications from starving under this new flexibility is the notion of reserved containers. Imagine two jobs are running that each have enough tasks to saturate more than the entire cluster. One job wants each of its mappers to get 1GB, and another job wants its mappers to get 2GB. Suppose the first job starts and fills up the entire cluster. Whenever one of its task finishes, it will leave open a 1GB slot. Even though the second job deserves the space, a naive policy will give it to the first one because it’s the only job with tasks that fit. This could cause the second job to be starved indefinitely. </p>
-<p>One big change in the YARN Fair Scheduler is how it defines a “resource”.<br>To prevent this unfortunate situation, when space on a node is offered to an application, if the application cannot immediately use it, it reserves it, and no other application can be allocated a container on that node until the reservation is fulfilled. Each node may have only one reserved container. The total reserved memory amount is reported in the ResourceManager UI. A high number means that it may take longer for new jobs to get space.</p>
-<p>简单来说，就是一个任务在执行的时候，预计还需要一定的资源，先声明了，将这些资源抢了，其他任务就无法使用这部分资源，这些资源就是 resever</p>
-<p>当一个NodeManager上的资源不足以满足当前一个Application的请求却有不得不分配给这个Application时，当前节点会为此Application预留资源，逐渐累加空余的剩余资源直至满足要求后才把资源封装成一个Container发给ApplicationMaster。如果一个Container已经被创建，并且处在剩余资源的累加过程中，它就处于上图中的RESERVED状态。当此Container已经分配给ApplicationMaster，并且此时ApplicationMaster还没发送通知说它已经得到了资源时，此Container处于ALLOCATED状态，直至ApplicationMaster发送通知给ResourceManager说它已经拿到了资源，则状态变为ACQUIRED。</p>
-<p>ref:<br><a href="http://blog.cloudera.com/blog/2013/06/improvements-in-the-hadoop-yarn-fair-scheduler/">Improvements in the Hadoop YARN Fair Scheduler</a><br><a href="https://www.cnblogs.com/Scott007/p/3893318.html">Yarn中的几种状态机</a></p>
-<h1 id="2018-04-04-01"><a href="#2018-04-04-01" class="headerlink" title="2018.04.04_01"></a>2018.04.04_01</h1><h2 id="问题描述-5"><a href="#问题描述-5" class="headerlink" title="问题描述"></a>问题描述</h2><p>val rdd = sc.parallelize(Array(“a”,”ab”,”abc”,”abcd”,””),2)<br>val rdd3 = rdd.aggregate(“”)((x,y)=&gt;(x.length.toString + y.length.toString),(x,y)=&gt;(x.length.toString + y.length.toString))<br>问rdd3 的结果为什么是”22”</p>
-<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>aggregate 之后，对两个分区分别进行seqOP<br>第一个分区 “a” “ab”<br>“”.length.toString + “a”.length.toString = “0”+”1” = “01”<br>“01”.length.toString + “ab”.length.toString = “2”+”2” = “22”</p>
-<p>第二个分区 “abc” “abcd” “”<br>“”.length.toString + “abc”.length.toString = “0”+”3” = “03”<br>“04”.length.toString + “abcd”.length.toString = “2” + “4” = “24”<br>“24”.length.toString + “”.length.toString = “2” + “0” = “20”</p>
-<p>然后 对 “22” “20” 进行 comOP<br>“”.length.toString + “22”.length.toString = “0” + “2” = “02”<br>“02”.length.toString + “20”.length.toString = “2” + “2” = “22”</p>
-<h2 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h2><ul>
-<li><a href="https://blog.csdn.net/u013514928/article/details/56680825">aggregate 算子</a></li>
-<li><a href="https://blog.csdn.net/Dax1n/article/details/72972256">序列分区</a><br>1，2，3，4，5  分区 1 2 |3 4 5</li>
-</ul>
-<h1 id="2018-04-04-02"><a href="#2018-04-04-02" class="headerlink" title="2018.04.04_02"></a>2018.04.04_02</h1><h2 id="问题描述-6"><a href="#问题描述-6" class="headerlink" title="问题描述"></a>问题描述</h2><p>请教大家一个问题<br>一个目录下有100个文件，假设都是SequenceFile,但是其中有1个文件为空，大小为0(由于集群限制无法删除)<br>spark 运行时报错 not a SequenceFile<br>（文件名比较奇怪，无法在提交脚本中用正则过滤）<br>请问该如何处理？</p>
-<h2 id="解决思路-2"><a href="#解决思路-2" class="headerlink" title="解决思路"></a>解决思路</h2><p>那相当于在 sc.sequenceFile<a href="inputs">LongWritable,Text</a> 之前 ，先遍历一次inputs，然后其中不为空的文件，放入一个数组input2 ，然后执行sc.sequenceFile<a href="inputs2">LongWritable,Text</a>   </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">val file_rdd = sc.sequenceFile[LongWritable,Text](inputs)</span><br></pre></td></tr></table></figure>
-<p>改为<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">val conf = new Configuration()</span><br><span class="line">val fileSystem = FileSystem.get(conf)</span><br><span class="line">val children = fileSystem.listStatus(new Path(inputs))</span><br><span class="line">val input2 = for(path &lt;- children if (path.getLen &gt; 0)) yield &#123;path.getPath.toString&#125;</span><br><span class="line">val file_rdd = sc.sequenceFile[LongWritable,Text](input2.mkString(&quot;,&quot;))</span><br></pre></td></tr></table></figure></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/04/16/spark-discuss20180401/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1406,7 +1118,7 @@
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -1418,9 +1130,6 @@
   </nav>
 </div>
   <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
       <span class="links-of-author-item">
         <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
       </span>
@@ -1452,15 +1161,67 @@
 
 <div class="copyright">
   
-  &copy; 
+  &copy; 2013 – 
   <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">喵十八</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
   </div>
+
+<div></div>
+
+<!--添加网站的运行时间-->
+<span id="sitetime"> <br></span>
+<script language="javascript">
+	function siteTime(){
+		window.setTimeout("siteTime()", 1000);
+		var seconds = 1000
+		var minutes = seconds * 60
+		var hours = minutes * 60
+		var days = hours * 24
+		var years = days * 365
+
+		var today = new Date()
+		var todayYear = today.getFullYear()
+		var todayMonth = today.getMonth()
+		var todayDate = today.getDate()
+		var todayHour = today.getHours()
+		var todayMinute = today.getMinutes()
+		var todaySecond = today.getSeconds()
+		var t1 = Date.UTC(2017,4,18,11,00,00)
+		var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+		var diff = t2-t1
+
+		var diffYears = Math.floor(diff/years)
+		var diffDays = Math.floor((diff/days)-diffYears*365)
+		var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+		var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+		var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+		document.getElementById("sitetime").innerHTML=" 本站已运行"+diffYears+" 年 "+diffDays+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒<br>"
+	}
+	siteTime()
+</script>
+
+<!-- 不蒜字统计 -->
+<div>
+	<i class="fa fa-user-md"></i>
+	<span id="busuanzi_container_site_uv">
+	  访问人数：<span id="busuanzi_value_site_uv"></span>
+	</span>&nbsp;|&nbsp;
+	
+	<i class="fa fa-eye"></i>
+	<span id="busuanzi_container_site_pv">
+	  总访问量：<span id="busuanzi_value_site_pv"></span>
+	</span>&nbsp;|&nbsp;
+	
+	<!-- 添加博客全站总字数统计-->
+	<i class="fa fa-pencil"></i>
+	<span class="post-count">博客全站共 113k 字</span>
+</div>
+	
 
         
 
@@ -1494,6 +1255,31 @@
 
 
   
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
 
 
 

@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta property="og:type" content="website">
@@ -133,6 +133,11 @@
     <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>Schedule</a>
+
+  </li>
         <li class="menu-item menu-item-commonweal">
 
     <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
@@ -152,6 +157,9 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Yao544303" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
 
 
     <main class="main">
@@ -175,6 +183,14 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       2.6k 字
+    </span>
+
+    <span title="post.min2read">
+       10 分钟
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -221,58 +237,14 @@
       
           <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近接到一个新任务，使用ganglia去监控Hadoop各个组件的指标。<br>调研发现，hdfs，hbase，spark这三个，可以通过设置，源生支持ganglia。然后其他的组件，比如storm，hive之类的，由于都是运行在JVM上的，可以使用JMX获取其监控指标。<br>在实际的生产过程，使用HttpClient获取JMX的json串，然后再进行解析，可以获取其内容。但是编码量比较大，而且都是重复工作，于是发现了jmxtrans这个工具，可以通过JSON配置文件的方式，获取JMX的监控指标，并将其发给ganglia。从而完成整个监控。</p>
 <h1 id="Ganglia"><a href="#Ganglia" class="headerlink" title="Ganglia"></a>Ganglia</h1><h2 id="Ganglia-简介"><a href="#Ganglia-简介" class="headerlink" title="Ganglia 简介"></a>Ganglia 简介</h2><p>Ganglia是UCBerkeley发起的一个开源集群监视项目。它主要是用来监控系统性能，如：CPU、Memory、硬盘利用率，I/O负载、网络流量情况等。Ganglia通过图形化的方式展示每个节点的状态信息，这对合理调整、分配系统资源，提高系统整体性能起到重要作用。Ganglia包含三个核心组件：GangliaMonitoring Daemon（gmond）、GangliaMeta Daemon（gmetad）以及GangliaPHP Web Frontend。</p>
-<h2 id="Ganglia-总体架构"><a href="#Ganglia-总体架构" class="headerlink" title="Ganglia 总体架构"></a>Ganglia 总体架构</h2><p><img src="http://s3.51cto.com/wyfs02/M02/1B/97/wKioL1MV9EGS37itAAH9Gcl8EpQ513.jpg" alt=""></p>
-<h3 id="Gmond组件"><a href="#Gmond组件" class="headerlink" title="Gmond组件"></a>Gmond组件</h3><p>Gmond组件部署于集群中各个被监控的节点。其主要功能是从操作系统或指定的主机收集状态信息。其收集主机状态信息的方式灵活，状态信息均以XML格式进行传输。Gmond组件可以级联形成层次结构，这种层次结构使得Ganglia拥有良好的可扩展性。另外，Gmond组件带来的系统负载非常少，对用户的影响非常小。Gmond组件的工作模式有两种：单播和多播。单播模式下，Gmond组件发送其收集的主机状态信息到指定的一个或多个节点，可以跨网段；多播模式下，Gmond组件发送其监控的主机状态信息到同一网段内的所有节点，同时还接收同一网段内其他节点发送的状态信息。</p>
-<h3 id="Gmetad组件"><a href="#Gmetad组件" class="headerlink" title="Gmetad组件"></a>Gmetad组件</h3><p>Gmetad组件可以部署于集群中的某一节点，也可以部署于集群外的某一专门服务器，其主要功能是周期性地从指定的Gmond组件或其他Gmetad组件拉取数据，并将拉取的数据存储在本地数据库。这些存储的状态信息供Ganglia-Web组件使用。</p>
-<h3 id="Ganglia-Web组件"><a href="#Ganglia-Web组件" class="headerlink" title="Ganglia-Web组件"></a>Ganglia-Web组件</h3><p>Ganlgia-Web组件和Gmetad组件须部署于同一节点，它通过数据库轮询的方式从Gmetad组件中获取状态信息，并以web形式图形化地展示各个节点的状态信息。</p>
-<h2 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h2><p>Ganglia包括如下几个程序，他们之间通过XDL(xml的压缩格式)或者XML格式传递监控数据，达到监控效果。集群内的节点，通过运行gmond收集发布节点状态信息，然后gmetad周期性的轮询gmond收集到的信息，然后存入rrd数据库，通过web服务器可以对其进行查询展示。</p>
-<p>Gmetad 这个程序负责周期性的到各个datasource收集各个cluster的数据，并更新到rrd数据库中。可以把它理解为服务端。</p>
-<p>Gmond 收集本机的监控数据，发送到其他机器上，收集其他机器的监控数据，gmond之间通过udp通信，传递文件格式为xdl。收集的数据供Gmetad读取，默认监听端口8649，监听到gmetad请求后发送xml格式的文件。可以把它理解为客户端。</p>
-<p>web front-end 一个基于web的监控界面，通常和Gmetad安装在同一个节点上，它从Gmetad取数据，并且读取rrd数据库，生成图片，显示出来。</p>
-<p>gmetad周期性的去gmond节点或者gmetad节点poll数据。一个gmetad可以设置多个datasource，每个datasource可以有多个备份，一个失败还可以去其他host取数据。</p>
-<h3 id="muticast模式"><a href="#muticast模式" class="headerlink" title="muticast模式"></a>muticast模式</h3><p>如果是muticast模式的话，gmond之间还会通过多播来相互传递数据。Gmond本身具有udpsend和recv通道，还有一个tcprecv通道。其中udp通道用于向其他gmond节点发送或接受数据，tcp则用来exportxml文件，主要接受来自gmetad的请求。Gmetad只有tcp通道，一方面它向datasource发送请求，另一方面会使用一个tcp端口，发布自身收集的xml文件，默认使用8651端口。所以gmetad即可以从gmond也可以从其他的gmetad得到xml数据。</p>
-<p>Gmond节点内部模块图如下所示：<br><img src="http://s3.51cto.com/wyfs02/M02/1B/96/wKiom1MV9JGDSgHAAAEPvjTFZ2c115.jpg" alt=""></p>
-<p>如上图所示，主要由三个模块组成，collect and publish模块，该模块周期性的调用一些内部指令获得metricdata，然后将这些数据通过udp通道发布给其他gmond节点。ListenThreads，监听其他gmond节点的发送的udp数据，然后将数据存放到内存中。XMLexport thread负责将数据以xml格式发布出去，比如交给gmetad。</p>
-<h3 id="unicast模式"><a href="#unicast模式" class="headerlink" title="unicast模式"></a>unicast模式</h3><p>unicast模式下ganglia系统内的数据流。<br><img src="http://s3.51cto.com/wyfs02/M00/1B/96/wKiom1MV9KjBgYghAAEd9vXRVrM462.jpg" alt=""></p>
-<p>如上图所示，多个gmond节点通过udp向单播的目标host的gmond发送数据，gmetad然后向该目标host的gmond请求xml文件，然后存入rrdtool数据库。在unicast模式中，图中方框内的组件通常是位于集群内的同一个节点。该节点负责收集存储显示被监控的各节点的状态信息。</p>
-<h2 id="自定义metrics"><a href="#自定义metrics" class="headerlink" title="自定义metrics"></a>自定义metrics</h2><p>向ganglia加入自定义metric有两种方法，一种是通过命令行的方式运行gmetric，另一种是通过ganglia提供的面向c和python的扩展模块，加入自定义的模块支持。</p>
-<p>更多python模块，可以参考：<br><a href="https://github.com/ganglia/gmond_python_modules">https://github.com/ganglia/gmond_python_modules</a></p>
-<h2 id="单播与组播"><a href="#单播与组播" class="headerlink" title="单播与组播"></a>单播与组播</h2><p>在进行Ganglia集群配置之前，首先要搞清楚单播和组播。<br>单播：可以跨网段传播，只将信息发送给指定的机器。要配置成为单播你应该指定一个（或者多个）接受的主机。<br>组播：在机器所处的网段中发送广播，发送给位于同一网段的所有机器。如果你正在使用组播传输，那么你没必要改变任何东西，因为这是Ganglia包安装默认的。唯一要做的就是把gmetad指向一个或几个运行着gmond的主机。没有必要列出每一个单个主机，因为gmond被设置为接受模式时会包含所有主机的列表以及整个集群的统计信息。</p>
-<p>关于单播和组播更详细的介绍和相关配置请参照：Ganglia快速开始向导（翻译自官方wiki），或者直接查看官方wiki。</p>
-<h1 id="Ganglia-安装"><a href="#Ganglia-安装" class="headerlink" title="Ganglia 安装"></a>Ganglia 安装</h1><p>Ganglia的安装，依赖包很多。如果在联网的环境下，还是比较简单的。否则的话，尽量使用源码编译安装。</p>
-<h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><p>安装ganglia依赖的库有：rrdtool，apr，confuse，expat，pkg-config，pcre-8.33<br>安装ganglia前准备：<br>ganglia源码包：<a href="http://sourceforge.net/projects/ganglia/files/?source=navbar，可以下载ganglia，及ganglia-web">http://sourceforge.net/projects/ganglia/files/?source=navbar，可以下载ganglia，及ganglia-web</a><br>rrdtool源码包：<a href="http://oss.oetiker.ch/rrdtool/pub/?M=D">http://oss.oetiker.ch/rrdtool/pub/?M=D</a><br>apr的源码包：<a href="http://apr.apache.org/download.cgi">http://apr.apache.org/download.cgi</a><br>confuse的源码包：<a href="http://www.nongnu.org/confuse/">http://www.nongnu.org/confuse/</a><br>expat的源码包：<a href="http://sourceforge.net/projects/expat/files/expat/2.1.0/">http://sourceforge.net/projects/expat/files/expat/2.1.0/</a><br>pkg-config的源码包：<a href="http://pkgconfig.freedesktop.org/releases/">http://pkgconfig.freedesktop.org/releases/</a><br>pcre的源码包：<a href="http://sourceforge.net/projects/pcre/files/pcre/">http://sourceforge.net/projects/pcre/files/pcre/</a></p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>1.安装rrd，安装前需要查看系统中是否有cairo库，glib库，libpng库，如果这些库都不存在，需要安装，如果已经存在，再去安装，会导致ganglia-web中出现不了图片<br><a href="http://www.centos.bz/2012/05/linux-compile-rrdtool/">参照</a></p>
-<p><a href="http://oss.oetiker.ch/rrdtool/pub/libs/">rrd依赖库的源码包地址</a><br>若未找到cairo库的话，需要安装cairo库<br>安装cairo库时需要安装其依赖库freetype，fontconfig，在安装cairo库时可能出现<br>    <code>could not find libpng in /usr/lib/pkgconfig path</code><br>这时需要设置<br>    <code>export png_REQUIRES=&quot;libpng&quot;</code><br>由于我的系统中已经存在这些库，所以我可以直接编译rrd-tool<br>    <code>./configure --prefix=/usr &amp;&amp; make &amp;&amp; make install</code></p>
-<p>2.安装 apr-1.4.6<br>  <code>./configure --prefix=/usr &amp;&amp; make &amp;&amp;make install</code></p>
-<p>3.安装confuse-2.7<br>    <code>./configure --prefix=/usr CFLAGS=-fPIC --disable-nls &amp;&amp; make &amp;&amp; make install</code></p>
-<p>4.安装 expat-2.1.0<br>    <code>./configure --prefix=/usr &amp;&amp; make &amp;&amp; make install</code></p>
-<p>5.安装pkg-config-0.28<br>    <code>/configure --prefix=/usr --with-internal-glib &amp;&amp; make &amp;&amp; make install</code></p>
-<p>6.安装pcre-8.33<br>    <code>./configure --prefix=/usr &amp;&amp; make &amp;&amp; make install</code></p>
-<p>7.安装ganglia<br>    <code>./configure --prefix=/usr CFLAGS=&quot;-I/usr/include&quot; CPPFLAGS=&quot;-I/usr/include&quot; LDFLAGS=&quot;-L/usr/lib/pkgconfig&quot; --with-gmetad &amp;&amp;make -j8 &amp;&amp;make install</code></p>
-<p>8.配置ganglia</p>
-<p><code>Server:</code><br><code>cp gmetad/gmetad.init /etc/init.d/gmetad</code><br><code>cp gmetad/gmetad.conf /etc/ganglia/gmetad.conf</code><br><code>chkconfig gmetad on</code><br><code>chkconfig --list gmetad</code><br>查看是否能够启动gmetad， <code>service gmetad start</code><br>如果出现动态库链接失败时，执行ldconfig</p>
-<p><code>Client:</code><br><code>cp gmond/gmond.init /etc/rc.d/init.d/gmond</code><br><code>mkdir /etc/ganglia</code><br><code>gmond --default_config &gt; /etc/ganglia/gmond.conf</code><br><code>chkconfig gmond on</code><br><code>chkconfig --list gmond</code><br><code>mkdir -p /var/lib/ganglia/rrds</code><br><code>chown nobody:nobody /var/lib/ganglia/rrds</code><br>查看是否能够启动gmond， <code>service gmond start</code><br>如果出现动态库链接失败时，执行ldconfig</p>
-<p>9.修改gmetad.conf及gmond.conf的内容<br>    <code>vi /etc/ganglia/gmetad.conf</code><br>#修改data_source  “grid” localhost (如果需要监听其他机器，将需要监听的机器添加到data_source中，需要监听的机器不需要安装gmetad)<br><code>vi /etc/ganglia/gmond.conf</code><br>#修改cluster中name = “grid”</p>
-<p>10.安装ganglia-web<br>直接到ganglia-web下执行<code>make install</code><br>然后执行 <code>mv /var/www/html/ganglia /var/www</code><br>    <code>service httpd restart</code></p>
-<h1 id="jmxtrans-安装"><a href="#jmxtrans-安装" class="headerlink" title="jmxtrans 安装"></a>jmxtrans 安装</h1><p>1、下载jmxtrans<br><a href="https://github.com/jmxtrans/jmxtrans/downloads">下载地址</a><br>2、安装jmxtrans<br>#判断是否已安装此软件<br>#rpm -qa |grep jmx<br>#卸载软件<br>#rpm -e jmxXXXXXX<br>#安装jmxtrans<br>rpm -ivh<br>说明：</p>
-<pre><code>jmxtrans安装目录：/usr/share/jmxtrans
-
-jmxtrans配置文件 ：/etc/sysconfig/jmxtrans
-
-json文件默认目录：/var/lib/jmxtrans/
-</code></pre><p>3、配置开机启动</p>
-<pre><code>jmxtrans配置文件增加JAVA_HOME的配置，例如：
-</code></pre><p>vi /etc/sysconfig/jmxtrans<br>export JAVA_HOME=/opt/jdk1.7<br>chkconfig —add jmxtrans<br>chkconfig jmxtrans on<br>service jmxtrans start<br>#启动日志的文件在/var/log/jmxtrans/jmxtrans.log，大家可以通过查看日志来判断是否可以接收数据</p>
-<p>4、监控jvm应用需要增加以下jvm启动参数</p>
-<p>-Dcom.sun.management.jmxremote<br>-Dcom.sun.management.jmxremote.port=12345<br>-Dcom.sun.management.jmxremote.authenticate=false<br>-Dcom.sun.management.jmxremote.ssl=false</p>
-<h1 id="jmxtrans-json配置"><a href="#jmxtrans-json配置" class="headerlink" title="jmxtrans json配置"></a>jmxtrans json配置</h1><p>待续</p>
-<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>由于之前在研究ELK。会不由自主的拿ELK和ganglia进行比较。虽然这是不合适的。ELK是一个完整的技术栈，ganglia则相对薄弱。如果对标的话，私以为ELK中的beats + X-pack 可以实现ganglia的功能。只是ELK功能更为强大，而ganglia则更为轻量。</p>
-<h1 id="ref"><a href="#ref" class="headerlink" title="ref"></a>ref</h1><p><a href="https://github.com/ganglia/ganglia-web">ganglia github</a></p>
-<p><a href="http://sofar.blog.51cto.com/353572/1367205/">ganglia 简介</a></p>
-<p><a href="http://blog.csdn.net/ximeizi/article/details/9225111?locationNum=10">基于redhat6.2下安装ganglia</a></p>
-<p><a href="http://www.mamicode.com/info-detail-651326.html">jmxtrans安装</a></p>
-<p><a href="https://github.com/jmxtrans/jmxtrans/">jmxtrans github</a></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/06/08/ganglia-notes-1/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -301,6 +273,14 @@ json文件默认目录：/var/lib/jmxtrans/
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       181 字
+    </span>
+
+    <span title="post.min2read">
+       1 分钟
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -378,6 +358,14 @@ json文件默认目录：/var/lib/jmxtrans/
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
     </span>
+
+    <span title="post.wordcount">
+       98 字
+    </span>
+
+    <span title="post.min2read">
+       1 分钟
+    </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
@@ -438,19 +426,14 @@ json文件默认目录：/var/lib/jmxtrans/
 <li>SparkML</li>
 <li>GraphX</li>
 </ul>
-<h1 id="Kafka"><a href="#Kafka" class="headerlink" title="Kafka"></a>Kafka</h1><ul>
-<li>Producer</li>
-<li>Consumer</li>
-<li>多线程</li>
-<li>高可用</li>
-<li>分区</li>
-</ul>
-<h1 id="HDFS"><a href="#HDFS" class="headerlink" title="HDFS"></a>HDFS</h1><h1 id="Hadoop"><a href="#Hadoop" class="headerlink" title="Hadoop"></a>Hadoop</h1><ul>
-<li>Yarn</li>
-<li>Zookeeper</li>
-<li>Map</li>
-</ul>
-<h1 id="数据挖掘"><a href="#数据挖掘" class="headerlink" title="数据挖掘"></a>数据挖掘</h1><h1 id="Storm"><a href="#Storm" class="headerlink" title="Storm"></a>Storm</h1><h1 id="Zookeeper"><a href="#Zookeeper" class="headerlink" title="Zookeeper"></a>Zookeeper</h1>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/12/06/TODO-List/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -479,6 +462,14 @@ json文件默认目录：/var/lib/jmxtrans/
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       66 字
+    </span>
+
+    <span title="post.min2read">
+       1 分钟
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -556,6 +547,14 @@ json文件默认目录：/var/lib/jmxtrans/
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
     </span>
+
+    <span title="post.wordcount">
+       307 字
+    </span>
+
+    <span title="post.min2read">
+       1 分钟
+    </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
@@ -602,11 +601,14 @@ json文件默认目录：/var/lib/jmxtrans/
           <p>Git是非常好用的分布式版本管理系统，学习记录如下</p>
 <h1 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h1><p><a href="http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html">http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html</a></p>
 <h1 id="Git分支管理"><a href="#Git分支管理" class="headerlink" title="Git分支管理"></a>Git分支管理</h1><p><a href="http://www.ruanyifeng.com/blog/2012/07/git.html">http://www.ruanyifeng.com/blog/2012/07/git.html</a></p>
-<p>文中提到的Master 和 Developer 两条线的思路，非常棒，但是在具体的实践中，需要根据项目来确定。<br>今天和发哥讨论的结果是，如果像我司一样，有独立的测试部门，需要不时的从Master取版本，做集成测试，那么 需要两条线，管理比较方便。<br>如果规模较小，可以考虑只用一个master 足够，每次打个tag就行，无需专人负责dev -&gt;mastert 的merge，况且这部分容易有坑。</p>
-<h1 id="Git-使用规范"><a href="#Git-使用规范" class="headerlink" title="Git 使用规范"></a>Git 使用规范</h1><p><a href="http://www.ruanyifeng.com/blog/2015/08/git-use-process.html">http://www.ruanyifeng.com/blog/2015/08/git-use-process.html</a></p>
-<p>在我们实际的 项目中，每次commit之前，需要先pull，解决好冲突之后，才能commit。<br>在我们使用Gerrit的过程中，会出现Merge Appending 的报错，原因是，submit了 1234 4次，且4依赖于前面的，前面任意一项submit未通过，那么submit 4的时候会出现找个错误。所以，有依赖关系的请谨慎。</p>
-<p>需要详细了解的内容：<br>cherry pick<br>rebase<br>tag</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/12/06/Git-%E7%AC%94%E8%AE%B0/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -635,6 +637,14 @@ json文件默认目录：/var/lib/jmxtrans/
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       1.1k 字
+    </span>
+
+    <span title="post.min2read">
+       3 分钟
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -681,69 +691,15 @@ json文件默认目录：/var/lib/jmxtrans/
       
           <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>　　今天，几位同事带着我先过了一次Scrum 实践，走了一个流程，感觉内容很多，一时估计没法消化，做个笔记。</p>
 <h1 id="Scrum简介"><a href="#Scrum简介" class="headerlink" title="Scrum简介"></a>Scrum简介</h1><p>　　Scrum是迭代式增量软件开发过程，通常用于敏捷软件开发。Scrum包括了一系列实践和预定义角色的过程骨架。Scrum中的主要角色包括同项目经理类似的Scrum主管角色负责维护过程和任务，产品负责人代表利益所有者，开发团队包括了所有开发人员。虽然Scrum是为管理软件开发项目而开发的，它同样可以用于运行软件维护团队，或者作为计划管理方法：<em>Scrum of Scrums</em>.</p>
-<h1 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h1><h2 id="“猪”角色"><a href="#“猪”角色" class="headerlink" title="“猪”角色"></a>“猪”角色</h2><ul>
-<li><p>产品负责人（Product Owner）<br>通常由市场部门的人担任</p>
-</li>
-<li><p>敏捷教练 (Scrum Master)<br>通常由开发组组长担任</p>
-</li>
-<li><p>开发团队 (Scrum Team)<br>包括开发,需求,测试</p>
-</li>
-</ul>
-<h2 id="“鸡”角色"><a href="#“鸡”角色" class="headerlink" title="“鸡”角色"></a>“鸡”角色</h2><ul>
-<li><p>用户<br>软件是为了某些人而创建！就像“假如森林里有一棵树倒下了，但没有人听到，那么它算发出了声音吗”，“假如软件没有被使用，那么它算是被开发出来了么？”</p>
-</li>
-<li><p>利益所有者 (客户，提供商)<br>影响项目成功的人, 但只直接参与冲刺评审过程。</p>
-</li>
-<li><p>管理者<br>为产品开发团体架起环境的那个人</p>
-</li>
-</ul>
-<h1 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h1><p>启动会议<br>-&gt;每日站会<br>-&gt;show Case<br>-&gt;迭代总结会议</p>
-<p>有的地方也写成如下名字：<br>冲刺规划会议（Sprint Plan Meeting）<br>-&gt;每日站立会议（Sprint Daily Meeting）<br>-&gt;冲刺复审会议（Sprint Review Meetion）<br>-&gt;冲刺回顾会议（Retrospective Meeting）</p>
-<h2 id="启动会议"><a href="#启动会议" class="headerlink" title="启动会议"></a>启动会议</h2><p>1.需求<br>需求需要和PO沟通 主要有如下几点：</p>
-<ul>
-<li>工作来源：这份工作是谁安排的，要求达到什么目的</li>
-<li>细节问题：这部分需要做好功课，你需要站在一个开发者的角度，来思考这些细节，这也是为你的开发团队向PO提问。</li>
-<li>工作量预估</li>
-</ul>
-<p>2.用户故事拆分<br>As For Do 原则</p>
-<ul>
-<li><p>As（用户角色）： 该功能是为谁设计的，预期用户是哪些人？<br>这一点必须收敛和明确，如果某一功能的预期用户太过复杂，说明这一部分的设计是有问题，需要拆分。</p>
-</li>
-<li><p>For（价值、目的） : 该功能的实现目的是什么</p>
-</li>
-<li>Do （过程、行为） : 该部分涉及真实进行的场景</li>
-</ul>
-<p>3.故事点<br>这一部分，涉及到分发任务，最好由开发人员回答，要引导（压榨）开发人员，发掘故事点。</p>
-<ul>
-<li>全员预估、发现坑、技术教练指导</li>
-<li>和PO 沟通实施先后顺序</li>
-<li>用户故事优先级别</li>
-</ul>
-<h2 id="每日站会"><a href="#每日站会" class="headerlink" title="每日站会"></a>每日站会</h2><p>严格按照Story 的故事点来汇报。Master 需要汇报整个项目进度。</p>
-<ul>
-<li>昨天做了什么</li>
-<li>今天准备做什么</li>
-<li>有什么问题<br>要求每个人发言简洁，明确。如果有细节的问题，注意打断然后私下讨论。确保每个人都能集中其工作在某个点上。</li>
-</ul>
-<h2 id="show-case"><a href="#show-case" class="headerlink" title="show case"></a>show case</h2><p>As 对象 必须在场<br>ST 成员各自演示功能</p>
-<h2 id="迭代总结会议"><a href="#迭代总结会议" class="headerlink" title="迭代总结会议"></a>迭代总结会议</h2><ul>
-<li>计划投入、实际投入、延时</li>
-<li>把大家的想法总结<ul>
-<li>大家反馈完成度</li>
-<li>谁做的最好？谁有待改进？ why？ 做个记录，有利于成员管理和考核，对好的予以表扬。不足的设法改进。Master 也需要借此对团队成员有一个考量。</li>
-<li>每个人提建议。<br>1.不足的可以改进的地方（注意分类，在逻辑层次需要在一个层面，例如 外部问题，团队管理问题，个人问题，有的问题可以及时和甲方沟通）<br> 2.好的，可以延续的地方。（如重构）</li>
-</ul>
-</li>
-</ul>
-<h1 id="杂七杂八"><a href="#杂七杂八" class="headerlink" title="杂七杂八"></a>杂七杂八</h1><ul>
-<li>第一次接触团队，大家互相不熟悉，第一个迭代（冲刺）可以制定工作量70% 这一部分需要和甲方商榷。</li>
-<li>作为Master 要保持自身的机动性。</li>
-<li>每个故事点，要尽可能的发掘开发人员的思路。</li>
-<li>用户故事，或者故事点过大时，要及时切分。</li>
-<li>纸上得来终觉浅</li>
-</ul>
-<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a href="http://blog.csdn.net/uxyheaven/article/details/49618097">http://blog.csdn.net/uxyheaven/article/details/49618097</a></p>
-
+<h1 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h1>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/11/29/%E6%95%8F%E6%8D%B7%E5%BC%80%E5%8F%91%EF%BC%88%E4%BA%8C%EF%BC%89-Scrum-%E5%AE%9E%E8%B7%B5/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -772,6 +728,14 @@ json文件默认目录：/var/lib/jmxtrans/
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       716 字
+    </span>
+
+    <span title="post.min2read">
+       2 分钟
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -819,35 +783,15 @@ json文件默认目录：/var/lib/jmxtrans/
           <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>上周六部长给我安排了一个任务，去带一个团队，不过是承担辅助的角色.当时我的内心毫无波动，甚至有点想笑.<br>历经了几天内部扯皮，才知道这个活不好干，而自身才他喵的入职4个月，刚刚转正.好吧，反正都到这个份上了，说什么都没用，好好学吧.</p>
 <h1 id="敏捷开发宣言"><a href="#敏捷开发宣言" class="headerlink" title="敏捷开发宣言"></a>敏捷开发宣言</h1><p><code><br>个体和互动 高于 流程和文档<br>工作的软件 高于 详尽的文档<br>客户合作 高于 合同谈判<br>响应变化 高于 遵循计划<br>也就是说, 尽管右项有其价值, 我们更重视左项的价值.
 </code></p>
-<h1 id="敏捷开发核心理念"><a href="#敏捷开发核心理念" class="headerlink" title="敏捷开发核心理念"></a>敏捷开发核心理念</h1><p>以最简单有效的方式快速达成目标, 并在这个过程中及时地响应外界的变化, 做出迅速的调整.</p>
-<p>　　</p>
-<h1 id="敏捷开发的核心价值观"><a href="#敏捷开发的核心价值观" class="headerlink" title="敏捷开发的核心价值观"></a>敏捷开发的核心价值观</h1><ul>
-<li>以人为本</li>
-<li>目标导向</li>
-<li>客户为先</li>
-<li>拥抱变化</li>
-</ul>
-<h1 id="敏捷开发的原则"><a href="#敏捷开发的原则" class="headerlink" title="敏捷开发的原则"></a>敏捷开发的原则</h1><ul>
-<li>我们最重要的目标，是通过持续不断地及早交付有价值的软件使客户满意。</li>
-<li>欣然面对需求变化，即使在开发后期也一样。为了客户的竞争优势，敏捷过程掌控变化。</li>
-<li>经常地交付可工作的软件，相隔几星期或一两个月，倾向于采取较短的周期。</li>
-<li>业务人员和开发人员必须相互合作，项目中的每一天都不例外。</li>
-<li>激发个体的斗志，以他们为核心搭建项目。提供所需的环境和支援，辅以信任，从而达成目标。</li>
-<li>不论团队内外，传递信息效果最好效率也最高的方式是面对面的交谈。</li>
-<li>可工作的软件是进度的首要度量标准。</li>
-<li>敏捷过程倡导可持续开发。责任人、开发人员和用户要能够共同维持其步调稳定延续。</li>
-<li>坚持不懈地追求技术卓越和良好设计，敏捷能力由此增强。</li>
-<li>以简洁为本，它是极力减少不必要工作量的艺术。</li>
-<li>最好的架构、需求和设计出自自组织团队。</li>
-<li>团队定期地反思如何能提高成效，并依此调整自身的举止表现。</li>
-</ul>
-<h1 id="体悟"><a href="#体悟" class="headerlink" title="体悟"></a>体悟</h1><ul>
-<li>敏捷不是万能的，针对每个团队的特性，合适的才是最好的</li>
-<li>敏捷其实对团队中每个成员的要求都很高，要求每个人都能发挥自己的主观能动性，为了达成团队的共同目标献言献策，在实际中，如何去调动大家的积极性很重要。</li>
-<li>敏捷不只是快，更多的是要求开发团队对需求反应更为迅捷。能迅速适应变化。</li>
-</ul>
-<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a href="http://blog.csdn.net/uxyheaven/article/details/49618097">http://blog.csdn.net/uxyheaven/article/details/49618097</a></p>
-
+<h1 id="敏捷开发核心理念"><a href="#敏捷开发核心理念" class="headerlink" title="敏捷开发核心理念"></a>敏捷开发核心理念</h1>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/11/29/%E6%95%8F%E6%8D%B7%E5%BC%80%E5%8F%91%EF%BC%88%E4%B8%80%EF%BC%89-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -876,6 +820,14 @@ json文件默认目录：/var/lib/jmxtrans/
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       103 字
+    </span>
+
+    <span title="post.min2read">
+       1 分钟
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -1015,7 +967,7 @@ json文件默认目录：/var/lib/jmxtrans/
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -1027,9 +979,6 @@ json文件默认目录：/var/lib/jmxtrans/
   </nav>
 </div>
   <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/Yao544303" title="GitHub → https://github.com/Yao544303" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
       <span class="links-of-author-item">
         <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
       </span>
@@ -1061,15 +1010,67 @@ json文件默认目录：/var/lib/jmxtrans/
 
 <div class="copyright">
   
-  &copy; 
+  &copy; 2013 – 
   <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">喵十八</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
   </div>
+
+<div></div>
+
+<!--添加网站的运行时间-->
+<span id="sitetime"> <br></span>
+<script language="javascript">
+	function siteTime(){
+		window.setTimeout("siteTime()", 1000);
+		var seconds = 1000
+		var minutes = seconds * 60
+		var hours = minutes * 60
+		var days = hours * 24
+		var years = days * 365
+
+		var today = new Date()
+		var todayYear = today.getFullYear()
+		var todayMonth = today.getMonth()
+		var todayDate = today.getDate()
+		var todayHour = today.getHours()
+		var todayMinute = today.getMinutes()
+		var todaySecond = today.getSeconds()
+		var t1 = Date.UTC(2017,4,18,11,00,00)
+		var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+		var diff = t2-t1
+
+		var diffYears = Math.floor(diff/years)
+		var diffDays = Math.floor((diff/days)-diffYears*365)
+		var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+		var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+		var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+		document.getElementById("sitetime").innerHTML=" 本站已运行"+diffYears+" 年 "+diffDays+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒<br>"
+	}
+	siteTime()
+</script>
+
+<!-- 不蒜字统计 -->
+<div>
+	<i class="fa fa-user-md"></i>
+	<span id="busuanzi_container_site_uv">
+	  访问人数：<span id="busuanzi_value_site_uv"></span>
+	</span>&nbsp;|&nbsp;
+	
+	<i class="fa fa-eye"></i>
+	<span id="busuanzi_container_site_pv">
+	  总访问量：<span id="busuanzi_value_site_pv"></span>
+	</span>&nbsp;|&nbsp;
+	
+	<!-- 添加博客全站总字数统计-->
+	<i class="fa fa-pencil"></i>
+	<span class="post-count">博客全站共 113k 字</span>
+</div>
+	
 
         
 
@@ -1103,6 +1104,31 @@ json文件默认目录：/var/lib/jmxtrans/
 
 
   
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
 
 
 
