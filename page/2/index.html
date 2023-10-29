@@ -173,6 +173,90 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fate-log-12-dataio/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       3.7k 字
+    </span>
+
+    <span title="post.min2read">
+       21 分钟
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/08/20/fate-log-12-dataio/" class="post-title-link" itemprop="url">FATE学习：跟着日志读源码（十二）dataio task excute阶段</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-08-20 13:41:52 / Modified: 13:46:33" itemprop="dateCreated datePublished" datetime="2023-08-20T13:41:52+08:00">2023-08-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FATE/" itemprop="url" rel="index"><span itemprop="name">FATE</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>参考FATE 的flowchart，常规任务开始的第一个组件，就是dataio。<br>同前文，在${job_log_dir}/fate_flow_schedule.log 中输出如下命令后，开始通过task_executor 执行dataio。<br></p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [2021-06-04 14:42:02,995] [1:140456603948800] - job_utils.py[line:310]: start process command: /opt/app-root/bin/python /data/projects/fate/python/fate_flow/operation/task_executor.py -j 202106041441554669404 -n dataio_0 -t 202106041441554669404_dataio_0 -v 0 -r guest -p 9989 -c /data/projects/fate/jobs/202106041441554669404/guest/9989/dataio_0/202106041441554669404_dataio_0/0/task_parameters.json --run_ip 10.200.224.59 --job_server 10.200.224.59:9380</span><br><span class="line">[INFO] [2021-06-04 14:42:03,005] [1:140456603948800] - job_utils.py[line:333]: start process command: /opt/app-root/bin/python /data/projects/fate/python/fate_flow/operation/task_executor.py -j 202106041441554669404 -n dataio_0 -t 202106041441554669404_dataio_0 -v 0 -r guest -p 9989 -c /data/projects/fate/jobs/202106041441554669404/guest/9989/dataio_0/202106041441554669404_dataio_0/0/task_parameters.json --run_ip 10.200.224.59 --job_server 10.200.224.59:9380 successfully, pid is 1657</span><br><span class="line"></span><br><span class="line">[INFO] [2021-06-04 14:42:03,972] [1657:139893886592832] - task_executor.py[line:56]: enter task process</span><br><span class="line">[INFO] [2021-06-04 14:42:03,972] [1657:139893886592832] - task_executor.py[line:57]: Namespace(component_name=&#x27;dataio_0&#x27;, config=&#x27;/data/projects/fate/jobs/202106041441554669404/guest/9989/dataio_0/202106041441554669404_dataio_0/0/task_parameters.json&#x27;, job_id=&#x27;202106041441554669404&#x27;, job_server=&#x27;10.200.224.59:9380&#x27;, party_id=9989, role=&#x27;guest&#x27;, run_ip=&#x27;10.200.224.59&#x27;, task_id=&#x27;202106041441554669404_dataio_0&#x27;, task_version=0)</span><br></pre></td></tr></table></figure><p></p>
+<p>具体的执行日志，会输出在dataio_0/DEBUG.log中。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/08/20/fate-log-12-dataio/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fate-log-11-upload-requests/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -991,108 +1075,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/fate-log-2-start-fateflow/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="喵十八">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="喵十八の小窝">
-    </span>
-
-    <span title="post.wordcount">
-       3.1k 字
-    </span>
-
-    <span title="post.min2read">
-       15 分钟
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/08/20/fate-log-2-start-fateflow/" class="post-title-link" itemprop="url">FATE学习：跟着日志读源码（二）fate_flow server 启动</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2023-08-20 12:10:46 / Modified: 12:24:01" itemprop="dateCreated datePublished" datetime="2023-08-20T12:10:46+08:00">2023-08-20</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FATE/" itemprop="url" rel="index"><span itemprop="name">FATE</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><ul>
-<li>代码：python/fate_flow/fate_flow_server.py</li>
-<li>web框架：Flask</li>
-</ul>
-<p>流程为：</p>
-<ol>
-<li>执行 python fate_flow_server.py ，这部分会在容器中打出相应日志。</li>
-<li><p>fate_flow_server 执行启动过程。这里可以看下logs目录</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(app-root) bash-4.2# pwd</span><br><span class="line">/data/projects/fate/logs</span><br><span class="line">(app-root) bash-4.2# ls</span><br><span class="line">fate_flow</span><br><span class="line">(app-root) bash-4.2# ls fate_flow/</span><br><span class="line">DEBUG.log  fate_flow_detect.log  fate_flow_schedule.log  fate_flow_stat.log  INFO.log  peewee.log</span><br></pre></td></tr></table></figure>
-<p>可以看到，由于没有提交任何任务，当前只有一个fate_flow的目录，这里记录的是fate_flow_server启动的日志。具体而言</p>
-<ul>
-<li>peewee.log：fate中操作db，使用了peewee，这里记录所有通过peewee操作数据库的日志</li>
-<li>fate_flow_detect.log：探测器日志</li>
-<li>fate_flow_schedule.log：调度器日志</li>
-<li>fate_flow_stat.log：除以上3部分外的其余状态日志</li>
-<li>DEBUG.log、INFO.log、WARNING.log、ERROR.log：各级别日志，会将以上各部分（除了fate_flow_detect.log，这个后续单独说明逻辑）中对应级别的日志收集。<br>因fate_flow_server 启动的日志，均输出在fate_flow 目录中，故本文所述的日志，均为fate_flow目录中的对应日志。</li>
-</ul>
-</li>
-</ol>
-<h1 id="执行-fate-flow-server-py"><a href="#执行-fate-flow-server-py" class="headerlink" title="执行 fate_flow_server.py"></a>执行 fate_flow_server.py</h1>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/08/20/fate-log-2-start-fateflow/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1164,7 +1146,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-count">59</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1177,7 +1159,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">78</span>
+        <span class="site-state-item-count">79</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

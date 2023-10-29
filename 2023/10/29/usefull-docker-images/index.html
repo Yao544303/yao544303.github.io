@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0-rc2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="背景Docker 部署有着非常多的优势，可以帮助提高开发、测试和部署的效率，降低成本，使应用更具可移植性和可扩展性，包括但不限于  标准化应用发布，跨平台和主机使用：Docker的镜像提供了标准化发布环境，使得应用可以在不同的平台和主机上运行，提高了可移植性。 节约时间，方便快速部署和启动：使用Docker可以快速构建、部署和启动应用，特别是在开发环境中，可以快速地构建和测试应用。 方便构建基于S">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记录几个常用的docker镜像">
+<meta property="og:url" content="http://yoursite.com/2023/10/29/usefull-docker-images/index.html">
+<meta property="og:site_name" content="喵十八の小窝">
+<meta property="og:description" content="背景Docker 部署有着非常多的优势，可以帮助提高开发、测试和部署的效率，降低成本，使应用更具可移植性和可扩展性，包括但不限于  标准化应用发布，跨平台和主机使用：Docker的镜像提供了标准化发布环境，使得应用可以在不同的平台和主机上运行，提高了可移植性。 节约时间，方便快速部署和启动：使用Docker可以快速构建、部署和启动应用，特别是在开发环境中，可以快速地构建和测试应用。 方便构建基于S">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/image/usefull_docker/docker-portainer-login.png">
+<meta property="og:image" content="http://yoursite.com/image/usefull_docker/docker-portainer-home.png">
+<meta property="og:image" content="http://yoursite.com/image/usefull_docker/docker-portainer-dashboard.png">
+<meta property="og:image" content="http://yoursite.com/image/usefull_docker/docker-portainer-container-list.png">
+<meta property="og:image" content="http://yoursite.com/image/usefull_docker/docker-nextcloud-size.png">
+<meta property="og:image" content="http://yoursite.com/image/usefull_docker/docker-nextcloud-trust.png">
+<meta property="og:image" content="http://yoursite.com/image/usefull_docker/docker-baidu-login.png">
+<meta property="og:image" content="http://yoursite.com/image/usefull_docker/docker-baidu-usage.png">
+<meta property="og:image" content="http://yoursite.com/image/usefull_docker/docker-dashy-demo.gif">
+<meta property="article:published_time" content="2023-10-29T06:28:03.000Z">
+<meta property="article:modified_time" content="2023-10-29T06:49:10.448Z">
+<meta property="article:author" content="喵十八">
+<meta property="article:tag" content="Docker镜像">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/image/usefull_docker/docker-portainer-login.png">
+
+<link rel="canonical" href="http://yoursite.com/2023/10/29/usefull-docker-images/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>记录几个常用的docker镜像 | 喵十八の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">喵十八の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>Schedule</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>Commonweal 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Yao544303" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/10/29/usefull-docker-images/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="喵十八">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵十八の小窝">
+    </span>
+
+    <span title="post.wordcount">
+       4k 字
+    </span>
+
+    <span title="post.min2read">
+       16 分钟
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          记录几个常用的docker镜像
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-10-29 14:28:03 / Modified: 14:49:10" itemprop="dateCreated datePublished" datetime="2023-10-29T14:28:03+08:00">2023-10-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p><a href="https://www.docker.com/">Docker</a> 部署有着非常多的优势，可以帮助提高开发、测试和部署的效率，降低成本，使应用更具可移植性和可扩展性，包括但不限于</p>
+<ol>
+<li>标准化应用发布，跨平台和主机使用：Docker的镜像提供了标准化发布环境，使得应用可以在不同的平台和主机上运行，提高了可移植性。</li>
+<li>节约时间，方便快速部署和启动：使用Docker可以快速构建、部署和启动应用，特别是在开发环境中，可以快速地构建和测试应用。</li>
+<li>方便构建基于SOA架构或微服务架构的系统：Docker可以方便地构建和部署基于SOA架构或微服务架构的系统，使得不同的服务可以独立地开发和部署。</li>
+<li>节约成本：通过Docker的镜像和容器化技术，可以有效地降低应用运行所需的硬件资源，从而节约成本。</li>
+<li>方便持续集成：Docker可以方便地集成到持续集成流程中，使得代码的构建、测试和部署更加自动化。</li>
+<li>可以作为集群系统的轻量主机或节点：Docker可以作为集群系统的轻量主机或节点，提供高效的资源管理和调度。</li>
+<li>简化配置：Docker将运行的环境打包至容器，使用时直接启动即可，大大简化了配置过程。</li>
+<li>快速迁移扩展：我们可以快速将容器进行打包迁移到需要的平台上应用，拥有良好的兼容性。<br>而且，这么多年下来，各类应用，都已经docker化了。大大方便了我们日常的使用，以下就列举了在日常使用和开发中常用的一些docker</li>
+</ol>
+<h1 id="前置"><a href="#前置" class="headerlink" title="前置"></a>前置</h1><p>安装好docker engine 和 docker-compose。</p>
+<h2 id="1-安装docker-engine"><a href="#1-安装docker-engine" class="headerlink" title="1. 安装docker engine"></a>1. 安装docker engine</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun</span><br><span class="line">sudo systemctl start docker</span><br><span class="line">docker version</span><br><span class="line"></span><br><span class="line"># 设置Docker 自启动</span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart docker.service</span><br><span class="line">systemctl enable docker.service</span><br><span class="line"># 关闭docker 服务自启动</span><br><span class="line">systemctl disable docker.service</span><br><span class="line"></span><br><span class="line"># 添加docker 用户组</span><br><span class="line">sudo groupadd docker</span><br><span class="line">sudo gpasswd -a $USER docker</span><br><span class="line">newgrp docker</span><br><span class="line">sudo systemctl restart docker</span><br><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+<h2 id="2-安装-docker-compose"><a href="#2-安装-docker-compose" class="headerlink" title="2. 安装 docker compose"></a>2. 安装 docker compose</h2><p>Docker Compose是一个工具，它用于定义和运行使用Docker容器的应用程序。这个工具负责编排多个Docker容器，使容器能够相互配合完成特定的任务。它允许用户通过一个单独的docker-compose.yml模板文件（YAML格式）来定义一组相关联的应用容器为一个项目。这个文件可以用来定义多个服务以及它们之间的依赖关系，并可以指定服务的启动顺序。使用Docker Compose，用户可以很方便地在单个文件中定义一个Web项目，包括Web服务容器本身、后端的数据库服务容器以及负载均衡容器等。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo curl -L &quot;https://github.com/docker/compose/releases/download/v2.2.2/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose</span><br><span class="line">sudo chmod +x /usr/local/bin/docker-compose</span><br></pre></td></tr></table></figure>
+<h2 id="3-docker-国内加速"><a href="#3-docker-国内加速" class="headerlink" title="3. docker 国内加速"></a>3. docker 国内加速</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vi /etc/docker/daemon.json</span><br></pre></td></tr></table></figure>
+<p>改为如下内容<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;registry-mirrors&quot;: [</span><br><span class="line">        &quot;https://hub-mirror.c.163.com&quot;,</span><br><span class="line">        &quot;https://mirror.baiduce.com&quot;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>重启docker<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl daemo-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure></p>
+<h1 id="通用类"><a href="#通用类" class="headerlink" title="通用类"></a>通用类</h1><p>主要记录了All-in-one 上常用的docker镜像。</p>
+<h2 id="Portainer"><a href="#Portainer" class="headerlink" title="Portainer"></a>Portainer</h2><p><a href="https://www.portainer.io/">Portainer</a>是一个可视化的Docker操作界面，提供状态显示面板、应用模板快速部署、容器镜像网络数据卷的基本操作（包括上传下载镜像，创建容器等操作）、事件日志显示、容器控制台操作、Swarm集群和服务等集中管理和操作、登录用户管理和控制等功能。功能十分全面，基本能满足中小型单位对容器管理的全部需求。<br>虽然习惯了docker cli， 但是在家里的AIO 上，有个web UI，省的每次都ssh了，也方便了不少。</p>
+<ol>
+<li>安装<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker volume create portainer_data</span><br><span class="line">docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce</span><br></pre></td></tr></table></figure></li>
+<li>启动后访问，<a href="http://ip:9000，">http://ip:9000，</a> 首次登录时创建admin账号密码<br><img src="/image/usefull_docker/docker-portainer-login.png" alt=""><br>后续就可以正常管理了。</li>
+</ol>
+<p><img src="/image/usefull_docker/docker-portainer-home.png" alt=""><br><img src="/image/usefull_docker/docker-portainer-dashboard.png" alt=""><br><img src="/image/usefull_docker/docker-portainer-container-list.png" alt=""></p>
+<h2 id="Nextcloud"><a href="#Nextcloud" class="headerlink" title="Nextcloud"></a>Nextcloud</h2><p><a href="https://nextcloud.com/">Nextcloud</a> 是一款开源免费的私有云存储网盘项目，可以让你快速便捷地搭建一套属于自己或团队的云同步网盘，从而实现跨平台跨设备文件同步、共享、版本控制、团队协作等功能。其客户端覆盖了Windows、Mac、Android、iOS、Linux等各种平台，也提供了网页端以及WebDAV接口，方便在各种设备上访问云盘。与Dropbox等专有服务相比，Nextcloud的开放架构让用户可以利用应用程序的方式在服务器上新增额外的功能，并让用户可以完全掌控自己的数据。</p>
+<ol>
+<li>安装<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">--name nextcloud \</span><br><span class="line">-p 80:80 \</span><br><span class="line">-v /home/user/nextcloud:/var/www/html \</span><br><span class="line">nextcloud</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>docker宿主机ip+port访问，即可访问，然后创建用户即可。</p>
+<ol>
+<li>iOS提示文件过大，无法上传<br><a href="https://help.nextcloud.com/t/413-error-the-file-is-too-large/151499">413 error the file is too large</a></li>
+</ol>
+<p>修改如下<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">/var/www/html/.user.ini</span><br><span class="line">#新增俩行</span><br><span class="line">upload_max_filesize=16G</span><br><span class="line">post_max_size=16G</span><br><span class="line"></span><br><span class="line">/var/www/html/.htaccess</span><br><span class="line">&lt;IfModule mod_php7.c&gt;</span><br><span class="line">  php_value mbstring.func_overload 0</span><br><span class="line">  php_value default_charset &#x27;UTF-8&#x27;</span><br><span class="line">  php_value output_buffering 0</span><br><span class="line">#新增部分</span><br><span class="line">  php_value upload_max_filesize 16G</span><br><span class="line">  php_value post_max_size 16G</span><br><span class="line">  &lt;IfModule mod_env.c&gt;</span><br><span class="line">    SetEnv htaccessWorking true</span><br><span class="line">  &lt;/IfModule&gt;</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line"></span><br><span class="line">/var/www/html/3rdparty/aws/aws-crt-php/php.ini</span><br><span class="line">#新增</span><br><span class="line">post_max_size = 16G</span><br><span class="line">upload_max_filesize = 16G</span><br></pre></td></tr></table></figure></p>
+<p>iOS 客户端设置下即可<br><img src="/image/usefull_docker/docker-nextcloud-size.png" alt=""></p>
+<ol>
+<li>暴露到外网<br>编辑 config/config.php 中的 “trusted_domains” 设置，加入你的域名<br>如下<br><img src="/image/usefull_docker/docker-nextcloud-trust.png" alt=""></li>
+</ol>
+<h2 id="百度网盘"><a href="#百度网盘" class="headerlink" title="百度网盘"></a>百度网盘</h2><p>不想在本机上安装度盘，怕他读我的信息，就单独起个docker 跑。</p>
+<ol>
+<li>安装<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">--name=baidunetdisk \</span><br><span class="line">-p 15811:5800 \</span><br><span class="line">-p 15911:5900 \</span><br><span class="line">-v /home/user/baidu/config:/config \</span><br><span class="line">-v /home/user/baidu/config/downloads:/config/downloads \</span><br><span class="line">-e VNC_PASSWORD=admin123 \</span><br><span class="line">--restart unless-stopped \</span><br><span class="line">johngong/baidunetdisk:latest</span><br></pre></td></tr></table></figure></li>
+<li>登录和使用和正常度盘差不多<br><img src="/image/usefull_docker/docker-baidu-login.png" alt=""><br><img src="/image/usefull_docker/docker-baidu-usage.png" alt=""></li>
+</ol>
+<h2 id="Dashy"><a href="#Dashy" class="headerlink" title="Dashy"></a>Dashy</h2><p><a href="https://github.com/Lissy93/dashy">Dashy</a>是一个开源的自托管的导航页配置服务，具有易于使用的可视化编辑器、状态检查、小工具和主题等功能。用户可以将自己常用的一些网站聚合起来放在一起，形成自己的导航页。<br>类似的还有<a href="https://github.com/bastienwirtz/homer">homer</a> <a href="https://github.com/ajnart/homarr">homarr</a> <a href="https://github.com/pawelmalak/flame">flame</a> <a href="https://github.com/linuxserver/Heimdall">Heimdall</a> </p>
+<p><img src="/image/usefull_docker/docker-dashy-demo.gif" alt=""></p>
+<ol>
+<li>安装<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  -p 80:80 \</span><br><span class="line">  -v /home/user/dashy/dashy.yml:/app/public/conf.yml \</span><br><span class="line">  --name my-dashboard \</span><br><span class="line">  --restart=always \</span><br><span class="line">  lissy93/dashy:latest</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>可以在UI上，通过拖拽的方式，配置自己的当行业，或者通过编写dashy.yml文件。<br>此外，还支持配置访问权限<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">appConfig:</span><br><span class="line">  theme: material</span><br><span class="line">  layout: horizontal</span><br><span class="line">  iconSize: large</span><br><span class="line">  language: en</span><br><span class="line">  auth:</span><br><span class="line">    enableGuestAccess: true</span><br><span class="line">    users:</span><br><span class="line">    - user: adminme</span><br><span class="line">      hash: 密码的hash值</span><br><span class="line">      type: admin</span><br></pre></td></tr></table></figure><br>具体可以参考：<a href="https://dashy.to/docs/quick-start">dashy quick start</a></p>
+<h2 id="Novnc"><a href="#Novnc" class="headerlink" title="Novnc"></a>Novnc</h2><p>Novnc是一个基于HTML5的VNC客户端，使用WebSockets、Canvas和JavaScript实现。它通常被用于云计算和虚拟机控制面板中，如OpenStack Dashboard和OpenNebula Sunstone。虽然Novnc采用WebSockets实现，但大多数VNC服务器并不支持WebSockets，因此Novnc不能直接连接到VNC服务器，需要一个代理（如websockify）来做WebSockets和TCP sockets之间的转换。用户可以从Novnc的官方网站下载并安装该客户端，或者使用git进行安装。安装完成后，用户可以通过运行命令来启动Novnc服务，并在浏览器中输入显示的链接地址来访问Windows桌面。</p>
+<p>如果访问一些网站，不想留下痕迹，就可以使用docker 起一个，类似沙盒。<br>这里用的是<a href="https://hub.docker.com/r/ljdyw/ubuntu-novnc，集成了百度云，迅雷x，火狐浏览器，图形化压缩软件，文本编辑器，qb下载器，中文桌面支持">https://hub.docker.com/r/ljdyw/ubuntu-novnc，集成了百度云，迅雷x，火狐浏览器，图形化压缩软件，文本编辑器，qb下载器，中文桌面支持</a><br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -dit -p 8080:8080 -p 6080:6080 -p 50000:50000 -p 5901:5901 -v /home/user/novnc:/root/下载 --name ubuntu1 ljdyw/ubuntu-novnc:latest</span><br></pre></td></tr></table></figure></p>
+<p>说明如下<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">访问端口6080</span><br><span class="line">22是ssh的端口 6.0后默认关闭 打开命令 /etc/init.d/ssh start</span><br><span class="line">5901是vnc端口</span><br><span class="line">连接密码 root333</span><br><span class="line">root密码 root333</span><br><span class="line">修改密码 进入桌面后右键打开终端 输入 vncpasswd 回车-输入密码-回车-再次输入密码-回车</span><br><span class="line">8080是qb访问端口</span><br><span class="line">默认用户名admin</span><br><span class="line">默认密码password 目录 /root/下载</span><br></pre></td></tr></table></figure></p>
+<h2 id="Alist"><a href="#Alist" class="headerlink" title="Alist"></a>Alist</h2><p><a href="https://alist.nn.ci/zh/">Alist</a> 是一个开源Web服务，可以添加多种网盘，将多个网盘应用集成到一个统一应用中使用，还支持通过WebDAV服务映射到操作系统本地目录使用。它不仅支持网盘存储，还支持对象存储、本地存储、FTP等等。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --restart=always -v /etc/alist:/opt/alist/data -v /home/user/alist:/media -p 5244:5244 -e PUID=0 -e PGID=0 -e UMASK=022 --name=&quot;alist&quot; xhofe/alist:latest</span><br></pre></td></tr></table></figure><br>可以配合Kodi等，搭建自己的家庭影院。<br><a href="https://blog.csdn.net/zjokk/article/details/128137616">Alist+KODI打造免费家庭影院</a></p>
+<h2 id="frp"><a href="#frp" class="headerlink" title="frp"></a>frp</h2><p><a href="https://gofrp.org/docs/concepts/">frp</a>是fast reverse proxy的缩写，是一个专注于内网穿透的高性能的反向代理应用,支持 TCP、UDP、HTTP、HTTPS 等多种协议，可以将内网服务以安全、便捷的方式通过具有公网 IP 节点的中转暴露到公网。frp有服务端（frps，s指service，通常搭建在有公网IP的设备上）和客户端（frpc，c指client，通常搭建在内网设备上）</p>
+<ol>
+<li>server 端安装</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd frps</span><br></pre></td></tr></table></figure>
+<p>创建docker-compose.yml， 内容如下<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">version: &#x27;3.3&#x27;</span><br><span class="line">services:</span><br><span class="line">    frps:</span><br><span class="line">        restart: always</span><br><span class="line">        network_mode: host</span><br><span class="line">        volumes:</span><br><span class="line">            - &#x27;./frps.ini:/etc/frp/frps.ini&#x27;</span><br><span class="line">        container_name: frps</span><br><span class="line">        image: snowdreamtech/frps</span><br></pre></td></tr></table></figure><br>同目录下新增 frps.ini 文件，样例如下<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[common]</span><br><span class="line">#frp 监听端口，与客户端绑定端口</span><br><span class="line">bind_port= 5443</span><br><span class="line">kcp_bind_port = 5443</span><br><span class="line">#dashboard用户名</span><br><span class="line">dashboard_user= admin</span><br><span class="line">#dashboard密码</span><br><span class="line">dashboard_pwd= passwd</span><br><span class="line">#dashboard端口，启动成功后可通过浏览器访问如http://ip:9527</span><br><span class="line">dashboard_port= 9527</span><br><span class="line">#设置客户端token，对应客户端有页需要配置一定要记住，如果客户端不填写你连不上服务端</span><br><span class="line">token = 1234abcd</span><br></pre></td></tr></table></figure><br>启动<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d </span><br></pre></td></tr></table></figure><br><strong>Tips</strong> 记得网络策略放开所需端口。</p>
+<ol>
+<li>client 端安装<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd frpc</span><br></pre></td></tr></table></figure>
+同样的，创建 docker-compose.yml文件和frpc.ini的文件<br>docker-compose.yml<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">version: &#x27;3.3&#x27;</span><br><span class="line">services:</span><br><span class="line">    frpc:</span><br><span class="line">        restart: always</span><br><span class="line">        network_mode: host</span><br><span class="line">        volumes:</span><br><span class="line">            - &#x27;./frpc.ini:/etc/frp/frpc.ini&#x27;</span><br><span class="line">        container_name: frpc</span><br><span class="line">        image: snowdreamtech/frpc</span><br></pre></td></tr></table></figure>
+frpc.ini<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"># frpc.ini</span><br><span class="line">[common]</span><br><span class="line">server_addr = 43.132.202.152</span><br><span class="line">server_port = 5443</span><br><span class="line">token = 8ad3d1x429a2d</span><br><span class="line"></span><br><span class="line">[ssh]</span><br><span class="line">type = tcp</span><br><span class="line">local_ip = 127.0.0.1</span><br><span class="line">local_port = 2222</span><br><span class="line">remote_port = 6222</span><br><span class="line"></span><br><span class="line">[nextcloud]</span><br><span class="line">type = tcp</span><br><span class="line">local_ip = 127.0.0.1</span><br><span class="line">local_port = 14433</span><br><span class="line">remote_port = 7004</span><br><span class="line"></span><br><span class="line">[vnc]</span><br><span class="line">type = tcp</span><br><span class="line">local_ip = 127.0.0.1</span><br><span class="line">local_port = 5900</span><br><span class="line">remote_port = 5900</span><br><span class="line">use_encryption = true</span><br><span class="line">use_compression = true</span><br></pre></td></tr></table></figure>
+启动<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d </span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="开发常用docker"><a href="#开发常用docker" class="headerlink" title="开发常用docker"></a>开发常用docker</h1><h2 id="Nginx-Proxy-Manager"><a href="#Nginx-Proxy-Manager" class="headerlink" title="Nginx Proxy Manager"></a>Nginx Proxy Manager</h2><p><a href="https://nginxproxymanager.com/">Nginx Proxy Manager</a> 是一个反向代理管理系统，它基于Nginx，具有漂亮整洁的Web UI。这个工具可以获得受信任的SSL证书，并通过单独的配置、自定义和入侵保护来管理多个代理。它是开源的，获得了很多的关注和认可。<br>创建 docker-compose.yml<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">version: &#x27;3&#x27;</span><br><span class="line">services:</span><br><span class="line">  app:</span><br><span class="line">    image: &#x27;jc21/nginx-proxy-manager:latest&#x27;</span><br><span class="line">    restart: unless-stopped</span><br><span class="line">    ports:</span><br><span class="line">      - &#x27;80:80&#x27;  # 冒号左边可以改成自己服务器未被占用的端口</span><br><span class="line">      - &#x27;81:81&#x27;  # 冒号左边可以改成自己服务器未被占用的端口</span><br><span class="line">      - &#x27;443:443&#x27; # 冒号左边可以改成自己服务器未被占用的端口</span><br><span class="line">    volumes:</span><br><span class="line">      - ./data:/data # 冒号左边可以改路径，现在是表示把数据存放在在当前文件夹下的 data 文件夹中</span><br><span class="line">      - ./letsencrypt:/etc/letsencrypt  # 冒号左边可以改路径，现在是表示把数据存放在在当前文件夹下的 letsencrypt 文件夹中</span><br></pre></td></tr></table></figure><br>启动<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d </span><br></pre></td></tr></table></figure><br>具体配置，参见官方文档</p>
+<h2 id="Halo"><a href="#Halo" class="headerlink" title="Halo"></a>Halo</h2><p><a href="https://docs.halo.run">Halo</a>博客系统是一款由Halo团队开发的博客系统，支持托管任意容器化应用。HALO博客系统使用Java语言编写，并基于Spring Boot框架开发。它还使用了MyBatis作为持久层框架，Redis作为缓存服务器，并使用Docker进行容器化部署。HALO博客系统具有用户认证、文章发布、评论、标签等功能，并支持多种存储方式。同时，它还支持在Docker和Kubernetes等平台上部署和使用。</p>
+<p>一样，用docker-compose 启动, 文件内容如下，<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">version: &quot;3&quot;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  halo:</span><br><span class="line">    image: halohub/halo:2.9</span><br><span class="line">    container_name: halo</span><br><span class="line">    restart: on-failure:3</span><br><span class="line">    depends_on:</span><br><span class="line">      halodb:</span><br><span class="line">        condition: service_healthy</span><br><span class="line">    networks:</span><br><span class="line">      halo_network:</span><br><span class="line">    volumes:</span><br><span class="line">      - ./:/root/.halo2</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;8090:8090&quot;</span><br><span class="line">    healthcheck:</span><br><span class="line">      test: [&quot;CMD&quot;, &quot;curl&quot;, &quot;-f&quot;, &quot;http://localhost:8090/actuator/health/readiness&quot;]</span><br><span class="line">      interval: 30s</span><br><span class="line">      timeout: 5s</span><br><span class="line">      retries: 5</span><br><span class="line">      start_period: 30s</span><br><span class="line">    command:</span><br><span class="line">      - --spring.r2dbc.url=r2dbc:pool:mysql://halodb:3306/halo</span><br><span class="line">      - --spring.r2dbc.username=root</span><br><span class="line">      # MySQL 的密码，请保证与下方 MYSQL_ROOT_PASSWORD 的变量值一致。</span><br><span class="line">      - --spring.r2dbc.password=o#DwN&amp;JSa56</span><br><span class="line">      - --spring.sql.init.platform=mysql</span><br><span class="line">      # 外部访问地址，请根据实际需要修改</span><br><span class="line">      - --halo.external-url=http://localhost:8090/</span><br><span class="line"></span><br><span class="line">  halodb:</span><br><span class="line">    image: mysql:8.0.31</span><br><span class="line">    container_name: halodb</span><br><span class="line">    restart: on-failure:3</span><br><span class="line">    networks:</span><br><span class="line">      halo_network:</span><br><span class="line">    command: </span><br><span class="line">      - --default-authentication-plugin=mysql_native_password</span><br><span class="line">      - --character-set-server=utf8mb4</span><br><span class="line">      - --collation-server=utf8mb4_general_ci</span><br><span class="line">      - --explicit_defaults_for_timestamp=true</span><br><span class="line">    volumes:</span><br><span class="line">      - ./mysql:/var/lib/mysql</span><br><span class="line">      - ./mysqlBackup:/data/mysqlBackup</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;3306:3306&quot;</span><br><span class="line">    healthcheck:</span><br><span class="line">      test: [&quot;CMD&quot;, &quot;mysqladmin&quot;, &quot;ping&quot;, &quot;-h&quot;, &quot;127.0.0.1&quot;, &quot;--silent&quot;]</span><br><span class="line">      interval: 3s</span><br><span class="line">      retries: 5</span><br><span class="line">      start_period: 30s</span><br><span class="line">    environment:</span><br><span class="line">      # 请修改此密码，并对应修改上方 Halo 服务的 SPRING_R2DBC_PASSWORD 变量值</span><br><span class="line">      - MYSQL_ROOT_PASSWORD=o#DwN&amp;JSa56</span><br><span class="line">      - MYSQL_DATABASE=halo</span><br><span class="line"></span><br><span class="line">networks:</span><br><span class="line">  halo_network:</span><br></pre></td></tr></table></figure></p>
+<h2 id="PostgreSQL"><a href="#PostgreSQL" class="headerlink" title="PostgreSQL"></a>PostgreSQL</h2><p><a href="https://www.postgresql.org/">PostgreSQL</a>是一种开源的关系型数据库管理系统（RDBMS），使用C语言编写。它支持SQL语言，并提供了强大的数据完整性、事务处理和安全性功能。PostgreSQL可以运行在多种操作系统上，包括Linux、Windows和macOS等。它提供了灵活的配置选项，可以根据需求进行定制，并具有可扩展性。PostgreSQL在开源社区中广泛使用，并被认为是一个可靠、高性能的数据库系统。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name postgress --restart always -e TZ=&#x27;Asia/Shanghai&#x27; -e POSTGRES_PASSWORD=&#x27;abc123&#x27; -e ALLOW_IP_RANGE=0.0.0.0/0 -v /home/postgres/data:/var/lib/postgresql -p 5432:5432 -d postgres</span><br></pre></td></tr></table></figure></p>
+<h2 id="pgAdmin"><a href="#pgAdmin" class="headerlink" title="pgAdmin"></a>pgAdmin</h2><p><a href="https://www.pgadmin.org/?ref=retool-blog.ghost.io">pgAdmin</a> pgAdmin是一个设计、维护和管理PostgreSQL数据库的通用工具。它支持多种操作系统，包括Linux、Unix、Mac OS X以及Windows，可以管理PostgreSQL 9.2以及更高版本。同时，pgAdmin还提供了大量的功能特性，如对象统计信息显示、依赖对象和被依赖对象的展示等。</p>
+<p>pgAdmin在PostgreSQL社区中广泛使用，被视为一个可靠、高性能的数据库管理工具。如果您是PostgreSQL数据库管理员或开发人员，那么pgAdmin可能是您需要使用的工具之一。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --name pgadmin --restart always -p 5080:80 -e &#x27;PGADMIN_DEFAULT_EMAIL=test@abc.com&#x27; -e &#x27;PGADMIN_DEFAULT_PASSWORD=testpwd&#x27; -e &#x27;PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION=True&#x27; -e &#x27;PGADMIN_CONFIG_LOGIN_BANNER=&quot;Authorised users only!&quot;&#x27; -e &#x27;PGADMIN_CONFIG_CONSOLE_LOG_LEVEL=10&#x27; dpage/pgadmin4</span><br></pre></td></tr></table></figure></p>
+<h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><p><a href="https://redis.io/">Redis</a> Redis是一个开源的使用ANSI C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。它是一个高性能的key-value数据库，和Memcached类似，它支持存储的value类型相对更多，包括string(字符串)、list(链表)、set(集合)、zset(sorted set —有序集合)和hash（哈希类型）。 在此基础上，redis支持各种不同方式的排序。 与memcached一样，为了保证效率，数据都是缓存在内存中。 从2010年3月15日起，Redis的开发工作由VMware主持。 从2013年5月开始，Redis的开发由Pivotal赞助。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart=always -p 6379:6379 --name redis -d redis</span><br></pre></td></tr></table></figure></p>
+<h2 id="gitlab"><a href="#gitlab" class="headerlink" title="gitlab"></a>gitlab</h2><p><a href="https://docs.gitlab.com/">gitlab</a>是一个用于仓库管理系统的开源项目，使用Git作为代码管理工具，并在此基础上搭建起来的Web服务。它被广泛使用于基于git的开源代码管理平台，主要针对软件开发过程中产生的代码和文档进行管理。GitLab主要针对group和project两个维度进行代码和文档管理，其中group是群组，project是工程项目。一个group可以管理多个project，可以理解为一个群组中有多项软件开发任务，而一个project中可能包含多个branch，意为每个项目中有多个分支，分支间相互独立，不同分支可以进行归并。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker run --detach \</span><br><span class="line">  --hostname gitlab.example.com \</span><br><span class="line">  --publish 19443:443 --publish 19080:80 --publish 19022:22 \</span><br><span class="line">  --name gitlab \</span><br><span class="line">  --restart always \</span><br><span class="line">  --volume /home/user/gitlab/config:/etc/gitlab \</span><br><span class="line">  --volume /home/user/gitlab/logs:/var/log/gitlab \</span><br><span class="line">  --volume /home/user/gitlab/data:/var/opt/gitlab \</span><br><span class="line">  gitlab/gitlab-ce:latest</span><br></pre></td></tr></table></figure></p>
+<p>创建用户<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it gitlab bash</span><br><span class="line">gitlab-rails console -e production</span><br><span class="line">//第一个默认为root</span><br><span class="line">user = User.where(id: 1).first</span><br><span class="line">//必须同时更改密码和password_confirmation才能使其正常工作</span><br><span class="line">user.password = &#x27;zaq1234ES&#x27;</span><br><span class="line">user.password_confirmation = &#x27;zaq1234ES&#x27;</span><br><span class="line">user.save!</span><br></pre></td></tr></table></figure></p>
+<h1 id="REF"><a href="#REF" class="headerlink" title="REF"></a>REF</h1><ul>
+<li><a href="https://github.com/docker/docker-install/">docker-install</a></li>
+<li><a href="https://blog.csdn.net/qq_44797987/article/details/112681224">Docker 配置国内源加速(2023/05/14)</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Docker%E9%95%9C%E5%83%8F/" rel="tag"># Docker镜像</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/26/azure-sqlserver-change-collections/" rel="prev" title="Azure sqlserver 更改字符集">
+      <i class="fa fa-chevron-left"></i> Azure sqlserver 更改字符集
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="喵十八"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">喵十八</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">79</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:yao544303963@gmail.com" title="E-Mail → mailto:yao544303963@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/yao544303963" title="CSDN → https://blog.csdn.net/yao544303963" rel="noopener" target="_blank"><i class="fa fa-crosshairs fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/yourname" title="Twitter → https://twitter.com/yourname" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2013 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">喵十八</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+<div></div>
+
+<!--添加网站的运行时间-->
+<span id="sitetime"> <br></span>
+<script language="javascript">
+	function siteTime(){
+		window.setTimeout("siteTime()", 1000);
+		var seconds = 1000
+		var minutes = seconds * 60
+		var hours = minutes * 60
+		var days = hours * 24
+		var years = days * 365
+
+		var today = new Date()
+		var todayYear = today.getFullYear()
+		var todayMonth = today.getMonth()
+		var todayDate = today.getDate()
+		var todayHour = today.getHours()
+		var todayMinute = today.getMinutes()
+		var todaySecond = today.getSeconds()
+		var t1 = Date.UTC(2017,4,18,11,00,00)
+		var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond)
+		var diff = t2-t1
+
+		var diffYears = Math.floor(diff/years)
+		var diffDays = Math.floor((diff/days)-diffYears*365)
+		var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours)
+		var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes)
+		var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds)
+		document.getElementById("sitetime").innerHTML=" 本站已运行"+diffYears+" 年 "+diffDays+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒<br>"
+	}
+	siteTime()
+</script>
+
+
+	
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '27aae79817de090819a6',
+      clientSecret: '9450110ff7650b446746819b94656ec441363aa7',
+      repo        : 'Yao544303.github.io',
+      owner       : 'Yao544303',
+      admin       : ['Yao544303'],
+      id          : 'f320f703de3be99b6d1cdf7fba68246f',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
